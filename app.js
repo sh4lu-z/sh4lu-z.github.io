@@ -27,11 +27,10 @@ function renderList(blogs) {
 
   if (blogs.length === 0) {
     container.innerHTML = `
-       <div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-200 text-center max-w-2xl mx-auto">
-           <div class="text-4xl mb-4">📄</div>
-           <h3 class="text-2xl font-bold mb-2 text-gray-900">No posts found!</h3>
-           <p class="text-gray-500 mb-8 text-lg">Head over to the Admin Panel to write your first markdown post.</p>
-           <a href="/admin.html" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow hover:bg-blue-700 transition">Go to Admin</a>
+       <div class="text-center py-20">
+           <h3 class="text-2xl font-bold mb-2 text-gray-900">No publications.</h3>
+           <p class="text-gray-500 mb-8 text-lg italic">Head over to the Admin Panel to write your first entry.</p>
+           <a href="/admin.html" class="inline-block text-sm font-bold text-gray-900 border-b border-gray-900 uppercase tracking-widest">Go to Admin</a>
        </div>
     `;
     return;
@@ -93,14 +92,14 @@ window.viewPost = async function (slug) {
   const shareUrl = window.location.href;
 
   container.innerHTML = `
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-      <button onclick="goHome()" class="bg-gray-200 text-gray-800 px-6 py-2.5 rounded-full font-bold hover:bg-gray-300 transition-colors flex items-center gap-2 shadow-sm shrink-0 w-max">← Back to Posts</button>
-      <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm max-w-full overflow-hidden text-sm">
-        <span class="text-gray-500 truncate min-w-0">${shareUrl}</span>
-        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-blue-600 font-bold hover:text-blue-800 shrink-0 cursor-pointer">Copy Link</button>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-gray-200 pb-4">
+      <button onclick="goHome()" class="text-gray-900 font-bold uppercase tracking-widest text-sm hover:underline flex items-center gap-2 shrink-0 w-max">&larr; Back</button>
+      <div class="flex items-center gap-4 text-sm">
+        <span class="text-gray-500 truncate min-w-0 italic">${shareUrl}</span>
+        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-gray-900 font-bold uppercase tracking-widest hover:underline shrink-0 cursor-pointer">Copy Link</button>
       </div>
     </div>
-    <article class="bg-white p-8 sm:p-12 lg:p-16 rounded-3xl shadow-md border border-gray-100 markdown-body">
+    <article class="py-8 markdown-body">
       ${marked.parse(content)}
     </article>
   `;
@@ -226,7 +225,7 @@ async function renderExternalLinks() {
   articles.sort((a, b) => b.date - a.date);
 
   if (articles.length === 0) {
-    container.innerHTML = `<div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-200 text-center max-w-2xl mx-auto"><h3 class="text-2xl font-bold mb-2">No Articles Found</h3><p class="text-gray-500 mb-8 text-lg">We couldn't fetch articles for @sh4lu_z across Medium and DEV.to right now.</p></div>`;
+    container.innerHTML = `<div class="text-center py-20"><h3 class="text-2xl font-bold mb-2 text-gray-900">No external papers.</h3><p class="text-gray-500 mb-8 text-lg italic">We couldn't fetch articles for @sh4lu_z right now.</p></div>`;
     return;
   }
 
