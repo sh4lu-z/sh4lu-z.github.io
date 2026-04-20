@@ -65,10 +65,10 @@ function renderList(blogs) {
 }
 
 function updateMetaTags(blog) {
-  const url = window.location.origin + window.location.pathname + "#" + blog.name.replace('.md','');
+  const url = window.location.origin + window.location.pathname + "#" + blog.name.replace('.md', '');
   document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
   document.querySelector('meta[property="twitter:url"]')?.setAttribute("content", url);
-  
+
   if (blog.title) {
     document.querySelector('meta[name="title"]')?.setAttribute("content", blog.title);
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", blog.title);
@@ -89,7 +89,7 @@ window.viewPost = async function (slug, append = false) {
   if (!append) {
     window.history.pushState(null, '', `#${slug}`);
     window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === slug);
-    if(window.currentPostIndex !== -1) {
+    if (window.currentPostIndex !== -1) {
       const blogMeta = window.allBlogs[window.currentPostIndex];
       document.title = `${blogMeta.title || slug.replace(/-/g, " ")} - Shaluka's Blog`;
       updateMetaTags(blogMeta);
@@ -97,7 +97,7 @@ window.viewPost = async function (slug, append = false) {
   }
 
   const searchContainer = document.getElementById("search-container");
-  if(searchContainer) searchContainer.style.display = 'none';
+  if (searchContainer) searchContainer.style.display = 'none';
 
   const container = document.getElementById("app-content");
   const mainNav = document.getElementById("main-nav");
@@ -139,7 +139,7 @@ window.viewPost = async function (slug, append = false) {
     headerHtml = `
       <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
         <span class="bg-[#fcfcfc] dark:bg-[#0f0f0f] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
-          Next Note
+          Next Blog
         </span>
       </div>
     `;
@@ -159,7 +159,7 @@ window.viewPost = async function (slug, append = false) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
     const loader = document.getElementById("next-post-loader");
-    if(loader) loader.remove();
+    if (loader) loader.remove();
     container.insertAdjacentHTML('beforeend', articleHtml);
   }
 
@@ -170,7 +170,7 @@ function setupNextPostObserver() {
   if (window.currentPostIndex === -1 || window.currentPostIndex >= window.allBlogs.length - 1) return;
 
   const container = document.getElementById("app-content");
-  
+
   let loader = document.getElementById("next-post-loader");
   if (!loader) {
     loader = document.createElement("div");
@@ -179,9 +179,9 @@ function setupNextPostObserver() {
     loader.innerHTML = `<div class="w-8 h-8 border-2 border-gray-200 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div>`;
     container.appendChild(loader);
   }
-  
+
   if (window.postObserver) window.postObserver.disconnect();
-  
+
   window.postObserver = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !window.loadingNextPost) {
       window.loadingNextPost = true;
@@ -203,9 +203,9 @@ window.goHome = function () {
   document.title = "Shaluka's Blog - Thoughts & Code";
   window.history.pushState(null, '', window.location.pathname);
   if (window.postObserver) window.postObserver.disconnect();
-  
+
   const searchContainer = document.getElementById("search-container");
-  if(searchContainer) searchContainer.style.display = 'block';
+  if (searchContainer) searchContainer.style.display = 'block';
 
   switchTab("internal");
 };
@@ -326,7 +326,7 @@ async function renderExternalLinks() {
   articles.forEach(art => {
     const defaultData = ICONS[art.platform] || ICONS["Medium"];
     const dateStr = new Date(art.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-    
+
     html += `
       <a href="${art.url}" target="_blank" class="border-l-4 border-gray-300 dark:border-gray-700 hover:border-gray-900 dark:hover:border-gray-100 pl-6 py-2 block group transition-colors">
         <div class="flex items-center gap-2 mb-2">
@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainNav = document.getElementById("main-nav");
     if (mainNav) mainNav.classList.add("hidden");
     const searchContainer = document.getElementById("search-container");
-    if(searchContainer) searchContainer.style.display = 'none';
+    if (searchContainer) searchContainer.style.display = 'none';
 
     // Set UI directly to that post
     viewPost(initialHash);
