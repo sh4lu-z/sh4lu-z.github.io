@@ -24,21 +24,11 @@
     <!-- Configuration -->
     <div id="settings-panel" class="bg-white p-8 rounded-2xl shadow-sm border border-amber-200 mb-8 !hidden">
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-amber-700">⚙️ GitHub Setup Needed</h2>
-      <p class="text-gray-500 mb-6 text-sm">We couldn't find your settings in AI Studio Secrets. You can provide them manually here.</p>
+      <p class="text-gray-500 mb-6 text-sm">We just need your Personal Access Token to manage files via API.</p>
       
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">Personal Access Token</label>
-          <input type="password" id="gh-token" placeholder="ghp_xxx..." class="border border-gray-300 p-3 w-full rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">Username (Owner)</label>
-          <input type="text" id="gh-owner" placeholder="e.g. sh4lu-z" class="border border-gray-300 p-3 w-full rounded-xl bg-gray-50 outline-none transition-all">
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">Repository Name</label>
-          <input type="text" id="gh-repo" placeholder="e.g. sh4lu-z.github.io" class="border border-gray-300 p-3 w-full rounded-xl bg-gray-50 outline-none transition-all">
-        </div>
+      <div class="mb-6">
+        <label class="block text-sm font-bold text-gray-700 mb-2">Personal Access Token</label>
+        <input type="password" id="gh-token" placeholder="ghp_xxx..." class="border border-gray-300 p-3 w-full rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
       </div>
       <button id="save-settings" class="bg-amber-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-amber-700 transition-colors shadow">Save to Browser</button>
     </div>
@@ -53,7 +43,7 @@
           <input type="text" id="blog-title" placeholder="My Awesome Post" class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full font-bold text-lg mb-4">
           
           <label class="block text-sm font-bold text-gray-700 mb-2">Cover Image URL (Optional)</label>
-          <input type="text" id="blog-cover" placeholder="https://example.com/image.jpg" class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full mb-4">
+          <input type="text" id="blog-cover" placeholder="Leave blank if you don't need an image..." class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full mb-4">
 
           <label class="block text-sm font-bold text-gray-700 mb-2">Short Description (Optional)</label>
           <textarea id="blog-desc" placeholder="A short summary of this post..." class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full mb-4 mt-1" rows="2"></textarea>
