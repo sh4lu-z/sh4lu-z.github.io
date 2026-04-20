@@ -6,12 +6,15 @@ export default defineConfig({
   base: '/', // Base URL for GitHub Pages (sh4lu-z.github.io)
   publicDir: 'public', // Explicitly set public static folder
   build: {
-    outDir: 'dist', // Standard output folder for Vercel / GitHub Actions
+    outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: 'index.html',
-        admin: 'admin.html' // VERY IMPORTANT: Ensure admin panel is built too
+        main: './index.html',
+        admin: './admin.html',
+        style: './style.css',
+        app: './app.js',
+        adminjs: './admin.js'
       }
     }
   },
