@@ -1,7 +1,4 @@
-// We can tap into the Vite env variables securely
-const GH_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || localStorage.getItem("gh_token") || "";
-const GH_OWNER = import.meta.env.VITE_GITHUB_OWNER || localStorage.getItem("gh_owner") || "sh4lu-z";
-const GH_REPO = import.meta.env.VITE_GITHUB_REPO || localStorage.getItem("gh_repo") || "sh4lu-z.github.io";
+window.allBlogs = []; // Store blogs for search filtering
 
 async function loadBlogs() {
   const container = document.getElementById("app-content");
@@ -11,12 +8,13 @@ async function loadBlogs() {
     const localRes = await fetch('/blogs/index.json');
     if(localRes.ok) {
       const localData = await localRes.json();
-      localBlogs = localData.map(b => ({ name: b.name }));
+      localBlogs = localData.map(b => b);
     }
 
     let finalBlogs = Array.from(localBlogs);
     finalBlogs.sort((a,b) => b.name.localeCompare(a.name)); // quick reverse sort by filename
 
+    window.allBlogs = finalBlogs;
     renderList(finalBlogs);
   } catch (err) {
     container.innerHTML = `<div class="text-center font-bold p-8 text-gray-500">No blogs found. Head to the Admin panel to start writing!</div>`;
@@ -41,12 +39,18 @@ function renderList(blogs) {
   let html = `<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">`;
   blogs.forEach(blog => {
     const slug = blog.name.replace(".md", "");
-    const title = slug.replace(/-/g, " ");
+    const title = blog.title || slug.replace(/-/g, " ");
+    const desc = blog.description ? `<p class="text-gray-500 mb-6 line-clamp-2">${blog.description}</p>` : '';
+    const imgHtml = blog.coverImage ? `<img src="${blog.coverImage}" class="w-full h-48 object-cover rounded-2xl mb-4" />` : `<div class="text-xs font-bold font-mono text-gray-400 mb-4 tracking-widest uppercase">📄 Article</div>`;
+    const dateStr = blog.date ? new Date(blog.date).toLocaleDateString() : '';
+
     html += `
-      <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-gray-900 hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1" onclick="viewPost('${slug}')">
-        <div class="text-xs font-bold font-mono text-gray-400 mb-4 tracking-widest uppercase">📄 Article</div>
-        <h3 class="text-2xl font-bold capitalize mb-8 text-gray-900 line-clamp-3 leading-tight">${title}</h3>
-        <div class="flex items-center text-blue-600 font-bold group">
+      <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-gray-900 hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1 flex flex-col" onclick="viewPost('${slug}')">
+        ${imgHtml}
+        <h3 class="text-2xl font-bold capitalize mb-2 text-gray-900 leading-tight">${title}</h3>
+        <div class="text-xs text-gray-400 font-bold mb-4">${dateStr}</div>
+        ${desc}
+        <div class="mt-auto flex items-center text-blue-600 font-bold group">
           Read Post <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
         </div>
       </div>
@@ -90,6 +94,23 @@ window.viewPost = async function(slug) {
 
 window.goHome = function() {
   switchTab("internal");
+};
+
+window.filterBlogs = function() {
+  const query = document.getElementById("search-input").value.toLowerCase().trim();
+  if (!query) {
+    renderList(window.allBlogs);
+    return;
+  }
+  
+  const filtered = window.allBlogs.filter(blog => {
+    const slug = blog.name.replace(".md", "");
+    const title = (blog.title || slug.replace(/-/g, " ")).toLowerCase();
+    const desc = (blog.description || "").toLowerCase();
+    return title.includes(query) || desc.includes(query);
+  });
+  
+  renderList(filtered);
 };
 
 const EXTERNAL_ARTICLES = [

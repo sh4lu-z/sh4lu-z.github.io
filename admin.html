@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Shaluka's Blog</title>
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="./style.css">
   <!-- Use EasyMDE for beautiful Rich Text / Markdown Editing -->
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
@@ -49,7 +50,13 @@
         <h2 class="text-2xl font-bold mb-6">📝 Write New Post</h2>
         <div class="mb-4">
           <label class="block text-sm font-bold text-gray-700 mb-2">Blog Title</label>
-          <input type="text" id="blog-title" placeholder="My Awesome Post" class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-lg">
+          <input type="text" id="blog-title" placeholder="My Awesome Post" class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full font-bold text-lg mb-4">
+          
+          <label class="block text-sm font-bold text-gray-700 mb-2">Cover Image URL (Optional)</label>
+          <input type="text" id="blog-cover" placeholder="https://example.com/image.jpg" class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full mb-4">
+
+          <label class="block text-sm font-bold text-gray-700 mb-2">Short Description (Optional)</label>
+          <textarea id="blog-desc" placeholder="A short summary of this post..." class="border border-gray-300 p-3 w-full rounded-xl focus:ring-2 focus:ring-blue-500 outline-none max-w-full mb-4 mt-1" rows="2"></textarea>
         </div>
         <div class="mb-6 flex-grow">
           <label class="block text-sm font-bold text-gray-700 mb-2">Markdown Content</label>

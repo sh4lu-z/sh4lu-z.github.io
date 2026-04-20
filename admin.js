@@ -1,11 +1,9 @@
-// Load environment variables (Injected completely securely by Vite during dev/build)
-const GH_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || localStorage.getItem("gh_token") || "";
-const GH_OWNER = import.meta.env.VITE_GITHUB_OWNER || localStorage.getItem("gh_owner") || "sh4lu-z";
-const GH_REPO = import.meta.env.VITE_GITHUB_REPO || localStorage.getItem("gh_repo") || "sh4lu-z.github.io";
+const GH_TOKEN = localStorage.getItem("gh_token") || "";
+const GH_OWNER = "sh4lu-z"; // Hardcoded
+const GH_REPO = "sh4lu-z.github.io"; // Hardcoded
 
 const tokenInput = document.getElementById("gh-token");
-const ownerInput = document.getElementById("gh-owner");
-const repoInput = document.getElementById("gh-repo");
+// Owner and Repo inputs are removed from logic since they are hardcoded
 const saveBtn = document.getElementById("save-settings");
 const adminBlogList = document.getElementById("admin-blog-list");
 const publishBtn = document.getElementById("publish-btn");
@@ -20,26 +18,23 @@ function initializeEditor() {
     spellChecker: false,
     placeholder: "Start your mind-blowing article here...",
     status: ["lines", "words", "preview"],
-    hideIcons: ["guide", "fullscreen", "side-by-side"]
+    toolbar: ["bold", "italic", "heading", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "|", "preview", "side-by-side", "fullscreen"],
   });
 }
 
 function loadSettings() {
-  // If token is found in import.meta.env, hide settings!
-  if (import.meta.env.VITE_GITHUB_TOKEN) {
+  // If token is found, hide settings!
+  if (GH_TOKEN) {
     settingsPanel.classList.add("!hidden");
   } else {
     settingsPanel.classList.remove("!hidden");
     tokenInput.value = localStorage.getItem("gh_token") || "";
-    ownerInput.value = GH_OWNER;
-    repoInput.value = GH_REPO;
+    tokenInput.value = localStorage.getItem("gh_token") || "";
   }
 }
 
 saveBtn.addEventListener("click", () => {
   localStorage.setItem("gh_token", tokenInput.value.trim());
-  localStorage.setItem("gh_owner", ownerInput.value.trim());
-  localStorage.setItem("gh_repo", repoInput.value.trim());
   alert("Settings safely saved to your browser!");
   fetchAdminBlogs();
 });
@@ -49,10 +44,9 @@ refreshBtn.addEventListener("click", () => {
 });
 
 async function fetchAdminBlogs() {
-  // Always prefer ENV variables over local storage if available
-  const owner = import.meta.env.VITE_GITHUB_OWNER || ownerInput.value.trim() || 'sh4lu-z';
-  const repo = import.meta.env.VITE_GITHUB_REPO || repoInput.value.trim() || 'sh4lu-z.github.io';
-  const token = import.meta.env.VITE_GITHUB_TOKEN || tokenInput.value.trim();
+  const owner = GH_OWNER;
+  const repo = GH_REPO;
+  const token = tokenInput.value.trim() || GH_TOKEN;
 
   if (!owner || !repo || !token) {
     adminBlogList.innerHTML = `<div class="text-amber-600 bg-amber-50 p-4 rounded-xl text-center font-bold">Waiting for GitHub Token...</div>`;
@@ -62,7 +56,7 @@ async function fetchAdminBlogs() {
   adminBlogList.innerHTML = `<div class="text-gray-500 text-center font-bold">Connecting to GitHub API...</div>`;
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/blogs`, {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs`, {
       headers: { 
         "Authorization": `Bearer ${token}`,
         "Accept": "application/vnd.github.v3+json"
@@ -70,7 +64,7 @@ async function fetchAdminBlogs() {
     });
     
     if (res.status === 404) {
-      adminBlogList.innerHTML = `<div class="bg-blue-50 text-blue-800 p-6 rounded-xl text-center font-bold">The 'public/blogs' folder doesn't exist yet in your repo. It will be created automatically when you publish your first post!</div>`;
+      adminBlogList.innerHTML = `<div class="bg-blue-50 text-blue-800 p-6 rounded-xl text-center font-bold">The 'blogs' folder doesn't exist yet in your repo. It will be created automatically when you publish your first post!</div>`;
       return;
     }
 
@@ -117,19 +111,21 @@ function encodeBase64Unicode(str) {
 
 publishBtn.addEventListener("click", async () => {
   const title = document.getElementById("blog-title").value.trim();
+  const coverImage = document.getElementById("blog-cover").value.trim();
+  const description = document.getElementById("blog-desc").value.trim();
   const content = editor.value(); // Get from EasyMDE Editor
   
-  const owner = import.meta.env.VITE_GITHUB_OWNER || ownerInput.value.trim() || 'sh4lu-z';
-  const repo = import.meta.env.VITE_GITHUB_REPO || repoInput.value.trim() || 'sh4lu-z.github.io';
-  const token = import.meta.env.VITE_GITHUB_TOKEN || tokenInput.value.trim();
+  const owner = ownerInput.value.trim() || GH_OWNER || 'sh4lu-z';
+  const repo = repoInput.value.trim() || GH_REPO || 'sh4lu-z.github.io';
+  const token = tokenInput.value.trim() || GH_TOKEN;
 
   if (!title || !content) {
     alert("Please provide both a Title and Content.");
     return;
   }
 
-  if (!owner || !repo || !token) {
-    alert("Please ensure your GitHub Token is set in Secrets or saved below.");
+  if (!token) {
+    alert("Please ensure your GitHub Token is saved below.");
     return;
   }
 
@@ -140,7 +136,7 @@ publishBtn.addEventListener("click", async () => {
   publishBtn.classList.add("opacity-70", "cursor-not-allowed");
 
   try {
-    const filePath = `public/blogs/${slug}.md`;
+    const filePath = `blogs/${slug}.md`;
     let existingSha = undefined;
 
     // 1. Check if file already exists so we can update it
@@ -178,12 +174,18 @@ publishBtn.addEventListener("click", async () => {
        throw new Error(errData.message || "Failed to publish");
     }
 
-    // 3. Update public/blogs/index.json
+    // 3. Update blogs/index.json
     try {
-      const indexObj = { name: slug + ".md", title: title };
+      const indexObj = { 
+        name: slug + ".md", 
+        title: title,
+        coverImage: coverImage,
+        description: description,
+        date: new Date().toISOString()
+      };
       let existingIndexSha = null;
       let currentIndex = [];
-      const getIndexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/blogs/index.json`, {
+      const getIndexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
          headers: { "Authorization": `Bearer ${token}` }
       });
       if (getIndexRes.ok) {
@@ -205,7 +207,7 @@ publishBtn.addEventListener("click", async () => {
       };
       if (existingIndexSha) indexBody.sha = existingIndexSha;
 
-      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/blogs/index.json`, {
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -219,6 +221,8 @@ publishBtn.addEventListener("click", async () => {
     
     alert("Successfully Published to GitHub! 🎉");
     document.getElementById("blog-title").value = "";
+    document.getElementById("blog-cover").value = "";
+    document.getElementById("blog-desc").value = "";
     editor.value(""); // Reset the MDE Editor content
     
     fetchAdminBlogs(); // Reload list
@@ -235,12 +239,12 @@ publishBtn.addEventListener("click", async () => {
 window.deleteBlog = async function(filename, sha) {
   if (!confirm(`Are you sure you want to permanently delete ${filename}?`)) return;
   
-  const owner = import.meta.env.VITE_GITHUB_OWNER || ownerInput.value.trim() || 'sh4lu-z';
-  const repo = import.meta.env.VITE_GITHUB_REPO || repoInput.value.trim() || 'sh4lu-z.github.io';
-  const token = import.meta.env.VITE_GITHUB_TOKEN || tokenInput.value.trim();
+  const owner = ownerInput.value.trim() || GH_OWNER || 'sh4lu-z';
+  const repo = repoInput.value.trim() || GH_REPO || 'sh4lu-z.github.io';
+  const token = tokenInput.value.trim() || GH_TOKEN;
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/blogs/${filename}`, {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/${filename}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -262,7 +266,7 @@ window.deleteBlog = async function(filename, sha) {
     try {
       let existingIndexSha = null;
       let currentIndex = [];
-      const getIndexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/blogs/index.json`, {
+      const getIndexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
          headers: { "Authorization": `Bearer ${token}` }
       });
       if (getIndexRes.ok) {
@@ -274,7 +278,7 @@ window.deleteBlog = async function(filename, sha) {
       currentIndex = currentIndex.filter(item => item.name !== filename);
 
       if (existingIndexSha) {
-        await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/public/blogs/index.json`, {
+        await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
           method: "PUT",
           headers: {
             "Authorization": `Bearer ${token}`,
