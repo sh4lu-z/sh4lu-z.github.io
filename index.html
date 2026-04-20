@@ -11,9 +11,19 @@
 <body class="bg-gray-50 text-gray-900 font-sans p-4 sm:p-8">
   <div class="max-w-5xl mx-auto">
     <!-- Header -->
-    <header class="py-12 border-b border-gray-200 mb-8 sm:py-16">
-      <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 cursor-pointer" onclick="goHome()">Shaluka's Blog.</h1>
-      <p class="mt-4 text-xl text-gray-500 font-medium">Thoughts, code, and everything in between.</p>
+    <header class="py-12 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-gray-200 mb-8 sm:py-16 gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Writing Space
+        </div>
+        <h1 class="text-5xl sm:text-6xl font-black tracking-tight text-gray-900 cursor-pointer hover:text-blue-600 transition-colors" onclick="goHome()">Shaluka's Notebook.</h1>
+        <p class="mt-4 text-xl text-gray-500 font-medium max-w-xl">Deep dives into code, tutorials, and thoughts on software engineering.</p>
+      </div>
+      
+      <a href="https://sh4lu-z.vercel.app/" target="_blank" class="shrink-0 flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-3.5 rounded-full font-bold shadow-md hover:bg-blue-600 hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+        Main Portfolio
+      </a>
     </header>
 
     <!-- Navigation Tabs -->

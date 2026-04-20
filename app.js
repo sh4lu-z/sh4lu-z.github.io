@@ -5,7 +5,8 @@ async function loadBlogs() {
   
   try {
     let localBlogs = [];
-    const localRes = await fetch('/blogs/index.json');
+    const cacheBuster = "?t=" + new Date().getTime();
+    const localRes = await fetch('/blogs/index.json' + cacheBuster);
     if(localRes.ok) {
       const localData = await localRes.json();
       localBlogs = localData.map(b => b);
@@ -71,7 +72,8 @@ window.viewPost = async function(slug) {
   let content = "";
   
   try {
-    const resp = await fetch(`/blogs/${slug}.md`);
+    const cacheBuster = "?t=" + new Date().getTime();
+    const resp = await fetch(`/blogs/${slug}.md` + cacheBuster);
     if(resp.ok) {
       content = await resp.text();
     } else {
