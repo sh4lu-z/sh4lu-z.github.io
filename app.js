@@ -2,18 +2,18 @@ window.allBlogs = []; // Store blogs for search filtering
 
 async function loadBlogs() {
   const container = document.getElementById("app-content");
-  
+
   try {
     let localBlogs = [];
     const cacheBuster = "?t=" + new Date().getTime();
     const localRes = await fetch('/blogs/index.json' + cacheBuster);
-    if(localRes.ok) {
+    if (localRes.ok) {
       const localData = await localRes.json();
       localBlogs = localData.map(b => b);
     }
 
     let finalBlogs = Array.from(localBlogs);
-    finalBlogs.sort((a,b) => b.name.localeCompare(a.name)); // quick reverse sort by filename
+    finalBlogs.sort((a, b) => b.name.localeCompare(a.name)); // quick reverse sort by filename
 
     window.allBlogs = finalBlogs;
     renderList(finalBlogs);
@@ -24,7 +24,7 @@ async function loadBlogs() {
 
 function renderList(blogs) {
   const container = document.getElementById("app-content");
-  
+
   if (blogs.length === 0) {
     container.innerHTML = `
        <div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-200 text-center max-w-2xl mx-auto">
@@ -37,49 +37,47 @@ function renderList(blogs) {
     return;
   }
 
-  let html = `<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">`;
+  let html = `<div class="grid gap-10">`;
   blogs.forEach(blog => {
     const slug = blog.name.replace(".md", "");
     const title = blog.title || slug.replace(/-/g, " ");
-    const desc = blog.description ? `<p class="text-gray-500 mb-6 line-clamp-2">${blog.description}</p>` : '';
-    const imgHtml = blog.coverImage ? `<img src="${blog.coverImage}" class="w-full h-48 object-cover rounded-2xl mb-4" />` : `<div class="text-xs font-bold font-mono text-gray-400 mb-4 tracking-widest uppercase">📄 Article</div>`;
-    const dateStr = blog.date ? new Date(blog.date).toLocaleDateString() : '';
+    const desc = blog.description ? `<p class="text-gray-600 mb-4 leading-relaxed">${blog.description}</p>` : '';
+    const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-gray-900 hover:shadow-xl cursor-pointer transition-all transform hover:-translate-y-1 flex flex-col" onclick="viewPost('${slug}')">
-        ${imgHtml}
-        <h3 class="text-2xl font-bold capitalize mb-2 text-gray-900 leading-tight">${title}</h3>
-        <div class="text-xs text-gray-400 font-bold mb-4">${dateStr}</div>
+      <div class="border-l-4 border-gray-900 pl-6 py-2 hover:bg-gray-50 cursor-pointer transition-colors" onclick="viewPost('${slug}')">
+        <h3 class="text-2xl font-normal mb-1 text-gray-900 italic">${title}</h3>
+        <div class="text-xs text-gray-500 font-bold tracking-widest uppercase mb-3">${dateStr}</div>
         ${desc}
-        <div class="mt-auto flex items-center text-blue-600 font-bold group">
-          Read Post <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+        <div class="inline-block mt-2 text-sm font-bold text-gray-900 border-b border-gray-900 uppercase tracking-widest group">
+          Read Abstract <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
         </div>
       </div>
     `;
   });
   html += `</div>`;
-  
+
   container.innerHTML = html;
 }
 
-window.viewPost = async function(slug) {
+window.viewPost = async function (slug) {
   const container = document.getElementById("app-content");
   const mainNav = document.getElementById("main-nav");
-  if(mainNav) mainNav.classList.add("hidden");
+  if (mainNav) mainNav.classList.add("hidden");
 
   container.innerHTML = `<div class="text-gray-500 font-bold text-center py-20 text-xl">Fetching post data...</div>`;
 
   let content = "";
-  
+
   try {
     const cacheBuster = "?t=" + new Date().getTime();
     const resp = await fetch(`/blogs/${slug}.md` + cacheBuster);
-    if(resp.ok) {
+    if (resp.ok) {
       content = await resp.text();
     } else {
       content = "# 404 Not Found\nCould not load file.";
     }
-  } catch(e) {
+  } catch (e) {
     content = "# Error loading file";
   }
 
@@ -89,29 +87,29 @@ window.viewPost = async function(slug) {
       ${marked.parse(content)}
     </article>
   `;
-  
+
   // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.goHome = function() {
+window.goHome = function () {
   switchTab("internal");
 };
 
-window.filterBlogs = function() {
+window.filterBlogs = function () {
   const query = document.getElementById("search-input").value.toLowerCase().trim();
   if (!query) {
     renderList(window.allBlogs);
     return;
   }
-  
+
   const filtered = window.allBlogs.filter(blog => {
     const slug = blog.name.replace(".md", "");
     const title = (blog.title || slug.replace(/-/g, " ")).toLowerCase();
     const desc = (blog.description || "").toLowerCase();
     return title.includes(query) || desc.includes(query);
   });
-  
+
   renderList(filtered);
 };
 
@@ -123,33 +121,33 @@ const EXTERNAL_ARTICLES = [
   { platform: "Medium", title: "My Favorite Web APIs in 2026", url: "https://medium.com/@sh4lu_z/my-favorite-web-apis" }
 ];
 
-window.switchTab = function(tabName) {
+window.switchTab = function (tabName) {
   const btnInternal = document.getElementById("btn-tab-internal");
   const btnExternal = document.getElementById("btn-tab-external");
   const tabInternal = document.getElementById("tab-internal");
   const tabExternal = document.getElementById("tab-external");
   const mainNav = document.getElementById("main-nav");
 
-  if(mainNav) mainNav.classList.remove("hidden");
+  if (mainNav) mainNav.classList.remove("hidden");
 
   if (tabName === "internal") {
-    btnInternal.classList.replace("border-transparent", "border-blue-600");
-    btnInternal.classList.replace("text-gray-500", "text-blue-600");
-    
-    btnExternal.classList.replace("border-blue-600", "border-transparent");
-    btnExternal.classList.replace("text-blue-600", "text-gray-500");
+    btnInternal.classList.add("border-gray-900", "text-gray-900");
+    btnInternal.classList.remove("border-transparent", "text-gray-400");
+
+    btnExternal.classList.add("border-transparent", "text-gray-400");
+    btnExternal.classList.remove("border-gray-900", "text-gray-900");
 
     tabInternal.classList.remove("hidden");
     tabExternal.classList.add("hidden");
-    
+
     // Refresh internal blogs so opening a post and switching tabs resets it
     loadBlogs();
   } else {
-    btnExternal.classList.replace("border-transparent", "border-blue-600");
-    btnExternal.classList.replace("text-gray-500", "text-blue-600");
-    
-    btnInternal.classList.replace("border-blue-600", "border-transparent");
-    btnInternal.classList.replace("text-blue-600", "text-gray-500");
+    btnExternal.classList.add("border-gray-900", "text-gray-900");
+    btnExternal.classList.remove("border-transparent", "text-gray-400");
+
+    btnInternal.classList.add("border-transparent", "text-gray-400");
+    btnInternal.classList.remove("border-gray-900", "text-gray-900");
 
     tabExternal.classList.remove("hidden");
     tabInternal.classList.add("hidden");
@@ -165,7 +163,7 @@ const ICONS = {
 async function renderExternalLinks() {
   const container = document.getElementById("external-articles-list");
   container.innerHTML = `<div class="text-gray-500 font-bold text-center py-20 text-xl">Fetching articles directly from DEV.to and Medium...</div>`;
-  
+
   let articles = [];
 
   // Fetch DEV.to articles
@@ -182,14 +180,14 @@ async function renderExternalLinks() {
         });
       });
     }
-  } catch(e) { console.warn("Failed Dev.to fetch", e); }
+  } catch (e) { console.warn("Failed Dev.to fetch", e); }
 
   // Fetch Medium articles
   try {
     const medRes = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@sh4lu_z");
     if (medRes.ok) {
       const medData = await medRes.json();
-      if(medData.items) {
+      if (medData.items) {
         medData.items.forEach(item => {
           articles.push({
             platform: "Medium",
@@ -200,31 +198,29 @@ async function renderExternalLinks() {
         });
       }
     }
-  } catch(e) { console.warn("Failed Medium fetch", e); }
+  } catch (e) { console.warn("Failed Medium fetch", e); }
 
   // Sort by date (newest first)
-  articles.sort((a,b) => b.date - a.date);
+  articles.sort((a, b) => b.date - a.date);
 
   if (articles.length === 0) {
     container.innerHTML = `<div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-200 text-center max-w-2xl mx-auto"><h3 class="text-2xl font-bold mb-2">No Articles Found</h3><p class="text-gray-500 mb-8 text-lg">We couldn't fetch articles for @sh4lu_z across Medium and DEV.to right now.</p></div>`;
     return;
   }
 
-  let html = `<div class="grid gap-6 sm:grid-cols-2">`;
+  let html = `<div class="grid gap-10">`;
   articles.forEach(art => {
     const defaultData = ICONS[art.platform] || ICONS["Medium"];
+    const dateStr = new Date(art.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     
     html += `
-      <a href="${art.url}" target="_blank" class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-gray-900 hover:shadow-xl transition-all transform hover:-translate-y-1 block group">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="inline-flex items-center justify-center p-2 rounded-xl ${defaultData.color}">
-            <svg class="w-6 h-6" viewBox="${defaultData.viewBox}" fill="currentColor"><path d="${defaultData.icon}"></path></svg>
-          </span>
-          <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">${art.platform}</span>
+      <a href="${art.url}" target="_blank" class="border-l-4 border-gray-300 hover:border-gray-900 pl-6 py-2 block group transition-colors">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">${art.platform} &mdash; ${dateStr}</span>
         </div>
-        <h3 class="text-2xl font-bold mb-4 text-gray-900 line-clamp-3 leading-tight group-hover:text-blue-600 transition-colors">${art.title}</h3>
-        <div class="inline-flex items-center text-sm font-bold text-gray-500 group-hover:text-blue-600 transition-colors">
-          Read on ${art.platform} <span class="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+        <h3 class="text-2xl font-normal mb-3 text-gray-900 italic line-clamp-2 group-hover:text-black">${art.title}</h3>
+        <div class="inline-block mt-2 text-sm font-bold text-gray-900 border-b border-gray-900 uppercase tracking-widest">
+          View Publication
         </div>
       </a>
     `;
