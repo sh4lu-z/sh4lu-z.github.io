@@ -37,20 +37,22 @@ function renderList(blogs) {
     return;
   }
 
-  let html = `<div class="grid gap-10">`;
+  let html = `<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">`;
   blogs.forEach(blog => {
     const slug = blog.name.replace(".md", "");
     const title = blog.title || slug.replace(/-/g, " ");
-    const desc = blog.description ? `<p class="text-gray-600 mb-4 leading-relaxed">${blog.description}</p>` : '';
+    const desc = blog.description ? `<p class="text-gray-500 mb-6 line-clamp-2">${blog.description}</p>` : '';
+    const imgHtml = blog.coverImage ? `<img src="${blog.coverImage}" class="w-full h-48 object-cover rounded-2xl mb-4" />` : '';
     const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <div class="border-l-4 border-gray-900 pl-6 py-2 hover:bg-gray-50 cursor-pointer transition-colors" onclick="viewPost('${slug}')">
-        <h3 class="text-2xl font-normal mb-1 text-gray-900 italic">${title}</h3>
-        <div class="text-xs text-gray-500 font-bold tracking-widest uppercase mb-3">${dateStr}</div>
+      <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md cursor-pointer transition-all flex flex-col" onclick="viewPost('${slug}')">
+        ${imgHtml}
+        <h3 class="text-2xl font-bold mb-2 text-gray-900 leading-tight">${title}</h3>
+        <div class="text-xs text-gray-400 font-bold mb-4 uppercase tracking-wider">${dateStr}</div>
         ${desc}
-        <div class="inline-block mt-2 text-sm font-bold text-gray-900 border-b border-gray-900 uppercase tracking-widest group">
-          Read Abstract <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+        <div class="mt-auto inline-flex items-center text-sm font-bold text-blue-600 group">
+          Read Post <span class="ml-1 transform group-hover:translate-x-1 transition-transform">→</span>
         </div>
       </div>
     `;
@@ -61,6 +63,13 @@ function renderList(blogs) {
 }
 
 window.viewPost = async function (slug) {
+  // Update URL hash for sharing
+  window.history.pushState(null, '', `#${slug}`);
+
+  // Hide Search
+  const searchContainer = document.getElementById("search-container");
+  if(searchContainer) searchContainer.style.display = 'none';
+
   const container = document.getElementById("app-content");
   const mainNav = document.getElementById("main-nav");
   if (mainNav) mainNav.classList.add("hidden");
@@ -81,8 +90,16 @@ window.viewPost = async function (slug) {
     content = "# Error loading file";
   }
 
+  const shareUrl = window.location.href;
+
   container.innerHTML = `
-    <button onclick="goHome()" class="bg-gray-200 text-gray-800 px-6 py-2.5 rounded-full font-bold hover:bg-gray-300 transition-colors mb-8 flex items-center gap-2 shadow-sm">← Back to Posts</button>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <button onclick="goHome()" class="bg-gray-200 text-gray-800 px-6 py-2.5 rounded-full font-bold hover:bg-gray-300 transition-colors flex items-center gap-2 shadow-sm shrink-0 w-max">← Back to Posts</button>
+      <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm max-w-full overflow-hidden text-sm">
+        <span class="text-gray-500 truncate min-w-0">${shareUrl}</span>
+        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-blue-600 font-bold hover:text-blue-800 shrink-0 cursor-pointer">Copy Link</button>
+      </div>
+    </div>
     <article class="bg-white p-8 sm:p-12 lg:p-16 rounded-3xl shadow-md border border-gray-100 markdown-body">
       ${marked.parse(content)}
     </article>
@@ -93,6 +110,11 @@ window.viewPost = async function (slug) {
 };
 
 window.goHome = function () {
+  window.history.pushState(null, '', window.location.pathname);
+  
+  const searchContainer = document.getElementById("search-container");
+  if(searchContainer) searchContainer.style.display = 'block';
+
   switchTab("internal");
 };
 
@@ -208,19 +230,22 @@ async function renderExternalLinks() {
     return;
   }
 
-  let html = `<div class="grid gap-10">`;
+  let html = `<div class="grid gap-6 sm:grid-cols-2">`;
   articles.forEach(art => {
     const defaultData = ICONS[art.platform] || ICONS["Medium"];
     const dateStr = new Date(art.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     
     html += `
-      <a href="${art.url}" target="_blank" class="border-l-4 border-gray-300 hover:border-gray-900 pl-6 py-2 block group transition-colors">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">${art.platform} &mdash; ${dateStr}</span>
+      <a href="${art.url}" target="_blank" class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-blue-500 hover:shadow-xl transition-all transform hover:-translate-y-1 block group">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="inline-flex items-center justify-center p-2 rounded-xl border border-gray-100 ${defaultData.color}">
+            <svg class="w-6 h-6" viewBox="${defaultData.viewBox}" fill="currentColor"><path d="${defaultData.icon}"></path></svg>
+          </span>
+          <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">${art.platform} &bull; ${dateStr}</span>
         </div>
-        <h3 class="text-2xl font-normal mb-3 text-gray-900 italic line-clamp-2 group-hover:text-black">${art.title}</h3>
-        <div class="inline-block mt-2 text-sm font-bold text-gray-900 border-b border-gray-900 uppercase tracking-widest">
-          View Publication
+        <h3 class="text-2xl font-bold mb-4 text-gray-900 line-clamp-3 leading-tight group-hover:text-blue-600 transition-colors">${art.title}</h3>
+        <div class="inline-flex items-center text-sm font-bold text-gray-500 group-hover:text-blue-600 transition-colors">
+          Read on ${art.platform} <span class="ml-1 transform group-hover:translate-x-1 transition-transform">→</span>
         </div>
       </a>
     `;
@@ -231,5 +256,17 @@ async function renderExternalLinks() {
 
 // Initial Call
 document.addEventListener("DOMContentLoaded", () => {
-  loadBlogs();
+  const initialHash = window.location.hash.substring(1);
+  if (initialHash) {
+    // Hide UI briefly while initializing
+    const mainNav = document.getElementById("main-nav");
+    if (mainNav) mainNav.classList.add("hidden");
+    const searchContainer = document.getElementById("search-container");
+    if(searchContainer) searchContainer.style.display = 'none';
+
+    // Set UI directly to that post
+    viewPost(initialHash);
+  } else {
+    loadBlogs();
+  }
 });
