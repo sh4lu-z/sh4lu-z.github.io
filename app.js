@@ -64,10 +64,36 @@ function renderList(blogs) {
   container.innerHTML = html;
 }
 
+function updateMetaTags(blog) {
+  const url = window.location.origin + window.location.pathname + "#" + blog.name.replace('.md','');
+  document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
+  document.querySelector('meta[property="twitter:url"]')?.setAttribute("content", url);
+  
+  if (blog.title) {
+    document.querySelector('meta[name="title"]')?.setAttribute("content", blog.title);
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", blog.title);
+    document.querySelector('meta[property="twitter:title"]')?.setAttribute("content", blog.title);
+  }
+  if (blog.description) {
+    document.querySelector('meta[name="description"]')?.setAttribute("content", blog.description);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", blog.description);
+    document.querySelector('meta[property="twitter:description"]')?.setAttribute("content", blog.description);
+  }
+  if (blog.coverImage) {
+    document.querySelector('meta[property="og:image"]')?.setAttribute("content", blog.coverImage);
+    document.querySelector('meta[property="twitter:image"]')?.setAttribute("content", blog.coverImage);
+  }
+}
+
 window.viewPost = async function (slug, append = false) {
   if (!append) {
     window.history.pushState(null, '', `#${slug}`);
     window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === slug);
+    if(window.currentPostIndex !== -1) {
+      const blogMeta = window.allBlogs[window.currentPostIndex];
+      document.title = `${blogMeta.title || slug.replace(/-/g, " ")} - Shaluka's Blog`;
+      updateMetaTags(blogMeta);
+    }
   }
 
   const searchContainer = document.getElementById("search-container");
@@ -174,6 +200,7 @@ function setupNextPostObserver() {
 }
 
 window.goHome = function () {
+  document.title = "Shaluka's Blog - Thoughts & Code";
   window.history.pushState(null, '', window.location.pathname);
   if (window.postObserver) window.postObserver.disconnect();
   
