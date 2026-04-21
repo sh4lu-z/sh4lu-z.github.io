@@ -1,4 +1,7 @@
 window.allBlogs = []; // Store blogs for search filtering
+window.currentPostIndex = -1;
+window.loadingNextPost = false;
+window.postObserver = null;
 
 async function loadBlogs() {
   const container = document.getElementById("app-content");
@@ -45,12 +48,12 @@ function renderList(blogs) {
     const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <div class="border-l-4 border-gray-900 pl-6 py-2 hover:bg-gray-50 cursor-pointer transition-colors flex flex-col" onclick="viewPost('${slug}')">
+      <div class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] cursor-pointer transition-colors flex flex-col" onclick="viewPost('${slug}')">
         ${imgHtml}
-        <h3 class="text-2xl font-bold mb-1 text-gray-900">${title}</h3>
-        <div class="text-xs text-gray-500 font-bold tracking-widest uppercase mb-3">${dateStr}</div>
+        <h3 class="text-2xl font-bold mb-1 text-gray-900 dark:text-gray-100">${title}</h3>
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase mb-3">${dateStr}</div>
         ${desc}
-        <div class="mt-auto inline-flex items-center text-sm font-bold text-gray-900 uppercase tracking-widest border-b border-gray-900 w-max group">
+        <div class="mt-auto inline-flex items-center text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest border-b border-gray-900 dark:border-gray-100 w-max group">
           Read Post <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
         </div>
       </div>
@@ -61,11 +64,12 @@ function renderList(blogs) {
   container.innerHTML = html;
 }
 
-window.viewPost = async function (slug) {
-  // Update URL hash for sharing
-  window.history.pushState(null, '', `#${slug}`);
+window.viewPost = async function (slug, append = false) {
+  if (!append) {
+    window.history.pushState(null, '', `#${slug}`);
+    window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === slug);
+  }
 
-  // Hide Search
   const searchContainer = document.getElementById("search-container");
   if(searchContainer) searchContainer.style.display = 'none';
 
@@ -73,43 +77,105 @@ window.viewPost = async function (slug) {
   const mainNav = document.getElementById("main-nav");
   if (mainNav) mainNav.classList.add("hidden");
 
-  container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div></div>`;
+  if (!append) {
+    container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
+  }
 
   let content = "";
-
   try {
     const cacheBuster = "?t=" + new Date().getTime();
     const resp = await fetch(`/blogs/${slug}.md` + cacheBuster);
     if (resp.ok) {
       content = await resp.text();
     } else {
-      content = "# 404 Not Found\nCould not load file.";
+      content = "## Not Found.";
     }
   } catch (e) {
-    content = "# Error loading file";
+    content = "## Error loading.";
   }
 
-  const shareUrl = window.location.href;
+  const shareUrl = window.location.origin + window.location.pathname + "#" + slug;
 
-  container.innerHTML = `
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-gray-200 pb-4">
-      <button onclick="goHome()" class="text-gray-900 font-bold uppercase tracking-widest text-sm hover:underline flex items-center gap-2 shrink-0 w-max">&larr; Back</button>
-      <div class="flex items-center gap-4 text-sm">
-        <span class="text-gray-500 truncate min-w-0 italic">${shareUrl}</span>
-        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-gray-900 font-bold uppercase tracking-widest hover:underline shrink-0 cursor-pointer">Copy Link</button>
+  let headerHtml = "";
+  if (!append) {
+    headerHtml = `
+      <div class="flex items-center justify-between mb-8">
+        <button onclick="goHome()" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Back to list">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        </button>
+        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+        </button>
       </div>
+    `;
+  } else {
+    // Divider for appended posts
+    headerHtml = `
+      <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
+        <span class="bg-[#fcfcfc] dark:bg-[#0f0f0f] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
+          Next Note
+        </span>
+      </div>
+    `;
+  }
+
+  const articleHtml = `
+    <div id="post-${slug}">
+      ${headerHtml}
+      <article class="py-8 markdown-body">
+        ${marked.parse(content)}
+      </article>
     </div>
-    <article class="py-8 markdown-body">
-      ${marked.parse(content)}
-    </article>
   `;
 
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (!append) {
+    container.innerHTML = articleHtml;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    const loader = document.getElementById("next-post-loader");
+    if(loader) loader.remove();
+    container.insertAdjacentHTML('beforeend', articleHtml);
+  }
+
+  setupNextPostObserver();
 };
+
+function setupNextPostObserver() {
+  if (window.currentPostIndex === -1 || window.currentPostIndex >= window.allBlogs.length - 1) return;
+
+  const container = document.getElementById("app-content");
+  
+  let loader = document.getElementById("next-post-loader");
+  if (!loader) {
+    loader = document.createElement("div");
+    loader.id = "next-post-loader";
+    loader.className = "flex flex-col items-center justify-center py-20 opacity-0 transition-opacity";
+    loader.innerHTML = `<div class="w-8 h-8 border-2 border-gray-200 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div>`;
+    container.appendChild(loader);
+  }
+  
+  if (window.postObserver) window.postObserver.disconnect();
+  
+  window.postObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !window.loadingNextPost) {
+      window.loadingNextPost = true;
+      loader.classList.remove("opacity-0");
+      setTimeout(() => {
+        window.currentPostIndex++;
+        const nextSlug = window.allBlogs[window.currentPostIndex].name.replace(".md", "");
+        viewPost(nextSlug, true).then(() => {
+          window.loadingNextPost = false;
+        });
+      }, 300);
+    }
+  }, { rootMargin: "100px" });
+
+  window.postObserver.observe(loader);
+}
 
 window.goHome = function () {
   window.history.pushState(null, '', window.location.pathname);
+  if (window.postObserver) window.postObserver.disconnect();
   
   const searchContainer = document.getElementById("search-container");
   if(searchContainer) searchContainer.style.display = 'block';
@@ -152,11 +218,11 @@ window.switchTab = function (tabName) {
   if (mainNav) mainNav.classList.remove("hidden");
 
   if (tabName === "internal") {
-    btnInternal.classList.add("border-gray-900", "text-gray-900");
-    btnInternal.classList.remove("border-transparent", "text-gray-400");
+    btnInternal.classList.add("border-gray-900", "text-gray-900", "dark:border-gray-100", "dark:text-gray-100");
+    btnInternal.classList.remove("border-transparent", "text-gray-400", "dark:text-gray-600");
 
-    btnExternal.classList.add("border-transparent", "text-gray-400");
-    btnExternal.classList.remove("border-gray-900", "text-gray-900");
+    btnExternal.classList.add("border-transparent", "text-gray-400", "dark:text-gray-600");
+    btnExternal.classList.remove("border-gray-900", "text-gray-900", "dark:border-gray-100", "dark:text-gray-100");
 
     tabInternal.classList.remove("hidden");
     tabExternal.classList.add("hidden");
@@ -164,11 +230,11 @@ window.switchTab = function (tabName) {
     // Refresh internal blogs so opening a post and switching tabs resets it
     loadBlogs();
   } else {
-    btnExternal.classList.add("border-gray-900", "text-gray-900");
-    btnExternal.classList.remove("border-transparent", "text-gray-400");
+    btnExternal.classList.add("border-gray-900", "text-gray-900", "dark:border-gray-100", "dark:text-gray-100");
+    btnExternal.classList.remove("border-transparent", "text-gray-400", "dark:text-gray-600");
 
-    btnInternal.classList.add("border-transparent", "text-gray-400");
-    btnInternal.classList.remove("border-gray-900", "text-gray-900");
+    btnInternal.classList.add("border-transparent", "text-gray-400", "dark:text-gray-600");
+    btnInternal.classList.remove("border-gray-900", "text-gray-900", "dark:border-gray-100", "dark:text-gray-100");
 
     tabExternal.classList.remove("hidden");
     tabInternal.classList.add("hidden");
@@ -183,7 +249,7 @@ const ICONS = {
 
 async function renderExternalLinks() {
   const container = document.getElementById("external-articles-list");
-  container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div></div>`;
+  container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
 
   let articles = [];
 
@@ -235,12 +301,12 @@ async function renderExternalLinks() {
     const dateStr = new Date(art.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     
     html += `
-      <a href="${art.url}" target="_blank" class="border-l-4 border-gray-300 hover:border-gray-900 pl-6 py-2 block group transition-colors">
+      <a href="${art.url}" target="_blank" class="border-l-4 border-gray-300 dark:border-gray-700 hover:border-gray-900 dark:hover:border-gray-100 pl-6 py-2 block group transition-colors">
         <div class="flex items-center gap-2 mb-2">
-          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">${art.platform} &mdash; ${dateStr}</span>
+          <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">${art.platform} &mdash; ${dateStr}</span>
         </div>
-        <h3 class="text-2xl font-bold mb-3 text-gray-900 line-clamp-2 leading-tight">${art.title}</h3>
-        <div class="inline-flex items-center text-sm font-bold text-gray-900 uppercase tracking-widest border-b border-gray-900 w-max">
+        <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">${art.title}</h3>
+        <div class="inline-flex items-center text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest border-b border-gray-900 dark:border-gray-100 w-max">
           View Publication
         </div>
       </a>
