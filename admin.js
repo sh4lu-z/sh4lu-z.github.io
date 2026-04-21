@@ -29,7 +29,6 @@ function loadSettings() {
   } else {
     settingsPanel.classList.remove("!hidden");
     tokenInput.value = localStorage.getItem("gh_token") || "";
-    tokenInput.value = localStorage.getItem("gh_token") || "";
   }
 }
 
@@ -115,8 +114,8 @@ publishBtn.addEventListener("click", async () => {
   const description = document.getElementById("blog-desc").value.trim();
   const content = editor.value(); // Get from EasyMDE Editor
   
-  const owner = ownerInput.value.trim() || GH_OWNER || 'sh4lu-z';
-  const repo = repoInput.value.trim() || GH_REPO || 'sh4lu-z.github.io';
+  const owner = GH_OWNER;
+  const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
 
   if (!title || !content) {
@@ -239,8 +238,8 @@ publishBtn.addEventListener("click", async () => {
 window.deleteBlog = async function(filename, sha) {
   if (!confirm(`Are you sure you want to permanently delete ${filename}?`)) return;
   
-  const owner = ownerInput.value.trim() || GH_OWNER || 'sh4lu-z';
-  const repo = repoInput.value.trim() || GH_REPO || 'sh4lu-z.github.io';
+  const owner = GH_OWNER;
+  const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
 
   try {
