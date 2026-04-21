@@ -1,3 +1,5 @@
+import { renderCommentSection } from './comments.js';
+
 window.allBlogs = []; // Store blogs for search filtering
 window.currentPostIndex = -1;
 window.loadingNextPost = false;
@@ -16,7 +18,12 @@ async function loadBlogs() {
     }
 
     let finalBlogs = Array.from(localBlogs);
-    finalBlogs.sort((a, b) => b.name.localeCompare(a.name)); // quick reverse sort by filename
+    finalBlogs.sort((a, b) => {
+      // Sort by date newest first
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateDateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateDateB - dateA;
+    });
 
     window.allBlogs = finalBlogs;
     renderList(finalBlogs);
@@ -48,13 +55,16 @@ function renderList(blogs) {
     const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <div class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] cursor-pointer transition-colors flex flex-col" onclick="viewPost('${slug}')">
+      <div class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] cursor-pointer transition-colors flex flex-col group" onclick="viewPost('${slug}')">
         ${imgHtml}
-        <h3 class="text-2xl font-bold mb-1 text-gray-900 dark:text-gray-100">${title}</h3>
-        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase mb-3">${dateStr}</div>
+        <h3 class="text-2xl font-bold mb-1 text-gray-900 dark:text-gray-100 group-hover:underline underline-offset-4">${title}</h3>
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          ${dateStr}
+        </div>
         ${desc}
-        <div class="mt-auto inline-flex items-center text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest border-b border-gray-900 dark:border-gray-100 w-max group">
-          Read Post <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+        <div class="mt-auto inline-flex items-center text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest border-b border-gray-900 dark:border-gray-100 w-max group-hover:mr-auto">
+          Read Post <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1 duration-300">→</span>
         </div>
       </div>
     `;
@@ -123,6 +133,11 @@ window.viewPost = async function (slug, append = false) {
   const shareUrl = window.location.origin + window.location.pathname + "#" + slug;
 
   let headerHtml = "";
+  let dateStr = "Recently";
+  if (window.currentPostIndex !== -1 && window.allBlogs[window.currentPostIndex].date) {
+     dateStr = new Date(window.allBlogs[window.currentPostIndex].date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
   if (!append) {
     headerHtml = `
       <div class="flex items-center justify-between mb-8">
@@ -132,6 +147,16 @@ window.viewPost = async function (slug, append = false) {
         <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
         </button>
+      </div>
+      
+      <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+        <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">
+          ${window.currentPostIndex !== -1 ? (window.allBlogs[window.currentPostIndex].title || slug.replace(/-/g, " ")) : slug.replace(/-/g, " ")}
+        </h1>
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          Published on ${dateStr}
+        </div>
       </div>
     `;
   } else {
@@ -151,6 +176,7 @@ window.viewPost = async function (slug, append = false) {
       <article class="py-8 markdown-body">
         ${marked.parse(content)}
       </article>
+      <div id="comments-container-${slug}"></div>
     </div>
   `;
 
@@ -162,6 +188,9 @@ window.viewPost = async function (slug, append = false) {
     if (loader) loader.remove();
     container.insertAdjacentHTML('beforeend', articleHtml);
   }
+
+  // Initialize the comments section
+  renderCommentSection(`comments-container-${slug}`, slug);
 
   setupNextPostObserver();
 };
