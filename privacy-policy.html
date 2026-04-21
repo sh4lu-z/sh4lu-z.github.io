@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Shaluka's Blog</title>
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+  </script>
+</head>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-3xl mx-auto flex flex-col min-h-screen">
+    <header class="py-8 mb-8 border-b-2 border-gray-200 dark:border-gray-800 flex justify-between items-center">
+      <h1 class="text-3xl font-bold">Privacy Policy</h1>
+      <a href="/" class="text-sm font-bold uppercase tracking-widest hover:opacity-70 text-gray-500 dark:text-gray-400">← Back Home</a>
+    </header>
+    
+    <main class="flex-grow text-gray-700 dark:text-gray-300 leading-relaxed space-y-6">
+      <p class="text-sm text-gray-500">Last updated: April 2026</p>
+      
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">1. Information We Collect</h3>
+        <p>When you sign in to leave a comment, we collect your basic profile information provided securely by Google OAuth (such as your name, email address, and public profile picture). We do not collect or store the passwords to your Google account.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">2. How We Use Your Information</h3>
+        <p>Your information is used solely to authenticate you for commenting purposes and to display your name and profile picture alongside your comments. We do not sell your personal data.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">3. Third-Party Services</h3>
+        <p>This blog uses Firebase (a Google service) for authentication and database hosting for comments. Please refer to Google's Privacy Policy to understand how they process your data securely.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">4. Your Data Rights</h3>
+        <p>You can request the deletion of your comments and authenticated data at any time by contacting the blog administrator (Shaluka Gimhan). Your comments can also be deleted directly via the interface when you are signed in.</p>
+      </div>
+    </main>
+
+    <footer class="mt-12 pt-8 text-center text-sm text-gray-500 border-t border-gray-200 dark:border-gray-800">
+      <p>&copy; 2026 Shaluka Gimhan's Blog</p>
+    </footer>
+  </div>
+</body>
+</html>

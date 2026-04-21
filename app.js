@@ -113,9 +113,27 @@ window.viewPost = async function (slug, append = false) {
   const mainNav = document.getElementById("main-nav");
   if (mainNav) mainNav.classList.add("hidden");
 
-  if (!append) {
-    container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
-  }
+      if (!append) {
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
+        
+        // Shrink header
+        const headerTitle = document.getElementById('main-header');
+        if (headerTitle) {
+          headerTitle.classList.remove('py-12', 'sm:py-16', 'border-b-2', 'mb-10');
+          headerTitle.classList.add('py-4', 'sm:py-6', 'mb-6');
+        }
+        const title = document.getElementById('site-title');
+        if (title) {
+          title.classList.remove('text-4xl', 'sm:text-5xl');
+          title.classList.add('text-lg', 'sm:text-xl');
+        }
+        const desc = document.getElementById('site-desc');
+        if (desc) desc.classList.add('hidden');
+
+        // Hide About if visible
+        const aboutContainer = document.getElementById('about-section');
+        if (aboutContainer) aboutContainer.classList.add('hidden');
+      }
 
   let content = "";
   try {
@@ -144,7 +162,7 @@ window.viewPost = async function (slug, append = false) {
         <button onclick="goHome()" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Back to list">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         </button>
-        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copied to clipboard!');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+        <button onclick="navigator.clipboard.writeText('${shareUrl}'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
         </button>
       </div>
@@ -233,6 +251,24 @@ window.goHome = function () {
   window.history.pushState(null, '', window.location.pathname);
   if (window.postObserver) window.postObserver.disconnect();
 
+  // Expand header
+  const headerTitle = document.getElementById('main-header');
+  if (headerTitle) {
+    headerTitle.classList.add('py-12', 'sm:py-16', 'border-b-2', 'mb-10');
+    headerTitle.classList.remove('py-4', 'sm:py-6', 'mb-6');
+  }
+  const title = document.getElementById('site-title');
+  if (title) {
+    title.classList.add('text-4xl', 'sm:text-5xl');
+    title.classList.remove('text-lg', 'sm:text-xl');
+  }
+  const desc = document.getElementById('site-desc');
+  if (desc) desc.classList.remove('hidden');
+
+  // Hide About
+  const aboutContainer = document.getElementById('about-section');
+  if (aboutContainer) aboutContainer.classList.remove('hidden');
+
   const searchContainer = document.getElementById("search-container");
   if (searchContainer) searchContainer.style.display = 'block';
 
@@ -270,6 +306,10 @@ window.switchTab = function (tabName) {
   const tabInternal = document.getElementById("tab-internal");
   const tabExternal = document.getElementById("tab-external");
   const mainNav = document.getElementById("main-nav");
+
+  // Ensure About is visible when switching tabs
+  const aboutContainer = document.getElementById("about-section");
+  if (aboutContainer) aboutContainer.classList.remove("hidden");
 
   if (mainNav) mainNav.classList.remove("hidden");
 

@@ -9,7 +9,9 @@
         "userId": { "type": "string", "description": "The UID of the commenter" },
         "userName": { "type": "string", "description": "Display name of the commenter" },
         "userPhoto": { "type": "string", "description": "Profile picture URL of the commenter" },
-        "createdAt": { "type": "timestamp", "description": "When the comment was made" }
+        "createdAt": { "type": "timestamp", "description": "When the comment was made" },
+        "parentId": { "type": "string", "description": "ID of parent comment if it's a reply" },
+        "adminHearted": { "type": "boolean", "description": "Whether an admin hearted this comment" }
       },
       "required": ["text", "userId", "userName", "userPhoto", "createdAt"]
     }

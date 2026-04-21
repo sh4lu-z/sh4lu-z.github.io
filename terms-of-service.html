@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - Shaluka's Blog</title>
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+  </script>
+</head>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-3xl mx-auto flex flex-col min-h-screen">
+    <header class="py-8 mb-8 border-b-2 border-gray-200 dark:border-gray-800 flex justify-between items-center">
+      <h1 class="text-3xl font-bold">Terms of Service</h1>
+      <a href="/" class="text-sm font-bold uppercase tracking-widest hover:opacity-70 text-gray-500 dark:text-gray-400">← Back Home</a>
+    </header>
+    
+    <main class="flex-grow text-gray-700 dark:text-gray-300 leading-relaxed space-y-6">
+      <p class="text-sm text-gray-500">Last updated: April 2026</p>
+      
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">1. Acceptance of Terms</h3>
+        <p>By accessing and interacting with Shaluka Gimhan's Blog (such as reading articles or leaving comments), you agree to be bound by these Terms of Service.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">2. User Conduct & Comments</h3>
+        <p>Users are expected to be respectful. Comments that include spam, hate speech, harassment, or malicious links will be deleted. We reserve the right to remove any comment or block any user at our discretion without prior notice.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">3. Intellectual Property</h3>
+        <p>All articles, original code snippets, and content on this blog are the property of Shaluka Gimhan unless otherwise explicitly specified. You may not republish full articles without permission, but you are highly encouraged to share links to the content.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">4. Disclaimers</h3>
+        <p>The information, code snippets, and tutorials on this blog are provided "as is" and for educational purposes. The author is not liable for any errors, bugs, or damages arising from the use of the provided code or information in production environments.</p>
+      </div>
+    </main>
+
+    <footer class="mt-12 pt-8 text-center text-sm text-gray-500 border-t border-gray-200 dark:border-gray-800">
+      <p>&copy; 2026 Shaluka Gimhan's Blog</p>
+    </footer>
+  </div>
+</body>
+</html>
