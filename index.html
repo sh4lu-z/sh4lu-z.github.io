@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#fcfcfc" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f0f0f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
 
   <!-- Primary Meta Tags -->
   <title>Shaluka Gimhan's Blog</title>
@@ -49,7 +49,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Shaluka's Blog">
   <meta name="application-name" content="Shaluka's Blog">
-  <meta name="msapplication-TileColor" content="#0f0f0f">
+  <meta name="msapplication-TileColor" content="#141414">
 
 
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
@@ -60,7 +60,8 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <script>
-  if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  // Only apply dark mode if the user has explicitly chosen it before
+  if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
@@ -68,7 +69,7 @@
 </script>
 
 <body
-  class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#0f0f0f] dark:text-gray-100">
+  class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
   <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
     <!-- Header -->
     <header class="py-12 border-b-2 border-gray-900 dark:border-gray-100 mb-10 sm:py-16 relative">
