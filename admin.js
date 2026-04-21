@@ -46,7 +46,7 @@ function loadSettings() {
 
 saveBtn.addEventListener("click", () => {
   localStorage.setItem("gh_token", tokenInput.value.trim());
-  alert("Settings safely saved to your browser!");
+  window.showToast("Settings safely saved to your browser!", 'success');
   fetchAdminBlogs();
 });
 
@@ -131,12 +131,12 @@ publishBtn.addEventListener("click", async () => {
   const token = tokenInput.value.trim() || GH_TOKEN;
 
   if (!title || !content) {
-    alert("Please provide both a Title and Content.");
+    window.showToast("Please provide both a Title and Content.", 'error');
     return;
   }
 
   if (!token) {
-    alert("Please ensure your GitHub Token is saved below.");
+    window.showToast("Please ensure your GitHub Token is saved below.", 'error');
     return;
   }
 
@@ -230,7 +230,7 @@ publishBtn.addEventListener("click", async () => {
       console.warn("Could not update index.json", e);
     }
     
-    alert("Successfully Published to GitHub! 🎉");
+    window.showToast("Successfully Published to GitHub! 🎉", 'success');
     document.getElementById("blog-title").value = "";
     document.getElementById("blog-cover").value = "";
     document.getElementById("blog-desc").value = "";
@@ -239,7 +239,7 @@ publishBtn.addEventListener("click", async () => {
     fetchAdminBlogs(); // Reload list
     
   } catch (err) {
-    alert("Error publishing: " + err.message);
+    window.showToast("Error publishing: " + err.message, 'error');
   } finally {
     publishBtn.innerText = "Publish to GitHub";
     publishBtn.disabled = false;
@@ -306,8 +306,9 @@ window.deleteBlog = async function(filename, sha) {
     }
     
     fetchAdminBlogs(); // Reload
+    window.showToast("Blog deleted completely.", 'info');
   } catch (err) {
-    alert("Error deleting: " + err.message);
+    window.showToast("Error deleting: " + err.message, 'error');
   }
 };
 
@@ -323,11 +324,11 @@ if (uploadBtn) {
     const token = localStorage.getItem("gh_token") || "";
 
     if (!file) {
-      alert("Please select an image first.");
+      window.showToast("Please select an image first.", 'error');
       return;
     }
     if (!token) {
-      alert("Token required to upload to GitHub.");
+      window.showToast("Token required to upload to GitHub.", 'error');
       return;
     }
 
@@ -357,7 +358,7 @@ if (uploadBtn) {
           const finalUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${filePath}`;
           linkInput.value = `![${file.name}](${finalUrl})`;
           statusContainer.classList.remove("hidden");
-          alert("Image uploaded successfully! Copy the link and paste it in your editor.");
+          window.showToast("Image uploaded successfully! Copy the link and paste it in your editor.", 'success');
         } else {
           const err = await res.json();
           throw new Error(err.message || "Failed to upload.");
@@ -365,7 +366,7 @@ if (uploadBtn) {
       };
       reader.readAsDataURL(file);
     } catch (err) {
-      alert("Upload Error: " + err.message);
+      window.showToast("Upload Error: " + err.message, 'error');
     } finally {
       uploadBtn.innerText = "Upload Image";
       uploadBtn.disabled = false;

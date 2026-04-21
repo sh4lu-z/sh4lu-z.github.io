@@ -71,7 +71,7 @@
             <input type="file" id="image-upload-input" accept="image/*" class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
             <button id="upload-image-btn" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow">Upload Image</button>
             <div id="upload-status" class="hidden">
-              <input type="text" id="generated-link" readonly class="w-full text-xs p-2 bg-gray-50 border border-gray-200 rounded mt-2 font-mono" onclick="this.select(); document.execCommand('copy'); alert('Link copied!');">
+              <input type="text" id="generated-link" readonly class="w-full text-xs p-2 bg-gray-50 border border-gray-200 rounded mt-2 font-mono" onclick="this.select(); document.execCommand('copy'); window.showToast('Link copied!', 'success');">
               <p class="text-[10px] text-gray-400 mt-1">↑ Click to copy Markdown link</p>
             </div>
           </div>
@@ -90,6 +90,7 @@
     </div>
 
   </div>
+  <script src="toast.js"></script>
   <script type="module" src="./admin.js"></script>
 </body>
 </html>

@@ -17,14 +17,19 @@ service cloud.firestore {
              (request.auth.token.email == 'shalukagimhan13@gmail.com' || request.auth.token.email == 'sh4lu.z@gmail.com');
     }
 
-    function isValidComment(data) {
+    function isValidCommentShape(data) {
+      let hasParent = data.keys().hasAny(['parentId']);
+      let hasHeart = data.keys().hasAny(['adminHearted']);
+      let validSize = data.keys().size() >= 5 && data.keys().size() <= 7;
+
       return data.keys().hasAll(['text', 'userId', 'userName', 'userPhoto', 'createdAt']) &&
-             data.keys().size() == 5 &&
+             validSize &&
              data.text is string && data.text.size() > 0 && data.text.size() <= 2000 &&
              data.userId is string && data.userId == request.auth.uid &&
              data.userName is string && data.userName.size() <= 100 &&
              data.userPhoto is string && data.userPhoto.size() <= 1000 &&
-             data.createdAt == request.time;
+             (hasParent ? (data.parentId is string || data.parentId == null) : true) &&
+             (hasHeart ? (data.adminHearted is bool) : true);
     }
 
     match /postComments/{postSlug}/comments/{commentId} {
@@ -41,14 +46,26 @@ service cloud.firestore {
       allow create: if isSignedIn() &&
                        isValidId(postSlug) && 
                        isValidId(commentId) &&
-                       isValidComment(incoming());
+                       isValidCommentShape(incoming()) &&
+                       incoming().createdAt == request.time &&
+                       (!incoming().keys().hasAny(['adminHearted']) || incoming().adminHearted == false);
 
       allow update: if isSignedIn() &&
                        isValidId(postSlug) &&
                        isValidId(commentId) &&
-                       isValidComment(incoming()) &&
-                       incoming().diff(existing()).affectedKeys().hasOnly(['text']) &&
-                       existing().userId == request.auth.uid;
+                       isValidCommentShape(incoming()) &&
+                       (
+                         // Action: Owner updates text
+                         (
+                           incoming().diff(existing()).affectedKeys().hasOnly(['text']) &&
+                           existing().userId == request.auth.uid
+                         ) ||
+                         // Action: Admin toggles heart
+                         (
+                           isAdmin() &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['adminHearted'])
+                         )
+                       );
 
       allow delete: if isSignedIn() &&
                        isValidId(postSlug) &&
