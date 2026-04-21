@@ -10,37 +10,39 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 font-sans p-4 sm:p-8">
-  <div class="max-w-5xl mx-auto flex flex-col min-h-screen">
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12">
+  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
     <!-- Header -->
-    <header class="py-12 border-b border-gray-200 mb-8 sm:py-16">
-      <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 cursor-pointer" onclick="goHome()">Shaluka's Blog.</h1>
-      <p class="mt-4 text-xl text-gray-500 font-medium">Thoughts, code, and everything in between.</p>
+    <header class="py-12 border-b-2 border-gray-900 mb-10 sm:py-16">
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 cursor-pointer" onclick="goHome()">Shaluka's Blog.</h1>
+      <p class="mt-4 text-lg text-gray-600">Thoughts, code, and everything in between.</p>
     </header>
 
     <!-- Navigation Tabs -->
-    <nav id="main-nav" class="flex border-b border-gray-200 mb-8 overflow-x-auto">
+    <nav id="main-nav" class="flex border-b border-gray-200 mb-6 overflow-x-auto">
       <button id="btn-tab-internal"
-        class="py-4 px-6 font-bold border-b-4 border-blue-600 text-blue-600 focus:outline-none whitespace-nowrap transition-colors"
+        class="py-3 px-6 text-sm font-bold tracking-widest uppercase border-b-2 border-gray-900 text-gray-900 focus:outline-none whitespace-nowrap transition-colors"
         onclick="switchTab('internal')">
-        📝 My Blogs
+        Internal Blogs
       </button>
       <button id="btn-tab-external"
-        class="py-4 px-6 font-bold border-b-4 border-transparent text-gray-500 hover:text-gray-900 focus:outline-none whitespace-nowrap transition-colors"
+        class="py-3 px-6 text-sm font-bold tracking-widest uppercase border-b-2 border-transparent text-gray-400 hover:text-gray-900 focus:outline-none whitespace-nowrap transition-colors"
         onclick="switchTab('external')">
-        🔗 External Publications
+        External Publications
       </button>
     </nav>
     
-    <!-- Search Bar -->
-    <div id="search-container" class="mb-8 max-w-lg">
-      <input type="text" id="search-input" placeholder="Search blogs..." class="w-full py-3 px-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 font-medium shadow-sm" oninput="filterBlogs()">
+    <!-- Minimalist Search Window -->
+    <div id="search-container" class="mb-10 max-w-lg">
+       <input type="text" id="search-input" placeholder="Search blogs..." class="w-full py-2 bg-transparent border-b border-gray-300 focus:border-gray-900 focus:outline-none transition-colors text-gray-900 placeholder-gray-400 text-sm font-bold tracking-wider" oninput="filterBlogs()">
     </div>
 
     <!-- Tab 1: Internal Content (Managed by app.js) -->
     <div id="tab-internal" class="block">
       <main id="app-content">
-        <div class="text-gray-500 font-bold text-center py-20 text-xl">Loading your site...</div>
+        <div class="flex flex-col items-center justify-center py-24">
+          <div class="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
+        </div>
       </main>
     </div>
 
@@ -52,11 +54,8 @@
     </div>
     
     <!-- Footer with Main Site Link -->
-    <footer class="mt-auto pt-16 pb-8 text-center">
-      <a href="https://sh4lu-z.vercel.app/" target="_blank" class="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-blue-600 hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-        Visit My Main Website
-      </a>
+    <footer class="mt-auto pt-24 pb-8 text-center text-sm font-bold tracking-widest uppercase text-gray-400">
+      &copy; 2026 <a href="https://sh4lu-z.vercel.app/" target="_blank" class="text-gray-900 hover:underline hover:text-black transition-colors">shaluka gimhan</a>
     </footer>
   </div>
   <script type="module" src="app.js"></script>
