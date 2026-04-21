@@ -37,22 +37,22 @@ function renderList(blogs) {
     return;
   }
 
-  let html = `<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">`;
+  let html = `<div class="grid gap-10">`;
   blogs.forEach(blog => {
     const slug = blog.name.replace(".md", "");
     const title = blog.title || slug.replace(/-/g, " ");
-    const desc = blog.description ? `<p class="text-gray-500 mb-6 line-clamp-2">${blog.description}</p>` : '';
-    const imgHtml = blog.coverImage ? `<img src="${blog.coverImage}" class="w-full h-48 object-cover rounded-2xl mb-4" />` : '';
+    const desc = blog.description ? `<p class="text-gray-600 mb-4 leading-relaxed">${blog.description}</p>` : '';
+    const imgHtml = blog.coverImage ? `<img src="${blog.coverImage}" class="w-full h-48 object-cover rounded-xl mb-4" />` : '';
     const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md cursor-pointer transition-all flex flex-col" onclick="viewPost('${slug}')">
+      <div class="border-l-4 border-gray-900 pl-6 py-2 hover:bg-gray-50 cursor-pointer transition-colors flex flex-col" onclick="viewPost('${slug}')">
         ${imgHtml}
-        <h3 class="text-2xl font-bold mb-2 text-gray-900 leading-tight">${title}</h3>
-        <div class="text-xs text-gray-400 font-bold mb-4 uppercase tracking-wider">${dateStr}</div>
+        <h3 class="text-2xl font-bold mb-1 text-gray-900">${title}</h3>
+        <div class="text-xs text-gray-500 font-bold tracking-widest uppercase mb-3">${dateStr}</div>
         ${desc}
-        <div class="mt-auto inline-flex items-center text-sm font-bold text-blue-600 group">
-          Read Post <span class="ml-1 transform group-hover:translate-x-1 transition-transform">→</span>
+        <div class="mt-auto inline-flex items-center text-sm font-bold text-gray-900 uppercase tracking-widest border-b border-gray-900 w-max group">
+          Read Post <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
         </div>
       </div>
     `;
@@ -74,7 +74,7 @@ window.viewPost = async function (slug) {
   const mainNav = document.getElementById("main-nav");
   if (mainNav) mainNav.classList.add("hidden");
 
-  container.innerHTML = `<div class="text-gray-500 font-bold text-center py-20 text-xl">Fetching post data...</div>`;
+  container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div></div>`;
 
   let content = "";
 
@@ -184,7 +184,7 @@ const ICONS = {
 
 async function renderExternalLinks() {
   const container = document.getElementById("external-articles-list");
-  container.innerHTML = `<div class="text-gray-500 font-bold text-center py-20 text-xl">Fetching articles directly from DEV.to and Medium...</div>`;
+  container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div></div>`;
 
   let articles = [];
 
@@ -230,22 +230,19 @@ async function renderExternalLinks() {
     return;
   }
 
-  let html = `<div class="grid gap-6 sm:grid-cols-2">`;
+  let html = `<div class="grid gap-10">`;
   articles.forEach(art => {
     const defaultData = ICONS[art.platform] || ICONS["Medium"];
     const dateStr = new Date(art.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     
     html += `
-      <a href="${art.url}" target="_blank" class="bg-white p-8 rounded-3xl shadow-sm border border-gray-200 hover:border-blue-500 hover:shadow-xl transition-all transform hover:-translate-y-1 block group">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="inline-flex items-center justify-center p-2 rounded-xl border border-gray-100 ${defaultData.color}">
-            <svg class="w-6 h-6" viewBox="${defaultData.viewBox}" fill="currentColor"><path d="${defaultData.icon}"></path></svg>
-          </span>
-          <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">${art.platform} &bull; ${dateStr}</span>
+      <a href="${art.url}" target="_blank" class="border-l-4 border-gray-300 hover:border-gray-900 pl-6 py-2 block group transition-colors">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">${art.platform} &mdash; ${dateStr}</span>
         </div>
-        <h3 class="text-2xl font-bold mb-4 text-gray-900 line-clamp-3 leading-tight group-hover:text-blue-600 transition-colors">${art.title}</h3>
-        <div class="inline-flex items-center text-sm font-bold text-gray-500 group-hover:text-blue-600 transition-colors">
-          Read on ${art.platform} <span class="ml-1 transform group-hover:translate-x-1 transition-transform">→</span>
+        <h3 class="text-2xl font-bold mb-3 text-gray-900 line-clamp-2 leading-tight">${art.title}</h3>
+        <div class="inline-flex items-center text-sm font-bold text-gray-900 uppercase tracking-widest border-b border-gray-900 w-max">
+          View Publication
         </div>
       </a>
     `;
