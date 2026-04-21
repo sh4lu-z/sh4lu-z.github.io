@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "Comment": {
+      "title": "Comment",
+      "description": "A user comment on a blog post",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "The comment body" },
+        "userId": { "type": "string", "description": "The UID of the commenter" },
+        "userName": { "type": "string", "description": "Display name of the commenter" },
+        "userPhoto": { "type": "string", "description": "Profile picture URL of the commenter" },
+        "createdAt": { "type": "timestamp", "description": "When the comment was made" }
+      },
+      "required": ["text", "userId", "userName", "userPhoto", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/postComments/{postSlug}/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/Comment" },
+      "description": "Stores comments for a specific blog post where the document ID is the slug."
+    }
+  }
+}
