@@ -19,6 +19,11 @@
 .markdown-body pre code { background: transparent; color: inherit; padding: 0; border-radius: 0; word-break: normal; overflow-wrap: normal; }
 .markdown-body blockquote { border-left: 4px solid #e5e7eb; padding-left: 1rem; color: #6b7280; font-style: italic; margin-bottom: 1.5rem; }
 .markdown-body img { border-radius: 0.75rem; margin: 2rem 0; max-width: 100%; height: auto; }
+.markdown-body table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; border-radius: 0.75rem; overflow: hidden; }
+.markdown-body th, .markdown-body td { border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left; }
+.markdown-body th { background-color: #f9fafb; font-weight: 700; }
+html.dark .markdown-body th { background-color: #1a1a1a; }
+html.dark .markdown-body th, html.dark .markdown-body td { border-color: #374151; }
 
 /* Dark mode specific overrides */
 html.dark .markdown-body h1 { border-bottom-color: #374151; }

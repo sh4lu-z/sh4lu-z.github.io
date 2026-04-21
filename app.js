@@ -21,8 +21,8 @@ async function loadBlogs() {
     finalBlogs.sort((a, b) => {
       // Sort by date newest first
       const dateA = a.date ? new Date(a.date).getTime() : 0;
-      const dateDateB = b.date ? new Date(b.date).getTime() : 0;
-      return dateDateB - dateA;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateB - dateA;
     });
 
     window.allBlogs = finalBlogs;
@@ -163,7 +163,7 @@ window.viewPost = async function (slug, append = false) {
     // Divider for appended posts
     headerHtml = `
       <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
-        <span class="bg-[#fcfcfc] dark:bg-[#0f0f0f] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
+        <span class="bg-[#fcfcfc] dark:bg-[#141414] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
           Next Blog
         </span>
       </div>

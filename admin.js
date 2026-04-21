@@ -18,7 +18,19 @@ function initializeEditor() {
     spellChecker: false,
     placeholder: "Start your mind-blowing article here...",
     status: ["lines", "words", "preview"],
-    toolbar: ["bold", "italic", "heading", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "|", "preview", "side-by-side", "fullscreen"],
+    minHeight: "500px",
+    autosave: {
+      enabled: true,
+      uniqueId: "shaluka-blog-editor",
+      delay: 1000,
+    },
+    toolbar: [
+      "bold", "italic", "strikethrough", "heading", "|", 
+      "quote", "unordered-list", "ordered-list", "|", 
+      "link", "image", "table", "horizontal-rule", "|", 
+      "preview", "side-by-side", "fullscreen", "|", 
+      "guide"
+    ],
   });
 }
 
@@ -190,7 +202,7 @@ publishBtn.addEventListener("click", async () => {
       if (getIndexRes.ok) {
         const getIndexData = await getIndexRes.json();
         existingIndexSha = getIndexData.sha;
-        currentIndex = JSON.parse(decodeURIComponent(escape(atob(getIndexData.content))));
+        currentIndex = JSON.parse(decodeURIComponent(escape(atob(getIndexData.content.replace(/\s/g, '')))));
       }
 
       const existingPostIdx = currentIndex.findIndex(i => i.name === indexObj.name);
@@ -270,7 +282,7 @@ window.deleteBlog = async function(filename, sha) {
       if (getIndexRes.ok) {
         const getIndexData = await getIndexRes.json();
         existingIndexSha = getIndexData.sha;
-        currentIndex = JSON.parse(decodeURIComponent(escape(atob(getIndexData.content))));
+        currentIndex = JSON.parse(decodeURIComponent(escape(atob(getIndexData.content.replace(/\s/g, '')))));
       }
 
       currentIndex = currentIndex.filter(item => item.name !== filename);
@@ -298,6 +310,68 @@ window.deleteBlog = async function(filename, sha) {
     alert("Error deleting: " + err.message);
   }
 };
+
+// Image Upload Logic
+const imageInput = document.getElementById("image-upload-input");
+const uploadBtn = document.getElementById("upload-image-btn");
+const statusContainer = document.getElementById("upload-status");
+const linkInput = document.getElementById("generated-link");
+
+if (uploadBtn) {
+  uploadBtn.addEventListener("click", async () => {
+    const file = imageInput.files[0];
+    const token = localStorage.getItem("gh_token") || "";
+
+    if (!file) {
+      alert("Please select an image first.");
+      return;
+    }
+    if (!token) {
+      alert("Token required to upload to GitHub.");
+      return;
+    }
+
+    uploadBtn.innerText = "Uploading...";
+    uploadBtn.disabled = true;
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = reader.result.split(',')[1];
+        const filename = Date.now() + "-" + file.name.replace(/[^a-z0-9.]+/gi, '-').toLowerCase();
+        const filePath = `assets/blog-images/${filename}`;
+
+        const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: `Uploaded image: ${filename}`,
+            content: base64
+          })
+        });
+
+        if (res.ok) {
+          const finalUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${filePath}`;
+          linkInput.value = `![${file.name}](${finalUrl})`;
+          statusContainer.classList.remove("hidden");
+          alert("Image uploaded successfully! Copy the link and paste it in your editor.");
+        } else {
+          const err = await res.json();
+          throw new Error(err.message || "Failed to upload.");
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      alert("Upload Error: " + err.message);
+    } finally {
+      uploadBtn.innerText = "Upload Image";
+      uploadBtn.disabled = false;
+    }
+  });
+}
 
 // Initialization
 document.addEventListener("DOMContentLoaded", () => {

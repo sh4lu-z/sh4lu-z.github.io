@@ -48,7 +48,7 @@ export function renderCommentSection(containerId, slug) {
           <button onclick="logoutFromComments()" class="text-xs font-bold text-red-600 hover:text-red-700 uppercase tracking-widest transition-colors">Sign Out</button>
         </div>
         <div class="mb-4">
-          <textarea id="comment-input-${slug}" placeholder="Share your thoughts..." class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#0f0f0f] text-gray-900 dark:text-gray-100 p-3 text-sm rounded-xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 outline-none transition-all mb-2" rows="2"></textarea>
+          <textarea id="comment-input-${slug}" placeholder="Share your thoughts..." class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#141414] text-gray-900 dark:text-gray-100 p-3 text-sm rounded-xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 outline-none transition-all mb-2" rows="2"></textarea>
           <button onclick="submitComment('${slug}')" class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity">Post Comment</button>
         </div>
       `;
@@ -139,7 +139,28 @@ function listenToComments(slug, listId) {
     let html = '';
     snapshot.forEach((docSnap) => {
       const c = docSnap.data();
-      const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString() : 'Just now';
+      let date = 'Just now';
+      
+      if (c.createdAt) {
+        let jsDate;
+        if (typeof c.createdAt.toDate === 'function') {
+          jsDate = c.createdAt.toDate();
+        } else if (c.createdAt.seconds) {
+          jsDate = new Date(c.createdAt.seconds * 1000);
+        } else {
+          jsDate = new Date(c.createdAt);
+        }
+
+        if (jsDate && !isNaN(jsDate.getTime())) {
+          date = jsDate.toLocaleDateString(undefined, { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      }
       const isOwner = currentUser && currentUser.uid === c.userId;
       const isAdmin = currentUser && currentUser.email && ADMIN_EMAILS.includes(currentUser.email);
       const canDelete = isOwner || isAdmin;

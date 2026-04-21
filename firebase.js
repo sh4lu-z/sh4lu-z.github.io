@@ -2,22 +2,24 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.9.0/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, query, onSnapshot, orderBy, doc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js';
 
-let firebaseConfig = null;
+let firebaseApp = null;
+let firebaseAuth = null;
+let firebaseDb = null;
 
 export async function initFirebase() {
-  if (firebaseConfig) return { auth, db };
+  if (firebaseApp) return { auth: firebaseAuth, db: firebaseDb };
 
   // Fetch the configuration file securely created during setup
   const res = await fetch('/firebase-applet-config.json');
   const fullConfig = await res.json();
   
   // Initialize Firebase using the configuration
-  const app = initializeApp(fullConfig);
+  firebaseApp = initializeApp(fullConfig);
   // Need to provide the firestore database id if there is one
-  const db = getFirestore(app, fullConfig.firestoreDatabaseId);
-  const auth = getAuth(app);
+  firebaseDb = getFirestore(firebaseApp, fullConfig.firestoreDatabaseId);
+  firebaseAuth = getAuth(firebaseApp);
   
-  return { app, auth, db };
+  return { app: firebaseApp, auth: firebaseAuth, db: firebaseDb };
 }
 
 // Re-export specific modules for convenience
