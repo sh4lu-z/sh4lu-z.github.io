@@ -1,7 +1,29 @@
 [
-  { "name": "vanilla-js-mastery.md", "title": "Vanilla JS Mastery" },
-  { "name": "css-grid-tricks.md", "title": "CSS Grid Tricks" },
-  { "name": "github-as-cms.md", "title": "GitHub as a CMS" },
-  { "name": "my-coding-journey.md", "title": "My Coding Journey" },
-  { "name": "web-components.md", "title": "Future of Web Components" }
+  {
+    "name": "vanilla-js-mastery.md",
+    "title": "Vanilla JS Mastery"
+  },
+  {
+    "name": "css-grid-tricks.md",
+    "title": "CSS Grid Tricks"
+  },
+  {
+    "name": "github-as-cms.md",
+    "title": "GitHub as a CMS"
+  },
+  {
+    "name": "my-coding-journey.md",
+    "title": "My Coding Journey"
+  },
+  {
+    "name": "web-components.md",
+    "title": "Future of Web Components"
+  },
+  {
+    "name": "the-magic-of-css-grid.md",
+    "title": "The Magic of CSS Grid",
+    "coverImage": "",
+    "description": "",
+    "date": "2026-04-20T19:35:11.839Z"
+  }
 ]
