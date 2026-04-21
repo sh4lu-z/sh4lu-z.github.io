@@ -236,8 +236,7 @@ publishBtn.addEventListener("click", async () => {
 });
 
 window.deleteBlog = async function(filename, sha) {
-  if (!confirm(`Are you sure you want to permanently delete ${filename}?`)) return;
-  
+  // Confirmation bypassed due to iframe restrictions
   const owner = GH_OWNER;
   const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
