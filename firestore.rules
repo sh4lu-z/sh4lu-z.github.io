@@ -47,7 +47,7 @@ service cloud.firestore {
                        isValidId(postSlug) && 
                        isValidId(commentId) &&
                        isValidCommentShape(incoming()) &&
-                       incoming().createdAt == request.time &&
+                       incoming().createdAt is timestamp &&
                        (!incoming().keys().hasAny(['adminHearted']) || incoming().adminHearted == false);
 
       allow update: if isSignedIn() &&
