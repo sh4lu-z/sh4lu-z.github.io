@@ -32,7 +32,7 @@ AI කියන්නේ අද ඊයේ ආපු දෙයක් නෙවෙ
 *   **1997:** IBM සමාගමේ Deep Blue පරිගණකය ලෝක චෙස් ශූර ගැරී කැස්පරොව්ව පරාජය කළා.
 *   **2022-වර්තමානය:** ChatGPT, Midjourney වැනි Generative AI වල පිපිරීමත් එක්ක AI සාමාන්‍ය මිනිසුන් අතරට ආවා.
 
-![AI History](https://images.unsplash.com/photo-1509228468518-180dd482195e?auto=format&fit=crop&q=80&w=1000)
+![AI History](https://qbi.uq.edu.au/files/40697/The-Brain-Intelligent-Machines-AI-timeline.jpg)
 
 ---
 
