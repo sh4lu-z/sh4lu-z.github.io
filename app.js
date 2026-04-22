@@ -4,8 +4,9 @@ window.allBlogs = []; // Store blogs for search filtering
 window.currentPostIndex = -1;
 window.loadingNextPost = false;
 window.postObserver = null;
+window.lastScrollPosition = 0;
 
-async function loadBlogs() {
+async function loadBlogs(restoreScroll = false) {
   const container = document.getElementById("app-content");
 
   try {
@@ -27,6 +28,12 @@ async function loadBlogs() {
 
     window.allBlogs = finalBlogs;
     renderList(finalBlogs);
+
+    if (restoreScroll && window.lastScrollPosition !== undefined) {
+      setTimeout(() => {
+        window.scrollTo({ top: window.lastScrollPosition, behavior: 'instant' });
+      }, 50);
+    }
   } catch (err) {
     container.innerHTML = `<div class="text-center font-bold p-8 text-gray-500">No blogs found. Head to the Admin panel to start writing!</div>`;
   }
@@ -63,9 +70,6 @@ function renderList(blogs) {
           ${dateStr}
         </div>
         ${desc}
-        <div class="mt-auto inline-flex items-center text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest border-b border-gray-900 dark:border-gray-100 w-max group-hover:mr-auto">
-          Read Post <span class="ml-1 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1 duration-300">→</span>
-        </div>
       </div>
     `;
   });
@@ -113,10 +117,11 @@ window.viewPost = async function (slug, append = false) {
   const mainNav = document.getElementById("main-nav");
   if (mainNav) mainNav.classList.add("hidden");
 
-      if (!append) {
-        container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
-        
-        // Shrink header
+  if (!append) {
+    window.lastScrollPosition = window.scrollY || document.documentElement.scrollTop;
+    container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
+    
+    // Shrink header
         const headerTitle = document.getElementById('main-header');
         if (headerTitle) {
           headerTitle.classList.remove('py-12', 'sm:py-16', 'border-b-2', 'mb-10');
@@ -246,7 +251,7 @@ function setupNextPostObserver() {
   window.postObserver.observe(loader);
 }
 
-window.goHome = function () {
+window.goHome = function (scrollToAbout = false) {
   document.title = "Shaluka's Blog - Thoughts & Code";
   window.history.pushState(null, '', window.location.pathname);
   if (window.postObserver) window.postObserver.disconnect();
@@ -265,14 +270,19 @@ window.goHome = function () {
   const desc = document.getElementById('site-desc');
   if (desc) desc.classList.remove('hidden');
 
-  // Hide About
   const aboutContainer = document.getElementById('about-section');
   if (aboutContainer) aboutContainer.classList.remove('hidden');
 
   const searchContainer = document.getElementById("search-container");
   if (searchContainer) searchContainer.style.display = 'block';
 
-  switchTab("internal");
+  switchTab("internal", !scrollToAbout);
+
+  if (scrollToAbout) {
+    setTimeout(() => {
+      document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
 };
 
 window.filterBlogs = function () {
@@ -300,7 +310,7 @@ const EXTERNAL_ARTICLES = [
   { platform: "Medium", title: "My Favorite Web APIs in 2026", url: "https://medium.com/@sh4lu_z/my-favorite-web-apis" }
 ];
 
-window.switchTab = function (tabName) {
+window.switchTab = function (tabName, restoreScroll = false) {
   const btnInternal = document.getElementById("btn-tab-internal");
   const btnExternal = document.getElementById("btn-tab-external");
   const tabInternal = document.getElementById("tab-internal");
@@ -324,7 +334,7 @@ window.switchTab = function (tabName) {
     tabExternal.classList.add("hidden");
 
     // Refresh internal blogs so opening a post and switching tabs resets it
-    loadBlogs();
+    loadBlogs(restoreScroll);
   } else {
     btnExternal.classList.add("border-gray-900", "text-gray-900", "dark:border-gray-100", "dark:text-gray-100");
     btnExternal.classList.remove("border-transparent", "text-gray-400", "dark:text-gray-600");
@@ -402,9 +412,6 @@ async function renderExternalLinks() {
           <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">${art.platform} &mdash; ${dateStr}</span>
         </div>
         <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight">${art.title}</h3>
-        <div class="inline-flex items-center text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest border-b border-gray-900 dark:border-gray-100 w-max">
-          View Publication
-        </div>
       </a>
     `;
   });
