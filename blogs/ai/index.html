@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title># 🤖 AI (කෘත්‍රිම බුද්ධිය) සහ අපේ අනාගතය: සම්පූර්ණ විවරණය - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="# 🤖 AI (කෘත්‍රිම බුද්ධිය) සහ අපේ අනාගතය: සම්පූර්ණ විවරණය">
+  <meta name="description" content="මෙම ලිපියෙන් Artificial Intelligence (AI) ගැන සරලව හඳුන්වා දී ඇත. AI හි අර්ථය, ඉතිහාසය, ක්‍රියාකාරී තාක්ෂණයන්, වර්තමාන tools සහ ලෝකයට ඇති බලපෑම් විස්තර කරයි. වාසි, අවාසි සහ AI යුගයට සූදානම් විය යුතු ආකාරයද මෙහි පැහැදිලි කරයි. නවීන ලෝකයේ AI භාවිතයද අවධාරණය කරයි.">
+  <meta name="blog-slug" content="ai">
+  <link rel="canonical" href="https://sh4lu-z.github.io/blogs/ai">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sh4lu-z.github.io/blogs/ai">
+  <meta property="og:title" content="# 🤖 AI (කෘත්‍රිම බුද්ධිය) සහ අපේ අනාගතය: සම්පූර්ණ විවරණය">
+  <meta property="og:description" content="මෙම ලිපියෙන් Artificial Intelligence (AI) ගැන සරලව හඳුන්වා දී ඇත. AI හි අර්ථය, ඉතිහාසය, ක්‍රියාකාරී තාක්ෂණයන්, වර්තමාන tools සහ ලෝකයට ඇති බලපෑම් විස්තර කරයි. වාසි, අවාසි සහ AI යුගයට සූදානම් විය යුතු ආකාරයද මෙහි පැහැදිලි කරයි. නවීන ලෝකයේ AI භාවිතයද අවධාරණය කරයි.">
+  <meta property="og:image" content="https://github.com/sh4lu-z.png">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="/css/style.css?v=2">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<script>
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
+    
+    <header class="py-4 sm:py-6 mb-6 relative transition-all duration-300">
+      <div class="absolute top-0 right-0 sm:top-4 flex items-center gap-2">
+        <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+        </a>
+        <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+    </header>
+
+    <main id="app-content" class="flex-grow">
+      <div id="post-ai">
+        <div class="flex items-center justify-between mb-8">
+          <a href="/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors block" title="Back to list">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </a>
+          <button onclick="navigator.clipboard.writeText('https://sh4lu-z.github.io/blogs/ai'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          </button>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight"># 🤖 AI (කෘත්‍රිම බුද්ධිය) සහ අපේ අනාගතය: සම්පූර්ණ විවරණය</h1>
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Published on 28 April 2026
+          </div>
+        </div>
+
+        <article class="py-8 markdown-body">
+          <p><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1200" alt="AI Header"></p>
+<p>අද මම ඔයාලත් එක්ක කතා කරන්න යන්නේ වර්තමාන ලෝකයේ හැමෝම කතා වෙන, හැම තැනම ඇහෙන මාතෘකාවක් ගැන. ඒ තමයි <strong>AI</strong> එහෙමත් නැත්නම් <strong>Artificial Intelligence</strong>. ගොඩක් අය හිතන්නේ AI කියන්නේ අනාගතයේ එන දෙයක් කියලා, හැබැයි ඇත්තටම අපි දැනටමත් ඉන්නේ AI යුගයක. </p>
+<p>මම මේ ලිපියෙන් AI ගැන සරලව වගේම ගැඹුරින් ඔයාලට කියලා දෙන්න බලාපොරොත්තු වෙනවා.</p>
+<hr>
+<h2>🧠 මොකක්ද මේ AI කියන්නේ? (What is AI?)</h2>
+<p>සරලවම කිව්වොත්, AI කියන්නේ මිනිස් බුද්ධිය පරිගණකයකට හෝ යන්ත්‍රයකට ලබා දීමයි. සාමාන්‍යයෙන් පරිගණකයක් කරන්නේ අපි දෙන නියෝග (Instructions) ක්‍රියාත්මක කරන එක විතරයි. හැබැයි AI එකකට පුළුවන්:</p>
+<ul>
+<li>දත්ත පාවිච්චි කරලා අලුත් දේවල් ඉගෙන ගන්න (<strong>Learning</strong>)</li>
+<li>ප්‍රශ්නයක් දුන්නම ඒක විසඳන්න ක්‍රම හොයන්න (<strong>Problem Solving</strong>)</li>
+<li>ලබා දෙන තොරතුරු මත තීරණ ගන්න (<strong>Decision Making</strong>)</li>
+</ul>
+<hr>
+<h2>📜 AI වල ඉතිහාසය (History of AI)</h2>
+<p>AI කියන්නේ අද ඊයේ ආපු දෙයක් නෙවෙයි. මේකේ ආරම්භය 1950 දශකය දක්වා දිව යනවා.</p>
+<ul>
+<li><strong>1950:</strong> ඇලන් ටියුරින් (Alan Turing) &quot;පරිගණකයකට හිතන්න පුළුවන්ද?&quot; කියන ප්‍රශ්නය ලෝකයට ඉදිරිපත් කළා.</li>
+<li><strong>1956:</strong> Dartmouth Conference එකේදී තමයි පළමු වතාවට &quot;Artificial Intelligence&quot; කියන වචනය පාවිච්චි වුණේ.</li>
+<li><strong>1997:</strong> IBM සමාගමේ Deep Blue පරිගණකය ලෝක චෙස් ශූර ගැරී කැස්පරොව්ව පරාජය කළා.</li>
+<li><strong>2022-වර්තමානය:</strong> ChatGPT, Midjourney වැනි Generative AI වල පිපිරීමත් එක්ක AI සාමාන්‍ය මිනිසුන් අතරට ආවා.</li>
+</ul>
+<p><img src="https://qbi.uq.edu.au/files/40697/The-Brain-Intelligent-Machines-AI-timeline.jpg" alt="AI History"></p>
+<hr>
+<h2>⚙️ AI ක්‍රියා කරන ප්‍රධාන තාක්ෂණයන්</h2>
+<p>AI කියන්නේ එක තාක්ෂණයක් නෙවෙයි, ඒක තාක්ෂණයන් ගණනාවක එකතුවක්:</p>
+<ol>
+<li><strong>Machine Learning (ML):</strong> යන්ත්‍රයකට දත්ත මගින් තනිවම ඉගෙන ගැනීමට සැලැස්වීම.</li>
+<li><strong>Deep Learning:</strong> මිනිස් මොළයේ ස්නායු පද්ධතිය අනුකරණය කරමින් (Neural Networks) ඉතා සංකීර්ණ දත්ත විශ්ලේෂණය කිරීම.</li>
+<li><strong>Natural Language Processing (NLP):</strong> මිනිස් භාෂාව (සිංහල, ඉංග්‍රීසි වගේ) තේරුම් ගැනීමට සහ ප්‍රතිචාර දැක්වීමට ඇති හැකියාව. (උදා: ChatGPT)</li>
+<li><strong>Computer Vision:</strong> පින්තූර සහ වීඩියෝ හඳුනාගැනීමේ හැකියාව. (උදා: Face ID)</li>
+</ol>
+<hr>
+<h2>🛠️ වර්තමානයේ අපිට පාවිච්චි කළ හැකි හොඳම AI Tools</h2>
+<p>ඔයා ශිෂ්‍යයෙක් වුණත්, රැකියාවක් කරන කෙනෙක් වුණත් මේ tools ඔයාගේ වැඩ පහසු කරගන්න පාවිච්චි කරන්න පුළුවන්:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Tool එක</th>
+<th align="left">කාර්යය</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>ChatGPT / Gemini</strong></td>
+<td align="left">ලිපි ලිවීමට, කේතනය (Coding) කිරීමට සහ තොරතුරු සෙවීමට.</td>
+</tr>
+<tr>
+<td align="left"><strong>Midjourney / DALL-E</strong></td>
+<td align="left">වචන වලින් ලස්සන පින්තූර නිර්මාණය කිරීමට.</td>
+</tr>
+<tr>
+<td align="left"><strong>Canva Magic Studio</strong></td>
+<td align="left">ඉතා ඉක්මනින් ඩිසයින් වැඩ කරගැනීමට.</td>
+</tr>
+<tr>
+<td align="left"><strong>GitHub Copilot</strong></td>
+<td align="left">Programmers ලට code ලියන්න උදවු වෙන්න.</td>
+</tr>
+<tr>
+<td align="left"><strong>ElevenLabs</strong></td>
+<td align="left">ලියන දේවල් මිනිස් කටහඬකින් අහන්න (Text-to-Speech).</td>
+</tr>
+</tbody></table>
+<p><img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?auto=format&fit=crop&q=80&w=1000" alt="Modern AI Tools"></p>
+<hr>
+<h2>🌍 AI වලින් ලෝකයට වෙන බලපෑම</h2>
+<p>AI නිසා ක්ෂේත්‍ර ගණනාවක් සම්පූර්ණයෙන්ම වෙනස් වෙලා තියෙනවා:</p>
+<h3>1. වෛද්‍ය ක්ෂේත්‍රය (Healthcare)</h3>
+<p>ලෙඩ රෝග කලින් හඳුනාගන්නත්, සාර්ථක සැත්කම් කරන්නත් දැන් AI පාවිච්චි කරනවා. MRI/CT Scan පරීක්ෂා කරලා පිළිකා වැනි රෝග මුල් අවධියේදීම හඳුනාගන්න AI වලට පුළුවන්.</p>
+<h3>2. අධ්‍යාපනය (Education)</h3>
+<p>සෑම ශිෂ්‍යයෙකුටම ගැලපෙන විදිහට ඉගෙනුම් රටාවන් සකස් කරන්න (Personalized Learning) AI උදවු වෙනවා.</p>
+<h3>3. කෘෂිකර්මය (Agriculture)</h3>
+<p>පසේ තත්ත්වය, කාලගුණය සහ බෝග වලට වැළඳෙන රෝග ගැන කලින් අනාවැකි කියන්න AI තාක්ෂණය යොදාගන්නවා.</p>
+<p><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1000" alt="AI in Healthcare"></p>
+<hr>
+<h2>⚖️ AI වල තියෙන වාසි සහ අවාසි</h2>
+<p>ඕනෑම දෙයක වගේම AI වලත් පැති දෙකක් තියෙනවා.</p>
+<h3>✅ වාසි:</h3>
+<ul>
+<li>අධික වේගය සහ කාර්යක්ෂමතාව.</li>
+<li>මහන්සියක් නැතිව 24/7 වැඩ කළ හැකි වීම.</li>
+<li>අතිශය නිවැරදි දත්ත විශ්ලේෂණය.</li>
+</ul>
+<h3>❌ අවාසි සහ අභියෝග:</h3>
+<ul>
+<li><strong>රැකියා අර්බුදය:</strong> සාම්ප්‍රදායික රැකියා (Data entry, basic accounting) අහිමි වීමේ අවදානම.</li>
+<li><strong>Ethical Issues:</strong> AI වැරදි තොරතුරු (Fake News) සහ Deepfakes නිර්මාණය කිරීමට යොදාගැනීම.</li>
+<li><strong>පරායත්තතාවය:</strong> මිනිසා ඕනෑවට වඩා AI මත යැපීම නිසා තනිවම සිතීමේ හැකියාව අඩු වීම.</li>
+</ul>
+<hr>
+<h2>👨‍💻 AI යුගයට අපි සූදානම් වෙන්නේ කොහොමද?</h2>
+<p>AI එන එක අපිට නවත්වන්න බැහැ, ඒ නිසා අපි කරන්න ඕනේ ඒකට හැඩගැහෙන එකයි. <strong>Shaluka Gimhan</strong> විදිහට මම ඔයාලට දෙන ටිප්ස් කිහිපයක් මෙන්න:</p>
+<ol>
+<li><strong>AI ගැන ඉගෙන ගන්න:</strong> AI tools පාවිච්චි කරන හැටි ඉගෙන ගන්න (Prompt Engineering).</li>
+<li><strong>Soft Skills දියුණු කරගන්න:</strong> නිර්මාණශීලීව සිතීම, නායකත්වය සහ මිනිස් සබඳතා වැනි AI වලට කළ නොහැකි දේවල් ප්‍රගුණ කරන්න.</li>
+<li><strong>දිගටම ඉගෙන ගන්න (Continuous Learning):</strong> ලෝකය වේගයෙන් වෙනස් වෙනවා, ඒ නිසා අලුත් තාක්ෂණයන් එක්ක යාවත්කාලීන වෙන්න.</li>
+</ol>
+<hr>
+<h2>🏁 අවසාන අදහස</h2>
+<p>AI කියන්නේ අපේ හතුරා නෙවෙයි, ඒක අපේ වැඩ පහසු කරගන්න ලැබුණු සුපිරි මෙවලමක් (Tool එකක්). අපි බුද්ධිමත්ව මේ තාක්ෂණය පාවිච්චි කළොත්, අපිට පුළුවන් ගොඩක් ඉහළට යන්න.</p>
+<p>මේ ලිපිය ගැන ඔයාලගේ අදහස් පහළින් කමෙන්ට් කරන්න. තවත් මෙවැනි ලිපියකින් හමුවෙමු!</p>
+<hr>
+<p><strong>Shaluka Gimhan</strong> 🚀<br><em>Tech Enthusiast | Content Creator</em></p>
+<hr>
+<p><em>(Note: මේ පින්තූර වල අයිතිය ඒවායේ මුල් අයිතිකරුවන් සතු වේ.)</em></p>
+
+        </article>
+        <div id="comments-container-ai"></div>
+      </div>
+    </main>
+
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+      <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+    </footer>
+  </div>
+  <script src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
