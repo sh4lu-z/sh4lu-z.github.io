@@ -1,12 +1,12 @@
 import { renderCommentSection } from './comments.js';
 
-window.allBlogs = []; // Store blogs for search filtering
+window.allBlogs = []; 
 window.currentPostIndex = -1;
 window.loadingNextPost = false;
 window.postObserver = null;
 window.lastScrollPosition = 0;
 
-async function loadBlogs(restoreScroll = false) {
+async function loadBlogs() {
   const container = document.getElementById("app-content");
 
   try {
@@ -20,7 +20,6 @@ async function loadBlogs(restoreScroll = false) {
 
     let finalBlogs = Array.from(localBlogs);
     finalBlogs.sort((a, b) => {
-      // Sort by date newest first
       const dateA = a.date ? new Date(a.date).getTime() : 0;
       const dateB = b.date ? new Date(b.date).getTime() : 0;
       return dateB - dateA;
@@ -29,11 +28,6 @@ async function loadBlogs(restoreScroll = false) {
     window.allBlogs = finalBlogs;
     renderList(finalBlogs);
 
-    if (restoreScroll && window.lastScrollPosition !== undefined) {
-      setTimeout(() => {
-        window.scrollTo({ top: window.lastScrollPosition, behavior: 'instant' });
-      }, 50);
-    }
   } catch (err) {
     container.innerHTML = `<div class="text-center font-bold p-8 text-gray-500">No blogs found. Head to the Admin panel to start writing!</div>`;
   }
@@ -62,7 +56,7 @@ function renderList(blogs) {
     const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <div class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] cursor-pointer transition-colors flex flex-col group" onclick="viewPost('${slug}')">
+      <a href="/${slug}.html" class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] block transition-colors group">
         ${imgHtml}
         <h3 class="text-2xl font-bold mb-1 text-gray-900 dark:text-gray-100 group-hover:underline underline-offset-4">${title}</h3>
         <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase mb-3 flex items-center gap-2">
@@ -70,7 +64,7 @@ function renderList(blogs) {
           ${dateStr}
         </div>
         ${desc}
-      </div>
+      </a>
     `;
   });
   html += `</div>`;
@@ -78,68 +72,30 @@ function renderList(blogs) {
   container.innerHTML = html;
 }
 
-function updateMetaTags(blog) {
-  const url = window.location.origin + window.location.pathname + "#" + blog.name.replace('.md', '');
-  document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);
-  document.querySelector('meta[property="twitter:url"]')?.setAttribute("content", url);
+window.filterBlogs = function () {
+  const query = document.getElementById("search-input").value.toLowerCase().trim();
+  if (!query) {
+    renderList(window.allBlogs);
+    return;
+  }
 
-  if (blog.title) {
-    document.querySelector('meta[name="title"]')?.setAttribute("content", blog.title);
-    document.querySelector('meta[property="og:title"]')?.setAttribute("content", blog.title);
-    document.querySelector('meta[property="twitter:title"]')?.setAttribute("content", blog.title);
-  }
-  if (blog.description) {
-    document.querySelector('meta[name="description"]')?.setAttribute("content", blog.description);
-    document.querySelector('meta[property="og:description"]')?.setAttribute("content", blog.description);
-    document.querySelector('meta[property="twitter:description"]')?.setAttribute("content", blog.description);
-  }
-  if (blog.coverImage) {
-    document.querySelector('meta[property="og:image"]')?.setAttribute("content", blog.coverImage);
-    document.querySelector('meta[property="twitter:image"]')?.setAttribute("content", blog.coverImage);
-  }
-}
+  const filtered = window.allBlogs.filter(blog => {
+    const slug = blog.name.replace(".md", "");
+    const title = (blog.title || slug.replace(/-/g, " ")).toLowerCase();
+    const desc = (blog.description || "").toLowerCase();
+    return title.includes(query) || desc.includes(query);
+  });
+
+  renderList(filtered);
+};
 
 window.viewPost = async function (slug, append = false) {
   if (!append) {
-    window.history.pushState(null, '', `#${slug}`);
-    window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === slug);
-    if (window.currentPostIndex !== -1) {
-      const blogMeta = window.allBlogs[window.currentPostIndex];
-      document.title = `${blogMeta.title || slug.replace(/-/g, " ")} - Shaluka's Blog`;
-      updateMetaTags(blogMeta);
-    }
+    window.location.href = `/${slug}.html`;
+    return;
   }
 
-  const searchContainer = document.getElementById("search-container");
-  if (searchContainer) searchContainer.style.display = 'none';
-
   const container = document.getElementById("app-content");
-  const mainNav = document.getElementById("main-nav");
-  if (mainNav) mainNav.classList.add("hidden");
-
-  if (!append) {
-    window.lastScrollPosition = window.scrollY || document.documentElement.scrollTop;
-    container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><div class="w-10 h-10 border-4 border-gray-100 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div></div>`;
-    
-    // Shrink header
-        const headerTitle = document.getElementById('main-header');
-        if (headerTitle) {
-          headerTitle.classList.remove('py-12', 'sm:py-16', 'border-b-2', 'mb-10');
-          headerTitle.classList.add('py-4', 'sm:py-6', 'mb-6');
-        }
-        const title = document.getElementById('site-title');
-        if (title) {
-          title.classList.remove('text-4xl', 'sm:text-5xl');
-          title.classList.add('text-lg', 'sm:text-xl');
-        }
-        const desc = document.getElementById('site-desc');
-        if (desc) desc.classList.add('hidden');
-
-        // Hide About if visible
-        const aboutContainer = document.getElementById('about-section');
-        if (aboutContainer) aboutContainer.classList.add('hidden');
-      }
-
   let content = "";
   try {
     const cacheBuster = "?t=" + new Date().getTime();
@@ -153,45 +109,20 @@ window.viewPost = async function (slug, append = false) {
     content = "## Error loading.";
   }
 
-  const shareUrl = window.location.origin + window.location.pathname + "#" + slug;
+  const shareUrl = window.location.origin + "/" + slug + ".html";
 
-  let headerHtml = "";
-  let dateStr = "Recently";
-  if (window.currentPostIndex !== -1 && window.allBlogs[window.currentPostIndex].date) {
-     dateStr = new Date(window.allBlogs[window.currentPostIndex].date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
-  if (!append) {
-    headerHtml = `
-      <div class="flex items-center justify-between mb-8">
-        <button onclick="goHome()" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Back to list">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        </button>
-        <button onclick="navigator.clipboard.writeText('${shareUrl}'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-        </button>
-      </div>
-      
-      <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
-        <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">
-          ${window.currentPostIndex !== -1 ? (window.allBlogs[window.currentPostIndex].title || slug.replace(/-/g, " ")) : slug.replace(/-/g, " ")}
-        </h1>
-        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-          Published on ${dateStr}
-        </div>
-      </div>
-    `;
-  } else {
-    // Divider for appended posts
-    headerHtml = `
-      <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
-        <span class="bg-[#fcfcfc] dark:bg-[#141414] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
-          Next Blog
-        </span>
-      </div>
-    `;
-  }
+  let headerHtml = `
+    <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
+      <span class="bg-[#fcfcfc] dark:bg-[#141414] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
+        Next Blog
+      </span>
+    </div>
+    <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+      <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">
+        <a href="/${slug}.html" class="hover:underline">${window.currentPostIndex !== -1 ? (window.allBlogs[window.currentPostIndex].title || slug.replace(/-/g, " ")) : slug.replace(/-/g, " ")}</a>
+      </h1>
+    </div>
+  `;
 
   const articleHtml = `
     <div id="post-${slug}">
@@ -203,14 +134,9 @@ window.viewPost = async function (slug, append = false) {
     </div>
   `;
 
-  if (!append) {
-    container.innerHTML = articleHtml;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    const loader = document.getElementById("next-post-loader");
-    if (loader) loader.remove();
-    container.insertAdjacentHTML('beforeend', articleHtml);
-  }
+  const loader = document.getElementById("next-post-loader");
+  if (loader) loader.remove();
+  container.insertAdjacentHTML('beforeend', articleHtml);
 
   // Initialize the comments section
   renderCommentSection(`comments-container-${slug}`, slug);
@@ -241,7 +167,7 @@ function setupNextPostObserver() {
       setTimeout(() => {
         window.currentPostIndex++;
         const nextSlug = window.allBlogs[window.currentPostIndex].name.replace(".md", "");
-        viewPost(nextSlug, true).then(() => {
+        window.viewPost(nextSlug, true).then(() => {
           window.loadingNextPost = false;
         });
       }, 300);
@@ -251,57 +177,6 @@ function setupNextPostObserver() {
   window.postObserver.observe(loader);
 }
 
-window.goHome = function (scrollToAbout = false) {
-  document.title = "Shaluka's Blog - Thoughts & Code";
-  window.history.pushState(null, '', window.location.pathname);
-  if (window.postObserver) window.postObserver.disconnect();
-
-  // Expand header
-  const headerTitle = document.getElementById('main-header');
-  if (headerTitle) {
-    headerTitle.classList.add('py-12', 'sm:py-16', 'border-b-2', 'mb-10');
-    headerTitle.classList.remove('py-4', 'sm:py-6', 'mb-6');
-  }
-  const title = document.getElementById('site-title');
-  if (title) {
-    title.classList.add('text-4xl', 'sm:text-5xl');
-    title.classList.remove('text-lg', 'sm:text-xl');
-  }
-  const desc = document.getElementById('site-desc');
-  if (desc) desc.classList.remove('hidden');
-
-  const aboutContainer = document.getElementById('about-section');
-  if (aboutContainer) aboutContainer.classList.remove('hidden');
-
-  const searchContainer = document.getElementById("search-container");
-  if (searchContainer) searchContainer.style.display = 'block';
-
-  switchTab("internal", !scrollToAbout);
-
-  if (scrollToAbout) {
-    setTimeout(() => {
-      document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }
-};
-
-window.filterBlogs = function () {
-  const query = document.getElementById("search-input").value.toLowerCase().trim();
-  if (!query) {
-    renderList(window.allBlogs);
-    return;
-  }
-
-  const filtered = window.allBlogs.filter(blog => {
-    const slug = blog.name.replace(".md", "");
-    const title = (blog.title || slug.replace(/-/g, " ")).toLowerCase();
-    const desc = (blog.description || "").toLowerCase();
-    return title.includes(query) || desc.includes(query);
-  });
-
-  renderList(filtered);
-};
-
 const EXTERNAL_ARTICLES = [
   { platform: "Medium", title: "Mastering the JavaScript Event Loop", url: "https://medium.com/@sh4lu_z/mastering-the-javascript-event-loop" },
   { platform: "DEV.to", title: "Top 10 VS Code Extensions I Use Daily", url: "https://dev.to/sh4lu_z/top-10-vs-code-extensions" },
@@ -310,17 +185,15 @@ const EXTERNAL_ARTICLES = [
   { platform: "Medium", title: "My Favorite Web APIs in 2026", url: "https://medium.com/@sh4lu_z/my-favorite-web-apis" }
 ];
 
-window.switchTab = function (tabName, restoreScroll = false) {
+window.switchTab = function (tabName) {
   const btnInternal = document.getElementById("btn-tab-internal");
   const btnExternal = document.getElementById("btn-tab-external");
   const tabInternal = document.getElementById("tab-internal");
   const tabExternal = document.getElementById("tab-external");
   const mainNav = document.getElementById("main-nav");
 
-  // Ensure About is visible when switching tabs
   const aboutContainer = document.getElementById("about-section");
   if (aboutContainer) aboutContainer.classList.remove("hidden");
-
   if (mainNav) mainNav.classList.remove("hidden");
 
   if (tabName === "internal") {
@@ -333,8 +206,7 @@ window.switchTab = function (tabName, restoreScroll = false) {
     tabInternal.classList.remove("hidden");
     tabExternal.classList.add("hidden");
 
-    // Refresh internal blogs so opening a post and switching tabs resets it
-    loadBlogs(restoreScroll);
+    loadBlogs();
   } else {
     btnExternal.classList.add("border-gray-900", "text-gray-900", "dark:border-gray-100", "dark:text-gray-100");
     btnExternal.classList.remove("border-transparent", "text-gray-400", "dark:text-gray-600");
@@ -359,7 +231,6 @@ async function renderExternalLinks() {
 
   let articles = [];
 
-  // Fetch DEV.to articles
   try {
     const devRes = await fetch("https://dev.to/api/articles?username=sh4lu_z");
     if (devRes.ok) {
@@ -375,7 +246,6 @@ async function renderExternalLinks() {
     }
   } catch (e) { console.warn("Failed Dev.to fetch", e); }
 
-  // Fetch Medium articles
   try {
     const medRes = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@sh4lu_z");
     if (medRes.ok) {
@@ -393,12 +263,18 @@ async function renderExternalLinks() {
     }
   } catch (e) { console.warn("Failed Medium fetch", e); }
 
-  // Sort by date (newest first)
   articles.sort((a, b) => b.date - a.date);
 
+  // If no articles fetched from APIs, fallback to hardcoded EXTERNAL_ARTICLES
   if (articles.length === 0) {
-    container.innerHTML = `<div class="text-center py-20"><h3 class="text-2xl font-bold mb-2 text-gray-900">No external papers.</h3><p class="text-gray-500 mb-8 text-lg italic">We couldn't fetch articles for @sh4lu_z right now.</p></div>`;
-    return;
+    articles = EXTERNAL_ARTICLES.map((art, i) => {
+      const fakeDate = new Date();
+      fakeDate.setDate(fakeDate.getDate() - (i * 15));
+      return {
+        ...art,
+        date: fakeDate.getTime()
+      };
+    });
   }
 
   let html = `<div class="grid gap-10">`;
@@ -419,19 +295,47 @@ async function renderExternalLinks() {
   container.innerHTML = html;
 }
 
-// Initial Call
+window.goHome = function() {
+  window.location.href = "/";
+}
+
+async function loadAllBlogsForStaticPage(currentSlug) {
+  try {
+    const cacheBuster = "?t=" + new Date().getTime();
+    const localRes = await fetch('/blogs/index.json' + cacheBuster);
+    if (localRes.ok) {
+      const localData = await localRes.json();
+      window.allBlogs = localData.sort((a, b) => {
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        return dateB - dateA;
+      });
+      window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === currentSlug);
+      setupNextPostObserver();
+    }
+  } catch (err) {
+    console.warn("Could not load index for infinite scroll", err);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  const initialHash = window.location.hash.substring(1);
-  if (initialHash) {
-    // Hide UI briefly while initializing
+  const slugMeta = document.querySelector('meta[name="blog-slug"]');
+  if (slugMeta) {
+    const slug = slugMeta.content;
+
     const mainNav = document.getElementById("main-nav");
     if (mainNav) mainNav.classList.add("hidden");
     const searchContainer = document.getElementById("search-container");
     if (searchContainer) searchContainer.style.display = 'none';
 
-    // Set UI directly to that post
-    viewPost(initialHash);
+    renderCommentSection(`comments-container-${slug}`, slug);
+    loadAllBlogsForStaticPage(slug);
   } else {
-    loadBlogs();
+    const initialHash = window.location.hash.substring(1);
+    if (initialHash) {
+      window.location.href = `/${initialHash}.html`;
+    } else {
+      loadBlogs();
+    }
   }
 });
