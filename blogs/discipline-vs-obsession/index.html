@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>discipline-vs-obsession - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="discipline-vs-obsession">
+  <meta name="description" content="">
+  <meta name="blog-slug" content="discipline-vs-obsession">
+  <link rel="canonical" href="https://sh4lu-z.github.io/blogs/discipline-vs-obsession">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sh4lu-z.github.io/blogs/discipline-vs-obsession">
+  <meta property="og:title" content="discipline-vs-obsession">
+  <meta property="og:description" content="">
+  <meta property="og:image" content="https://github.com/sh4lu-z.png">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="/css/style.css?v=2">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<script>
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
+    
+    <header class="py-4 sm:py-6 mb-6 relative transition-all duration-300">
+      <div class="absolute top-0 right-0 sm:top-4 flex items-center gap-2">
+        <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+        </a>
+        <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+    </header>
+
+    <main id="app-content" class="flex-grow">
+      <div id="post-discipline-vs-obsession">
+        <div class="flex items-center justify-between mb-8">
+          <a href="/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors block" title="Back to list">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </a>
+          <button onclick="navigator.clipboard.writeText('https://sh4lu-z.github.io/blogs/discipline-vs-obsession'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          </button>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">discipline-vs-obsession</h1>
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Published on 28 April 2026
+          </div>
+        </div>
+
+        <article class="py-8 markdown-body">
+          <p><img src="https://preview.redd.it/its-busy-on-the-surface-we-have-to-find-the-deep-end-where-v0-lt3nw9ar5ssg1.png?width=640&crop=smart&auto=webp&s=c09fa8c860dcac764cf743c046c10600e7855535" alt="">
+අපි හැමෝම අහලා තියෙන කතාවක් තමා ඕනෑම දෙයක් ජයගන්න නම් &quot;Discipline&quot; (විනය) තියෙන්න ඕන කියන එක. ඒක ඇත්ත. හැමදාම උදේ නැගිටලා, දවසේ සැලැස්මට අනුව වැඩ කරන එකෙන් සාර්ථක වෙන්න පුළුවන්. ඒත් මට කාලයක් තිස්සේ හිතුණු දෙයක් තමා, විනයෙන් වැඩ කරන 99 දෙනා සාමාන්‍යයෙන් සාර්ථක වෙද්දී, අර වැඩේ වෙනුවෙන් &quot;උමතුවෙන්&quot; (Obsession) වැඩ කරන එක්කෙනා අතිවිශිෂ්ට වෙනවා කියන එක.</p>
+<p>මේක මට හොඳටම දැනෙන්නේ අලුත් තාක්ෂණයන් එක්ක වැඩ කරද්දියි. උදාහරණයක් විදිහට, සාමාන්‍ය විනයක් තියෙන කෙනෙක් දවසට පැය දෙකක් අලුත් programming language එකක් ඉගෙන ගන්න වෙන් කරයි. ඒත් ඒ දේට obsessed වුණු කෙනෙක්? එයාට කෑම කන වෙලාවෙත්, නිදාගන්න යද්දිත් ඔලුවේ වැඩ කරන්නේ අර ලියපු කෝඩ් එකේ තිබ්බ bug එක ෆික්ස් කරන්නේ කොහොමද, නැත්නම් අලුත් AI මොඩල් එකක් ට්‍රේන් කරන්නේ කොහොමද කියන එක.</p>
+<p>මම පෞද්ගලිකව ගොඩක් භාෂා පාවිච්චි කරලා තියෙනවා. JavaScript, Python, Node.js වගේ දේවල් වලින් වැඩක් ඉක්මනට කරගන්න ලේසියි. හැබැයි මම පෞද්ගලිකව ආසම භාෂාව Rust. ඒක මුලින් ඉගෙනගන්න ටිකක් අමාරුයි, හැබැයි ඒකෙන් ලැබෙන low-level control එකයි, performance එකයි දැක්කම වෙන මුකුත් එපා වෙනවා. ඒ වගේ අමාරු දේවල් ඉගෙන ගන්න, Deep Neural Nets වගේ දේවල් වල ඇතුළාන්තය (Black Box එක) හාරා අවුස්සන්න සාමාන්‍ය විනයකට වඩා එහා ගියපු උමතුවක් තියෙන්නම ඕන.</p>
+<p>ඒ වගේම තමා අපි හදන දේවල් වල පෙනුමත්. ගොඩක් අය වෙබ් සයිට් එකක් හදද්දි එක එක කෑලි පුරවලා සංකීර්ණ කරනවා. ඒත් ඇත්තටම බලන්න ලෝකේ ඉන්න දක්ෂම මිනිස්සුන්ගේ (උදාහරණයක් විදිහට Andrej Karpathy ගේ වගේ) වෙබ් සයිට් එකක්. හරිම &quot;minimalist&quot; සහ &quot;clean&quot; ඩිසයින් එකක් තියෙන්නේ. ඒ වගේ සරල, පිළිවෙල දෙයක් හදන්නත් වෙනම මනසක් තියෙන්න ඕන.</p>
+<p>ඉතින්, ඔයා තාම වැඩ කරන්නේ විනයෙන් විතරද? නැත්නම් ඔයා කරන දේට ඔයා Obsessed ද? පල්ලෙහායින් කමෙන්ට් එකක් දාන්න, අපි කතා කරමු!</p>
+
+        </article>
+        <div id="comments-container-discipline-vs-obsession"></div>
+      </div>
+    </main>
+
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+      <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+    </footer>
+  </div>
+  <script src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
