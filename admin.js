@@ -3,7 +3,6 @@ const GH_OWNER = "sh4lu-z"; // Hardcoded
 const GH_REPO = "sh4lu-z.github.io"; // Hardcoded
 
 const tokenInput = document.getElementById("gh-token");
-// Owner and Repo inputs are removed from logic since they are hardcoded
 const saveBtn = document.getElementById("save-settings");
 const adminBlogList = document.getElementById("admin-blog-list");
 const publishBtn = document.getElementById("publish-btn");
@@ -112,7 +111,7 @@ async function fetchAdminBlogs() {
   }
 }
 
-// Helper to safely handle Base64 encoding with Unicode (emojis, etc)
+// Helper to safely handle Base64 encoding with Unicode
 function encodeBase64Unicode(str) {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
       function toSolidBytes(match, p1) {
@@ -120,11 +119,136 @@ function encodeBase64Unicode(str) {
       }));
 }
 
+// Helper: Get file SHA
+async function getFileSha(path, owner, repo, token) {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return { sha: data.sha, content: data.content };
+    }
+  } catch (e) {}
+  return { sha: null, content: null };
+}
+
+// Helper: Generate static HTML string
+function generateHtmlForBlog(slug, title, dateStr, coverImage, description, htmlContent) {
+  const shareUrl = "https://sh4lu-z.github.io/" + slug + ".html";
+  return `<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>${title} - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="${title}">
+  <meta name="description" content="${description}">
+  <meta name="blog-slug" content="${slug}">
+  <link rel="canonical" href="${shareUrl}">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${shareUrl}">
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${description}">
+  <meta property="og:image" content="${coverImage || 'https://github.com/sh4lu-z.png'}">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="/style.css?v=2">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<script>
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
+    
+    <header class="py-4 sm:py-6 mb-6 relative transition-all duration-300">
+      <div class="absolute top-0 right-0 sm:top-4 flex items-center gap-2">
+        <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+        </a>
+        <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+    </header>
+
+    <main id="app-content" class="flex-grow">
+      <div id="post-${slug}">
+        <div class="flex items-center justify-between mb-8">
+          <a href="/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors block" title="Back to list">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </a>
+          <button onclick="navigator.clipboard.writeText('${shareUrl}'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          </button>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">${title}</h1>
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Published on ${dateStr}
+          </div>
+        </div>
+
+        <article class="py-8 markdown-body">
+          ${htmlContent}
+        </article>
+        <div id="comments-container-${slug}"></div>
+      </div>
+    </main>
+
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+      <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+    </footer>
+  </div>
+  <script src="/toast.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>`;
+}
+
+// Helper: Generate Sitemap XML
+function generateSitemap(currentIndex) {
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://sh4lu-z.github.io/</loc>
+    <priority>1.0</priority>
+  </url>
+`;
+  currentIndex.forEach(blog => {
+    const slug = blog.name.replace(".md", "");
+    const lastmod = blog.date ? new Date(blog.date).toISOString() : new Date().toISOString();
+    xml += `  <url>
+    <loc>https://sh4lu-z.github.io/${slug}.html</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+`;
+  });
+  xml += `</urlset>`;
+  return xml;
+}
+
 publishBtn.addEventListener("click", async () => {
   const title = document.getElementById("blog-title").value.trim();
   const coverImage = document.getElementById("blog-cover").value.trim();
   const description = document.getElementById("blog-desc").value.trim();
-  const content = editor.value(); // Get from EasyMDE Editor
+  const content = editor.value(); 
   
   const owner = GH_OWNER;
   const repo = GH_REPO;
@@ -147,96 +271,100 @@ publishBtn.addEventListener("click", async () => {
   publishBtn.classList.add("opacity-70", "cursor-not-allowed");
 
   try {
-    const filePath = `blogs/${slug}.md`;
-    let existingSha = undefined;
+    const mdPath = `blogs/${slug}.md`;
+    const htmlPath = `${slug}.html`;
+    const dateIso = new Date().toISOString();
+    const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 
-    // 1. Check if file already exists so we can update it
-    try {
-      const checkRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (checkRes.ok) {
-        const checkData = await checkRes.json();
-        existingSha = checkData.sha;
-      }
-    } catch(e) {} // ignore if 404
+    // 1. Get existing SHAs
+    const existingMd = await getFileSha(mdPath, owner, repo, token);
+    const existingHtml = await getFileSha(htmlPath, owner, repo, token);
 
-    // 2. Publish (Create or Update)
-    const bodyData = {
-      message: existingSha ? `Updated blog: ${title}` : `Created blog: ${title}`,
+    // 2. Publish Markdown
+    const mdBody = {
+      message: existingMd.sha ? `Updated blog MD: ${title}` : `Created blog MD: ${title}`,
       content: encodeBase64Unicode(content)
     };
-    if (existingSha) {
-      bodyData.sha = existingSha;
+    if (existingMd.sha) mdBody.sha = existingMd.sha;
+
+    let res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`, {
+      method: "PUT",
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(mdBody)
+    });
+    if (!res.ok) throw new Error("Failed to publish Markdown");
+
+    // 3. Publish HTML (SSG)
+    const htmlContent = generateHtmlForBlog(slug, title, dateStr, coverImage, description, marked.parse(content));
+    const htmlBody = {
+      message: existingHtml.sha ? `Updated blog HTML: ${title}` : `Created blog HTML: ${title}`,
+      content: encodeBase64Unicode(htmlContent)
+    };
+    if (existingHtml.sha) htmlBody.sha = existingHtml.sha;
+
+    res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${htmlPath}`, {
+      method: "PUT",
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(htmlBody)
+    });
+    if (!res.ok) throw new Error("Failed to publish HTML");
+
+    // 4. Update index.json
+    let currentIndex = [];
+    const existingIndex = await getFileSha("blogs/index.json", owner, repo, token);
+    if (existingIndex.content) {
+      currentIndex = JSON.parse(decodeURIComponent(escape(atob(existingIndex.content.replace(/\s/g, '')))));
     }
 
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+    const indexObj = { 
+      name: slug + ".md", 
+      title: title,
+      coverImage: coverImage,
+      description: description,
+      date: dateIso
+    };
+
+    const existingPostIdx = currentIndex.findIndex(i => i.name === indexObj.name);
+    if (existingPostIdx >= 0) {
+      currentIndex[existingPostIdx] = indexObj;
+    } else {
+      currentIndex.push(indexObj);
+    }
+
+    const indexBody = {
+      message: "Update index.json",
+      content: encodeBase64Unicode(JSON.stringify(currentIndex, null, 2))
+    };
+    if (existingIndex.sha) indexBody.sha = existingIndex.sha;
+
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
       method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.github.v3+json"
-      },
-      body: JSON.stringify(bodyData)
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(indexBody)
     });
 
-    if (!res.ok) {
-       const errData = await res.json();
-       throw new Error(errData.message || "Failed to publish");
-    }
+    // 5. Update sitemap.xml
+    const sitemapContent = generateSitemap(currentIndex);
+    const existingSitemap = await getFileSha("sitemap.xml", owner, repo, token);
+    const sitemapBody = {
+      message: "Update sitemap.xml",
+      content: encodeBase64Unicode(sitemapContent)
+    };
+    if (existingSitemap.sha) sitemapBody.sha = existingSitemap.sha;
 
-    // 3. Update blogs/index.json
-    try {
-      const indexObj = { 
-        name: slug + ".md", 
-        title: title,
-        coverImage: coverImage,
-        description: description,
-        date: new Date().toISOString()
-      };
-      let existingIndexSha = null;
-      let currentIndex = [];
-      const getIndexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
-         headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (getIndexRes.ok) {
-        const getIndexData = await getIndexRes.json();
-        existingIndexSha = getIndexData.sha;
-        currentIndex = JSON.parse(decodeURIComponent(escape(atob(getIndexData.content.replace(/\s/g, '')))));
-      }
-
-      const existingPostIdx = currentIndex.findIndex(i => i.name === indexObj.name);
-      if (existingPostIdx >= 0) {
-        currentIndex[existingPostIdx] = indexObj;
-      } else {
-        currentIndex.push(indexObj);
-      }
-
-      const indexBody = {
-         message: "Update index.json",
-         content: encodeBase64Unicode(JSON.stringify(currentIndex, null, 2))
-      };
-      if (existingIndexSha) indexBody.sha = existingIndexSha;
-
-      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(indexBody)
-      });
-    } catch(e) {
-      console.warn("Could not update index.json", e);
-    }
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/sitemap.xml`, {
+      method: "PUT",
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(sitemapBody)
+    });
     
     window.showToast("Successfully Published to GitHub! 🎉", 'success');
     document.getElementById("blog-title").value = "";
     document.getElementById("blog-cover").value = "";
     document.getElementById("blog-desc").value = "";
-    editor.value(""); // Reset the MDE Editor content
+    editor.value(""); 
     
-    fetchAdminBlogs(); // Reload list
+    fetchAdminBlogs(); 
     
   } catch (err) {
     window.showToast("Error publishing: " + err.message, 'error');
@@ -248,64 +376,59 @@ publishBtn.addEventListener("click", async () => {
 });
 
 window.deleteBlog = async function(filename, sha) {
-  // Confirmation bypassed due to iframe restrictions
   const owner = GH_OWNER;
   const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
+  const slug = filename.replace(".md", "");
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/${filename}`, {
+    // 1. Delete MD
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/${filename}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.github.v3+json"
-      },
-      body: JSON.stringify({
-        message: `Deleted blog: ${filename}`,
-        sha: sha
-      })
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ message: `Deleted blog MD: ${filename}`, sha: sha })
     });
 
-    if (!res.ok) {
-       const err = await res.json();
-       throw new Error(err.message || "Failed to delete");
+    // 2. Delete HTML
+    const existingHtml = await getFileSha(`${slug}.html`, owner, repo, token);
+    if (existingHtml.sha) {
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${slug}.html`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ message: `Deleted blog HTML: ${slug}.html`, sha: existingHtml.sha })
+      });
     }
 
-    // Attempt to update index.json securely
-    try {
-      let existingIndexSha = null;
-      let currentIndex = [];
-      const getIndexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
-         headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (getIndexRes.ok) {
-        const getIndexData = await getIndexRes.json();
-        existingIndexSha = getIndexData.sha;
-        currentIndex = JSON.parse(decodeURIComponent(escape(atob(getIndexData.content.replace(/\s/g, '')))));
-      }
-
+    // 3. Update index.json
+    let currentIndex = [];
+    const existingIndex = await getFileSha("blogs/index.json", owner, repo, token);
+    if (existingIndex.content) {
+      currentIndex = JSON.parse(decodeURIComponent(escape(atob(existingIndex.content.replace(/\s/g, '')))));
       currentIndex = currentIndex.filter(item => item.name !== filename);
 
-      if (existingIndexSha) {
-        await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/index.json`, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+           message: "Remove from index.json",
+           content: encodeBase64Unicode(JSON.stringify(currentIndex, null, 2)),
+           sha: existingIndex.sha
+        })
+      });
+
+      // 4. Update sitemap.xml
+      const sitemapContent = generateSitemap(currentIndex);
+      const existingSitemap = await getFileSha("sitemap.xml", owner, repo, token);
+      if (existingSitemap.sha) {
+        await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/sitemap.xml`, {
           method: "PUT",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-             message: "Remove from index.json",
-             content: encodeBase64Unicode(JSON.stringify(currentIndex, null, 2)),
-             sha: existingIndexSha
-          })
+          headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "Update sitemap.xml after delete", content: encodeBase64Unicode(sitemapContent), sha: existingSitemap.sha })
         });
       }
-    } catch(e) {
-       console.warn("Could not update index.json after delete", e);
     }
     
-    fetchAdminBlogs(); // Reload
+    fetchAdminBlogs();
     window.showToast("Blog deleted completely.", 'info');
   } catch (err) {
     window.showToast("Error deleting: " + err.message, 'error');
