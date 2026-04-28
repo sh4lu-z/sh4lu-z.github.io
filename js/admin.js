@@ -66,7 +66,7 @@ async function fetchAdminBlogs() {
   adminBlogList.innerHTML = `<div class="text-gray-500 text-center font-bold">Connecting to GitHub API...</div>`;
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs`, {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/md`, {
       headers: { 
         "Authorization": `Bearer ${token}`,
         "Accept": "application/vnd.github.v3+json"
@@ -74,7 +74,7 @@ async function fetchAdminBlogs() {
     });
     
     if (res.status === 404) {
-      adminBlogList.innerHTML = `<div class="bg-blue-50 text-blue-800 p-6 rounded-xl text-center font-bold">The 'blogs' folder doesn't exist yet in your repo. It will be created automatically when you publish your first post!</div>`;
+      adminBlogList.innerHTML = `<div class="bg-blue-50 text-blue-800 p-6 rounded-xl text-center font-bold">The 'blogs/md' folder doesn't exist yet in your repo. It will be created automatically when you publish your first post!</div>`;
       return;
     }
 
@@ -99,7 +99,10 @@ async function fetchAdminBlogs() {
             <span class="font-bold text-gray-900 block line-clamp-1">${blog.name}</span>
             <span class="text-xs text-green-600 font-bold uppercase tracking-wider">Published</span>
           </div>
-          <button onclick="deleteBlog('${blog.name}', '${blog.sha}')" class="text-white bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 font-bold shadow-sm transition">Delete</button>
+          <div class="flex gap-2">
+            <button onclick="editBlog('${blog.name}')" class="text-gray-900 bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 font-bold shadow-sm transition">Edit</button>
+            <button onclick="deleteBlog('${blog.name}', '${blog.sha}')" class="text-white bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 font-bold shadow-sm transition">Delete</button>
+          </div>
         </div>
       `;
     });
@@ -135,7 +138,7 @@ async function getFileSha(path, owner, repo, token) {
 
 // Helper: Generate static HTML string
 function generateHtmlForBlog(slug, title, dateStr, coverImage, description, htmlContent) {
-  const shareUrl = "https://sh4lu-z.github.io/" + slug + ".html";
+  const shareUrl = "https://sh4lu-z.github.io/blogs/" + slug;
   return `<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -160,7 +163,7 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
   </style>
-  <link rel="stylesheet" href="/style.css?v=2">
+  <link rel="stylesheet" href="/css/style.css?v=2">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <script>
@@ -214,8 +217,8 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
       <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
     </footer>
   </div>
-  <script src="/toast.js"></script>
-  <script type="module" src="/app.js"></script>
+  <script src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js"></script>
 </body>
 </html>`;
 }
@@ -233,7 +236,7 @@ function generateSitemap(currentIndex) {
     const slug = blog.name.replace(".md", "");
     const lastmod = blog.date ? new Date(blog.date).toISOString() : new Date().toISOString();
     xml += `  <url>
-    <loc>https://sh4lu-z.github.io/${slug}.html</loc>
+    <loc>https://sh4lu-z.github.io/blogs/${slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -271,8 +274,8 @@ publishBtn.addEventListener("click", async () => {
   publishBtn.classList.add("opacity-70", "cursor-not-allowed");
 
   try {
-    const mdPath = `blogs/${slug}.md`;
-    const htmlPath = `${slug}.html`;
+    const mdPath = `blogs/md/${slug}.md`;
+    const htmlPath = `blogs/${slug}/index.html`;
     const dateIso = new Date().toISOString();
     const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -358,6 +361,12 @@ publishBtn.addEventListener("click", async () => {
       body: JSON.stringify(sitemapBody)
     });
     
+    // Handle renaming if title changed
+    if (window.editingOriginalFilename && window.editingOriginalFilename !== (slug + ".md")) {
+       await window.deleteBlog(window.editingOriginalFilename, null, true);
+    }
+    window.editingOriginalFilename = null;
+
     window.showToast("Successfully Published to GitHub! 🎉", 'success');
     document.getElementById("blog-title").value = "";
     document.getElementById("blog-cover").value = "";
@@ -375,27 +384,82 @@ publishBtn.addEventListener("click", async () => {
   }
 });
 
-window.deleteBlog = async function(filename, sha) {
+window.editingOriginalFilename = null;
+
+window.editBlog = async function(filename) {
+  const owner = GH_OWNER;
+  const repo = GH_REPO;
+  const token = tokenInput.value.trim() || GH_TOKEN;
+  const slug = filename.replace(".md", "");
+
+  window.showToast("Loading blog data...", "info");
+
+  try {
+    const existingIndex = await getFileSha("blogs/index.json", owner, repo, token);
+    let metadata = {};
+    if (existingIndex.content) {
+      const currentIndex = JSON.parse(decodeURIComponent(escape(atob(existingIndex.content.replace(/\s/g, '')))));
+      metadata = currentIndex.find(i => i.name === filename) || {};
+    }
+
+    const mdFile = await getFileSha(`blogs/md/${filename}`, owner, repo, token);
+    let mdContent = "";
+    if (mdFile.content) {
+      mdContent = decodeURIComponent(escape(atob(mdFile.content.replace(/\s/g, ''))));
+    }
+
+    document.getElementById("blog-title").value = metadata.title || slug.replace(/-/g, " ");
+    document.getElementById("blog-cover").value = metadata.coverImage || "";
+    document.getElementById("blog-desc").value = metadata.description || "";
+    editor.value(mdContent);
+
+    window.editingOriginalFilename = filename;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById("publish-btn").innerText = "Update Blog";
+    window.showToast("Ready to edit!", "success");
+
+  } catch (err) {
+     window.showToast("Error loading blog: " + err.message, "error");
+  }
+};
+
+window.deleteBlog = async function(filename, sha, silent = false) {
   const owner = GH_OWNER;
   const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
   const slug = filename.replace(".md", "");
 
   try {
+    if (!sha) {
+       const oldFile = await getFileSha(`blogs/md/${filename}`, owner, repo, token);
+       if (!oldFile.sha) return; // doesn't exist
+       sha = oldFile.sha;
+    }
+
     // 1. Delete MD
-    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/${filename}`, {
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/md/${filename}`, {
       method: "DELETE",
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ message: `Deleted blog MD: ${filename}`, sha: sha })
     });
 
-    // 2. Delete HTML
-    const existingHtml = await getFileSha(`${slug}.html`, owner, repo, token);
-    if (existingHtml.sha) {
-      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${slug}.html`, {
+    // 2. Delete HTML (New Structure)
+    const existingHtmlNew = await getFileSha(`blogs/${slug}/index.html`, owner, repo, token);
+    if (existingHtmlNew.sha) {
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/${slug}/index.html`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ message: `Deleted blog HTML: ${slug}.html`, sha: existingHtml.sha })
+        body: JSON.stringify({ message: `Deleted blog HTML: ${slug}/index.html`, sha: existingHtmlNew.sha })
+      });
+    }
+
+    // Attempt to delete HTML (Old Structure)
+    const existingHtmlOld = await getFileSha(`blogs/${slug}.html`, owner, repo, token);
+    if (existingHtmlOld.sha) {
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/${slug}.html`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ message: `Deleted legacy blog HTML: ${slug}.html`, sha: existingHtmlOld.sha })
       });
     }
 
@@ -429,9 +493,9 @@ window.deleteBlog = async function(filename, sha) {
     }
     
     fetchAdminBlogs();
-    window.showToast("Blog deleted completely.", 'info');
+    if (!silent) window.showToast("Blog deleted completely.", 'info');
   } catch (err) {
-    window.showToast("Error deleting: " + err.message, 'error');
+    if (!silent) window.showToast("Error deleting: " + err.message, 'error');
   }
 };
 

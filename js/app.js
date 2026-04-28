@@ -56,7 +56,7 @@ function renderList(blogs) {
     const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
     html += `
-      <a href="/${slug}.html" class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] block transition-colors group">
+      <a href="/blogs/${slug}" class="border-l-4 border-gray-900 dark:border-gray-100 pl-6 py-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] block transition-colors group">
         ${imgHtml}
         <h3 class="text-2xl font-bold mb-1 text-gray-900 dark:text-gray-100 group-hover:underline underline-offset-4">${title}</h3>
         <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase mb-3 flex items-center gap-2">
@@ -91,7 +91,7 @@ window.filterBlogs = function () {
 
 window.viewPost = async function (slug, append = false) {
   if (!append) {
-    window.location.href = `/${slug}.html`;
+    window.location.href = `/blogs/${slug}`;
     return;
   }
 
@@ -99,7 +99,7 @@ window.viewPost = async function (slug, append = false) {
   let content = "";
   try {
     const cacheBuster = "?t=" + new Date().getTime();
-    const resp = await fetch(`/blogs/${slug}.md` + cacheBuster);
+    const resp = await fetch(`/blogs/md/${slug}.md` + cacheBuster);
     if (resp.ok) {
       content = await resp.text();
     } else {
@@ -109,7 +109,7 @@ window.viewPost = async function (slug, append = false) {
     content = "## Error loading.";
   }
 
-  const shareUrl = window.location.origin + "/" + slug + ".html";
+  const shareUrl = window.location.origin + "/blogs/" + slug;
 
   let headerHtml = `
     <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
@@ -119,7 +119,7 @@ window.viewPost = async function (slug, append = false) {
     </div>
     <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
       <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">
-        <a href="/${slug}.html" class="hover:underline">${window.currentPostIndex !== -1 ? (window.allBlogs[window.currentPostIndex].title || slug.replace(/-/g, " ")) : slug.replace(/-/g, " ")}</a>
+        <a href="/blogs/${slug}" class="hover:underline">${window.currentPostIndex !== -1 ? (window.allBlogs[window.currentPostIndex].title || slug.replace(/-/g, " ")) : slug.replace(/-/g, " ")}</a>
       </h1>
     </div>
   `;
@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     const initialHash = window.location.hash.substring(1);
     if (initialHash) {
-      window.location.href = `/${initialHash}.html`;
+      window.location.href = `/blogs/${initialHash}`;
     } else {
       loadBlogs();
     }
