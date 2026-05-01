@@ -136,12 +136,17 @@ async function getFileSha(path, owner, repo, token) {
   return { sha: null, content: null };
 }
 
+
 // Helper: Generate static HTML string
 function generateHtmlForBlog(slug, title, dateStr, coverImage, description, htmlContent, keywords) {
   const shareUrl = "https://sh4lu-z.github.io/blogs/" + slug;
   
   // Type කරලා නැත්නම් Title එකෙන් auto හදාගන්නවා
   const finalKeywords = keywords ? keywords : title.replace(/[^a-zA-Z0-9 ]/g, "").split(" ").filter(w => w.length > 2).join(", ");
+
+  // ⚠️ Bug Fix: HTML කැඩෙන එක නවත්තන්න quotes (") ටික &quot; බවට පත් කිරීම
+  const safeTitle = title.replace(/"/g, '&quot;');
+  const safeDescription = description.replace(/"/g, '&quot;');
 
   return `<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -150,9 +155,9 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>${title} - Shaluka Gimhan's Blog</title>
-  <meta name="title" content="${title}">
-  <meta name="description" content="${description}">
+  <title>${safeTitle} - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="${safeTitle}">
+  <meta name="description" content="${safeDescription}">
   <meta name="author" content="Shaluka Gimhan">
   <meta name="keywords" content="${finalKeywords}">
   <meta name="robots" content="index, follow">
@@ -161,8 +166,8 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="${shareUrl}">
-  <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}">
+  <meta property="og:title" content="${safeTitle}">
+  <meta property="og:description" content="${safeDescription}">
   <meta property="og:image" content="${coverImage || 'https://github.com/sh4lu-z.png'}">
   <meta name="twitter:card" content="summary_large_image">
   
@@ -206,7 +211,7 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
         </div>
         
         <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
-          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">${title}</h1>
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">${safeTitle}</h1>
           <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             Published on ${dateStr}
