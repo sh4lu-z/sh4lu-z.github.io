@@ -137,8 +137,12 @@ async function getFileSha(path, owner, repo, token) {
 }
 
 // Helper: Generate static HTML string
-function generateHtmlForBlog(slug, title, dateStr, coverImage, description, htmlContent) {
+function generateHtmlForBlog(slug, title, dateStr, coverImage, description, htmlContent, keywords) {
   const shareUrl = "https://sh4lu-z.github.io/blogs/" + slug;
+  
+  // Type කරලා නැත්නම් Title එකෙන් auto හදාගන්නවා
+  const finalKeywords = keywords ? keywords : title.replace(/[^a-zA-Z0-9 ]/g, "").split(" ").filter(w => w.length > 2).join(", ");
+
   return `<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -149,6 +153,9 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
   <title>${title} - Shaluka Gimhan's Blog</title>
   <meta name="title" content="${title}">
   <meta name="description" content="${description}">
+  <meta name="author" content="Shaluka Gimhan">
+  <meta name="keywords" content="${finalKeywords}">
+  <meta name="robots" content="index, follow">
   <meta name="blog-slug" content="${slug}">
   <link rel="canonical" href="${shareUrl}">
   
@@ -251,6 +258,7 @@ publishBtn.addEventListener("click", async () => {
   const title = document.getElementById("blog-title").value.trim();
   const coverImage = document.getElementById("blog-cover").value.trim();
   const description = document.getElementById("blog-desc").value.trim();
+  const keywords = document.getElementById("blog-keywords").value.trim();
   const content = editor.value(); 
   
   const owner = GH_OWNER;
@@ -298,7 +306,7 @@ publishBtn.addEventListener("click", async () => {
     if (!res.ok) throw new Error("Failed to publish Markdown");
 
     // 3. Publish HTML (SSG)
-    const htmlContent = generateHtmlForBlog(slug, title, dateStr, coverImage, description, marked.parse(content));
+    const htmlContent = generateHtmlForBlog(slug, title, dateStr, coverImage, description, marked.parse(content), keywords);
     const htmlBody = {
       message: existingHtml.sha ? `Updated blog HTML: ${title}` : `Created blog HTML: ${title}`,
       content: encodeBase64Unicode(htmlContent)
@@ -324,6 +332,7 @@ publishBtn.addEventListener("click", async () => {
       title: title,
       coverImage: coverImage,
       description: description,
+      keywords: keywords,
       date: dateIso
     };
 
@@ -371,6 +380,7 @@ publishBtn.addEventListener("click", async () => {
     document.getElementById("blog-title").value = "";
     document.getElementById("blog-cover").value = "";
     document.getElementById("blog-desc").value = "";
+    document.getElementById("blog-keywords").value = "";
     editor.value(""); 
     
     fetchAdminBlogs(); 
@@ -411,6 +421,7 @@ window.editBlog = async function(filename) {
     document.getElementById("blog-title").value = metadata.title || slug.replace(/-/g, " ");
     document.getElementById("blog-cover").value = metadata.coverImage || "";
     document.getElementById("blog-desc").value = metadata.description || "";
+    document.getElementById("blog-keywords").value = metadata.keywords || "";
     editor.value(mdContent);
 
     window.editingOriginalFilename = filename;
