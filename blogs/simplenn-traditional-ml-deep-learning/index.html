@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SimpleNN හරහා Traditional ML සහ Deep Learning අතර වෙනස - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="SimpleNN හරහා Traditional ML සහ Deep Learning අතර වෙනස">
+  <meta name="description" content="SimpleNN ව්‍යාපෘතිය හරහා Machine Learning සහ Deep Learning වල වෙනස ප්‍රායෝගිකව ඉගෙන ගනිමු.">
+  <meta name="author" content="Shaluka Gimhan">
+  <meta name="keywords" content="aiml, Machine Learning, Deep Learning, SimpleNN, Neural Network">
+  <meta name="robots" content="index, follow">
+  <meta name="blog-slug" content="simplenn-traditional-ml-deep-learning">
+  <link rel="canonical" href="https://sh4lu-z.github.io/blogs/simplenn-traditional-ml-deep-learning">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sh4lu-z.github.io/blogs/simplenn-traditional-ml-deep-learning">
+  <meta property="og:title" content="SimpleNN හරහා Traditional ML සහ Deep Learning අතර වෙනස">
+  <meta property="og:description" content="SimpleNN ව්‍යාපෘතිය හරහා Machine Learning සහ Deep Learning වල වෙනස ප්‍රායෝගිකව ඉගෙන ගනිමු.">
+  <meta property="og:image" content="https://github.com/sh4lu-z.png">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="/css/style.css?v=2">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<script>
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
+    
+    <header class="py-4 sm:py-6 mb-6 relative transition-all duration-300">
+      <div class="absolute top-0 right-0 sm:top-4 flex items-center gap-2">
+        <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+        </a>
+        <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+    </header>
+
+    <main id="app-content" class="flex-grow">
+      <div id="post-simplenn-traditional-ml-deep-learning">
+        <div class="flex items-center justify-between mb-8">
+          <a href="/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors block" title="Back to list">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </a>
+          <button onclick="navigator.clipboard.writeText('https://sh4lu-z.github.io/blogs/simplenn-traditional-ml-deep-learning'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          </button>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">SimpleNN හරහා Traditional ML සහ Deep Learning අතර වෙනස</h1>
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Published on 26 May 2026
+          </div>
+        </div>
+
+        <article class="py-8 markdown-body">
+          <p><img src="https://s3.ap-southeast-1.amazonaws.com/files-scs-prod/public%2Fimages%2F1605842918803-AI+vs+ML+vs+DL.png" alt="Machine Learning & Deep Learning"></p>
+<p>Machine Learning සහ Deep Learning කියන්නේ අද කාලයේ තොරතුරු තාක්ෂණ ක්ෂේත්‍රයේ නිතරම ඇහෙන වචන දෙකක්. හැබැයි කෙනෙක් අලුතින්ම මේ ක්ෂේත්‍රයට එද්දී, &quot;මොකක්ද මේ පරණ Machine learning ක්‍රම සහ අලුත් Deep Learning ක්‍රම අතර තියෙන වෙනස?&quot; කියන ප්‍රශ්නය මතු වෙනවා. විශේෂයෙන්ම Text Analysis වගේ දේකදී මේ වෙනස ගොඩක් කැපී පේනවා. </p>
+<p>අන්න ඒ වෙනස ප්‍රායෝගිකව අත්හදා බලන්න පුලුවන් වෙන්න සරලව නිර්මාණය කරපු  GitHub repository එකක් තමයි <strong>SimpleNN</strong> කියන්නේ. මේක විශේෂයෙන්ම නිර්මාණය කරලා තියෙන්නේ Sentiment Analysis (වාක්‍යයක  ධනාත්මකද සෘණාත්මකද යන්න හඳුනාගැනීම) සඳහායි.</p>
+<p>අපි බලමු මේ ප්‍රොජෙක්ට් එක ඇතුළේ මොනවද තියෙන්නේ සහ එයින් අපිට ඉගෙන ගන්න පුළුවන් මොනවද කියලා.</p>
+<hr>
+<h2>🛠️ එකම ප්‍රශ්නයට විසඳුම් දෙකක්: ML vs Deep Learning</h2>
+<p>මෙම ප්‍රොජෙක්ට් එකේ ප්‍රධාන අරමුණ වෙන්නේ ක්‍රමවේද දෙකක් යටතේ Sentiment Classification එකක් කරන්නේ කොහොමද කියලා පෙන්වා දීමයි. </p>
+<h3>1.  Machine Learning  (The Traditional Way)</h3>
+<p>ඔයා ප්‍රොජෙක්ට් එකේ ඇති <code>sentiment_classifier_nb.py</code> ෆයිල් එක බැලුවොත්, එහි භාවිතා කරලා තියෙන්නේ සාමානය  ක්‍රමවේදයක්. මෙහිදී <strong>scikit-learn</strong> භාවිතා කරලා වාක්‍යයක තියෙන වචන සංඛ්‍යාත්මක දත්ත බවට පත් කරන්නේ <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> කියන ක්‍රමය හරහායි. ඒ කියන්නේ යම්කිසි වචනයක් කොච්චර වැදගත්ද කියලා ගණනය කරන එකයි. ඉන්පසුව <strong>Multinomial Naive Bayes</strong> කියන ඇල්ගොරිතම එක හරහා මෙය Positive ද Negative ද කියලා තීරණය කරනවා.</p>
+<ul>
+<li><strong>මෙහි වාසිය:</strong> මේ ක්‍රමය ඉතාමත් වේගවත්. ඒ වගේම අපිට ප්‍රතිඵලය ආවේ කොහොමද කියලා පැහැදිලිව බලාගන්න (Interpretable) පුළුවන්.</li>
+</ul>
+<h3>2.  Deep Learning  (The Modern Way)</h3>
+<p>අනෙක් අතට <code>sentiment_classifier_nn.ipynb</code> කියන Jupyter Notebook එකේ තියෙන්නේ <strong>TensorFlow / Keras</strong> භාවිතා කරලා හදපු Neural Network එකක්. මෙහිදී වචන හඳුනාගන්නේ නිකන්ම අංක වලින් නෙවෙයි, <strong>Embedding Layer</strong> එකක් හරහා වචන වලට 16-dimensional අවකාශයක් ලබා දෙනවා. ඊට පස්සේ Global Average Pooling සහ Dense Layers (ReLU සහ Sigmoid activation සමගින්) හරහා ගිහින් තමයි අවසාන තීරණය දෙන්නේ.</p>
+<ul>
+<li><strong>මෙහි වාසිය:</strong> මේ ක්‍රමයට වචන වල තේරුම සහ වාක්‍යයේ වචන පෙළගැසී ඇති රටාව (Semantic meanings and sequences) තේරුම් ගැනීමේ සුවිශේෂී හැකියාවක් තියෙනවා.* 
+<img src="https://raw.githubusercontent.com/sh4lu-z/SimpleNN/main/src/SimpleNN.png" alt=""></li>
+</ul>
+<hr>
+<h2>📊 කුමක්ද වඩාත් හොඳ?</h2>
+<p>මෙම වගුවෙන් මේ ක්‍රම දෙකෙහි ප්‍රධාන ලක්ෂණ සාරාංශ කරලා තියෙනවා. මේ මගින් ඔබට ඔබේ මීළඟ AI ප්‍රොජෙක්ට් එකට වඩාත් සුදුසු ක්‍රමය කුමක්දැයි තීරණය කරන්න පුළුවන්.</p>
+<table>
+<thead>
+<tr>
+<th align="left">ලක්ෂණය</th>
+<th align="left">Machine Learning (Naive Bayes)</th>
+<th align="left">Deep Learning (Neural Network)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>භාවිතා වන තාක්ෂණය</strong></td>
+<td align="left">scikit-learn, numpy</td>
+<td align="left">tensorflow, keras, numpy</td>
+</tr>
+<tr>
+<td align="left"><strong>දත්ත සකසන ක්‍රමය</strong></td>
+<td align="left">TF-IDF Vectorization</td>
+<td align="left">Word Embeddings (16-D vector space)</td>
+</tr>
+<tr>
+<td align="left"><strong>වේගය</strong></td>
+<td align="left">ඉතා වේගවත් (Fast training)</td>
+<td align="left">සාපේක්ෂව වැඩි කාලයක් ගනී</td>
+</tr>
+<tr>
+<td align="left"><strong>තේරුම් ගැනීමේ හැකියාව</strong></td>
+<td align="left">වචනවල වැදගත්කම පමණක් සලකයි</td>
+<td align="left">වචන වල සැබෑ අර්ථය (Semantics) තේරුම් ගනී</td>
+</tr>
+<tr>
+<td align="left"><strong>Output ස්වභාවය</strong></td>
+<td align="left">පැහැදිලි Probability අගයක්</td>
+<td align="left">0.0 සිට 1.0 දක්වා (Sigmoid) පරාසයක්</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>📈 පුහුණු කිරීම සහ දත්ත (Training &amp; Dataset)</h2>
+<p>මෙම මොඩල් දෙකම පුහුණු කරලා තියෙන්නේ සැබෑ ලෝකයේ පාරිභෝගික ප්‍රතිචාර (Customer feedback) නියෝජනය කරන Review 100 කින් යුත් කුඩා, හැබැයි පැහැදිලි දත්ත (Dataset) භාවිතයෙනි. මෙහි ධනාත්මක ප්‍රතිචාර 50ක් සහ සෘණාත්මක ප්‍රතිචාර 50ක් අඩංගු වෙනවා.</p>
+<ul>
+<li><strong>Positive Example:</strong> <em>&quot;Exceeded my expectations in every way&quot;</em> </li>
+<li><strong>Negative Example:</strong> <em>&quot;Broke within the first five minutes of use&quot;</em></li>
+</ul>
+<p><img src="https://miro.medium.com/0*sBZ4CiiBnSl87CwS.png" alt="Training Loss & Accuracy"></p>
+<p>ඔබ ඉහත ප්‍රස්ථාරය දෙස බැලුවහොත්, Neural Network එක Epochs ගණනාවක් පුරා දත්ත වලින් ඉගෙන ගනිමින්, තමන්ගේ Loss අගය ටිකෙන් ටික අඩු කරගන්නා ආකාරය මනාවට පැහැදිලි වෙනවා. අවසානයේදී පුහුණු කළ මොඩලය <code>sentiment_model.keras</code> ලෙසත්, වචන හඳුනාගන්නා ආකාරය <code>tokenizer.json</code> ලෙසත් ප්‍රොජෙක්ට් එකේ සේව් වෙනවා.</p>
+<hr>
+<h2>🚀 ඔබේ පරිගණකයේ මෙය Run කරන්නේ කෙසේද?</h2>
+<p>මේක කියවලා විතරක් මදි, ඔබත් කෝඩ් එක Run කරලම බලන්න ඕනේ. ඒ සඳහා පහත පියවර අනුගමනය කරන්න.</p>
+<p><strong>1. අවශ්‍ය Libraries Install කරගන්න:</strong></p>
+<pre><code class="language-bash">pip install tensorflow scikit-learn numpy jupyter
+</code></pre>
+<p><strong>2. Naive Bayes Classifier එක Run කිරීම:</strong>
+Terminal එකේ පහත කමාන්ඩ් එක ලබා දෙන්න. මෙය ක්ෂණිකව ක්‍රියාත්මක වී ප්‍රතිඵල පෙන්වාවි.</p>
+<pre><code class="language-bash">python sentiment_classifier_nb.py
+</code></pre>
+<p><strong>3. Neural Network එක Run කිරීම:</strong></p>
+<p>Jupyter Notebook හරහා ඩීප් ලර්නිං කෝඩ් එක පියවරෙන් පියවර අධ්‍යයනය කරන්න පුළුවන්.</p>
+<pre><code class="language-bash">jupyter notebook
+</code></pre>
+<p>ඉන්පසු බ්‍රවුසරයෙන් <code>sentiment_classifier_nn.ipynb</code> ගොනුව විවෘත කර එහි ඇති සෙල් (cells) එකින් එක run කරන්න.</p>
+<hr>
+<p>👉 <strong>SimpleNN Repository එක මෙතනින් බලන්න:</strong> <a href="https://github.com/sh4lu-z/SimpleNN">https://github.com/sh4lu-z/SimpleNN</a></p>
+<p>*(ඔබටත් මෙවැනි දේවල් අත්හදා බලන්න උනන්දුවක් තියෙනවද? පහළින් Comment එකක් දාගෙනම යන්න!)</p>
+
+        </article>
+        <div id="comments-container-simplenn-traditional-ml-deep-learning"></div>
+      </div>
+    </main>
+
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+      <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+    </footer>
+  </div>
+  <script src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
