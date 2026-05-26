@@ -10,4 +10,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://sh4lu-z.github.io/blogs/simplenn-traditional-ml-deep-learning</loc>
+    <lastmod>2026-05-26T01:08:49.650Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
