@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>👀 Computer Vision ගැන සරලව - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="👀 Computer Vision ගැන සරලව">
+  <meta name="description" content="Computer Vision මඟින් ඡායාරූප සහ වීඩියෝ විශ්ලේෂණය කිරීමට පරිගණක පුහුණු කරන ආකාරය පිළිබඳ සරල හැඳින්වීමකි.">
+  <meta name="author" content="Shaluka Gimhan">
+  <meta name="keywords" content="shaluka blog, blog, Vision, Computer Vision, Computer Vision blog, Computer Vision blog sinhala">
+  <meta name="robots" content="index, follow">
+  <meta name="blog-slug" content="computer-vision">
+  <link rel="canonical" href="https://sh4lu-z.github.io/blogs/computer-vision">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sh4lu-z.github.io/blogs/computer-vision">
+  <meta property="og:title" content="👀 Computer Vision ගැන සරලව">
+  <meta property="og:description" content="Computer Vision මඟින් ඡායාරූප සහ වීඩියෝ විශ්ලේෂණය කිරීමට පරිගණක පුහුණු කරන ආකාරය පිළිබඳ සරල හැඳින්වීමකි.">
+  <meta property="og:image" content="https://github.com/sh4lu-z.png">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="/css/style.css?v=3">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+</head>
+<script>
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
+    
+    <header class="py-4 sm:py-6 mb-6 relative transition-all duration-300">
+      <div class="absolute top-0 right-0 sm:top-4 flex items-center gap-2">
+        <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+        </a>
+        <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+      </div>
+      <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+    </header>
+
+    <main id="app-content" class="flex-grow">
+      <div id="post-computer-vision">
+        <div class="flex items-center justify-between mb-8">
+          <a href="/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors block" title="Back to list">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </a>
+          <button onclick="navigator.clipboard.writeText('https://sh4lu-z.github.io/blogs/computer-vision'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          </button>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">👀 Computer Vision ගැන සරලව</h1>
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Published on 27 May 2026
+          </div>
+        </div>
+
+        <article class="py-8 markdown-body">
+          <p>හැමෝටම ආයුබෝවන්! අද මම ඔයාලත් එක්ක කතා කරන්න යන්නේ කෘත්‍රිම බුද්ධිය (AI) ලෝකයේ තියෙන මාරම ආකර්ෂණීය මාතෘකාවක් ගැන. මේක ඇහුවම ඔයාලට හිතෙයි &quot;අප්පටසිරි, කම්පියුටර්ස් වලටත් දැන් ඇස් පේනවද?&quot; කියලා. ඔව්, ඇත්තටම අද වෙද්දී කම්පියුටර් වලට අපිව පේනවා විතරක් නෙවෙයි, අපි කරන දේවල් පවා තේරුම් ගන්න පුළුවන්. </p>
+<p>උදේට නැගිට්ටහම ජනේලෙන් එළිය බලද්දී, පාරේ යන වාහන, අහසේ යන කුරුල්ලෝ අඳුරගන්න අපිට කිසිම අමාරුවක් නෑ නේද? අපේ ඇස් දෙකයි මොළයයි ඒ දේ තත්පරෙන් දාහෙන් පංගුවක් ඇතුළත කරලා ඉවරයි. ඒත් යකඩ කෑලි, වයර් සහ ඉලක්කම් (0 සහ 1) විතරක් තේරෙන කම්පියුටර් එකකට කොහොමද අපි මේ ලෝකය පෙන්නන්නේ? අන්න ඒ තාක්ෂණයට තමයි අපි සරලව <strong>Computer Vision (පරිගණක දෘෂ්ටිය)</strong> කියලා කියන්නේ.</p>
+<p>ඔබගේ ෆෝන් එකට මූණ පෙන්නුවම ෆෝන් එක අන්ලොක් (Face ID) වෙන්නේ කොහොමද? ඩ්‍රයිවර් කෙනෙක් නැතුව Tesla කාර් පාරේ යන්නේ කොහොමද? මේ හැමදේම පිටිපස්සේ තියෙන මැජික් එක අද මම ඔයාලට සරලවම කියලා දෙන්නම්.</p>
+<p><img src="https://www.shutterstock.com/image-photo/eye-smart-contact-lens-website-600nw-2515818959.jpg" alt="">
+<sub><a href="https://www.shutterstock.com/image-photo/eye-smart-contact-lens-website-600nw-2515818959.jpg">Source Image</a></sub></p>
+<hr>
+<h2>ඉතින් මොකක්ද මේ Computer Vision කියන්නේ? 🤔</h2>
+<p>මම මේක සරලවම කියන්නම්. Computer Vision කියන්නේ කෘත්‍රිම බුද්ධියේ (AI) එක්තරා කොටසක්. මේකෙන් කරන්නේ ෆොටෝස්, වීඩියෝස් දිහා බලලා ඒවයේ තියෙන්නේ මොනවද කියලා තේරුම් ගන්න කම්පියුටර් වලට උගන්නන එකයි. </p>
+<p>අපිට ඇස් තියෙනවා වගේ කම්පියුටර් එකට <strong>කැමරා</strong> තියෙනවා. අපිට ඒ පේන දේවල් තේරුම් ගන්න මොළයක් තියෙනවා වගේ, කම්පියුටර් එකට <strong>Machine Learning ඇල්ගොරිතම (Algorithms)</strong> තියෙනවා. මේ කැමරාවයි, ඇල්ගොරිතම ටිකයි එකතු වුණාම තමයි පරිගණකයට මේ සුපිරි &quot;පෙනීමේ ශක්තිය&quot; ලැබෙන්නේ.</p>
+<h2>කම්පියුටර් එකක් ඇත්තටම ෆොටෝ එකක් දකින්නේ කොහොමද? 📸</h2>
+<p>අපි ලස්සන මලක් දැක්කම අපිට ඒකේ පාට, හැඩය පේනවනේ. ඒත් මම ඔයාලට කිව්වොත් කම්පියුටර් එකට කිසිම ෆොටෝ එකක් පේන්නේ නෑ, ඒකට පේන්නේ <strong>ඉලක්කම් ගොඩක් විතරයි</strong> කියලා, ඔයාලා විශ්වාස කරනවද? ඔව්, ඒක තමයි ඇත්ත!</p>
+<p>ඔයාලා ෆොටෝ එකක් ගොඩාක් සූම් (Zoom in) කරලා බලලා තියෙනවද? එහෙම කරහම ඔයාලට පෙනෙයි ෆොටෝ එක හැදිලා තියෙන්නේ පුංචි පුංචි හතරැස් කොටු ගොඩකින් කියලා. අපි මේවට කියනවා <strong>Pixels (පික්සල්)</strong> කියලා. </p>
+<p>කම්පියුටර් එකක් කරන්නේ මේ හැම පික්සල් එකකම තියෙන පාට, ඉලක්කමකට හරවන එකයි. සාමාන්‍යයෙන් මේවා RGB (Red, Green, Blue) විදිහට තමයි තියෙන්නේ. කම්පියුටර් එක දකින්නේ 0 ඉඳලා 255 වෙනකන් තියෙන ඉලක්කම් වලින් හැදුණු ලොකූ වගුවක් (Matrix එකක්) විතරයි. (0 කියන්නේ කළු පාට, 255 කියන්නේ සුදු පාට). </p>
+<p><img src="https://raw.githubusercontent.com/sh4lu-z/sh4lu-z.github.io/main/assets/blog-images/1779905079830-gemini-generated-image-cvh0wcvh0wcvh0wc.png" alt=""></p>
+<hr>
+<h3>අපි පොඩි ප්‍රායෝගික සෙල්ලමක් කරමුද? 🎮</h3>
+<p>නිකන්ම කියවනවට වඩා, ඇත්තටම කම්පියුටර් එකක් ෆොටෝ එකක් process කරන්නේ කොහොමද කියලා ඔයාලටම අත්හදා බලන්න මම පහළින් පොඩි Interactive Widget එකක් හැදුවා. ඒකේ තියෙන බටන්ස් ක්ලික් කරලා බලන්න, සාමාන්‍ය ෆොටෝ එකක දාර (Edges) කම්පියුටර් එක හොයාගන්නේ කොහොමද, ෆොටෝ එකක් පික්සල් විදිහට කම්පියුටර් එකට පේන්නේ කොහොමද කියලා. </p>
+<p><em>(ඔබට පහතින් ඇති බටන්ස් ක්ලික් කර වෙනස්කම් නිරීක්ෂණය කළ හැක)</em></p>
+<div class="blog-widget" data-widget="dividcv-widget-containerstyledisplayflexjustify-contentcenterwidth100margin30px0"></div>
+කොහොමද ටූල් එක? Edge detection දැම්මහම ඔයාලට පේනවා නේද ෆොටෝ එකේ තියෙන හැඩතල (කාර් එකේ හැඩය, ඉරේ හැඩය) කම්පියුටර් එක සුදු පාට ඉරි වලින් වෙන් කරලා අඳුරගන්න විදිහ? අන්න ඒ වගේ මූලික දේවල් වලින් පටන් අරන් තමයි AI එක ලොකු ලොකු දේවල් අඳුරගන්න පුරුදු වෙන්නේ.
+
+<h2>Computer Vision වල ප්‍රධාන වැඩ කෑලි 4 මොනවද? 🛠️</h2>
+<p>ඔයාලා හිතන්න එපා කම්පියුටර් එකට අපි වගේ එකපාරටම ෆොටෝ එකක් දැක්කම හැමදේම තේරෙනවා කියලා. මේක ප්‍රධාන කොටස් 4 කට බෙදන්න පුළුවන්.</p>
+<ol>
+<li><p><strong>Image Classification (රූප වර්ගීකරණය) - <em>&quot;මේ මොකක්ද?&quot;</em></strong> 🐶
+මම කම්පියුටර් එකට ෆොටෝ එකක් දාලා අහනවා &quot;මේ බල්ලෙක්ද? පූසෙක්ද?&quot; කියලා. කම්පියුටර් එක ෆොටෝ එක process කරලා කියනවා &quot;මේක බල්ලෙක්&quot; කියලා. ඔයාලා Google Photos වල &quot;Dog&quot; කියලා සර්ච් කරහම ඔයාලගේ ගැලරි එකේ ඉන්න බල්ලන්ගේ ෆොටෝස් විතරක් එන්නේ මේ තාක්ෂණය නිසා.</p>
+</li>
+<li><p><strong>Object Detection (වස්තු හඳුනාගැනීම) - <em>&quot;ඒක තියෙන්නේ කොහෙද?&quot;</em></strong> 🚗
+ෆොටෝ එකේ ඉන්නේ බල්ලෙක් කියලා කිව්වට විතරක් මදි. ඌ ඉන්නේ ෆොටෝ එකේ කොතනද කියලා හොයන්නත් ඕනේ. මෙතනදී කම්පියුටර් එක කරන්නේ ෆොටෝ එකේ තියෙන කාර්, මිනිස්සු, සත්තු හොයලා ඒ හැම එකක් වටේටම පාට පාට කොටුවක් (Bounding Box එකක්) අඳින එකයි.</p>
+</li>
+</ol>
+<p><img src="https://media.licdn.com/dms/image/v2/D4E12AQE8w9lsMI9c7A/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1739377720974?e=2147483647&v=beta&t=Un4xIHMnLQn1voUcA1Al7vX16g3ZMiby2RZ_nZSkijM" alt="">
+<sub><a href="https://media.licdn.com/dms/image/v2/D4E12AQE8w9lsMI9c7A/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1739377720974?e=2147483647&v=beta&t=Un4xIHMnLQn1voUcA1Al7vX16g3ZMiby2RZ_nZSkijM">Source Image</a></sub></p>
+<hr>
+<ol start="3">
+<li><p><strong>Image Segmentation (රූප ඛණ්ඩනය)</strong> ✂️
+මේක අර කොටු අඳිනවට වඩා මාරම සූක්ෂම වැඩක්. හිතන්න ඔයාලා Canva එකේ හරි Photoshop වල හරි ෆොටෝ එකක Background එක අයින් කරනවා (Remove BG) කියලා. අන්න ඒ වගේ, හරියටම මනුස්සයගෙ හැඩේටම කපලා වෙන් කරගන්න එකට තමයි Segmentation කියන්නේ.</p>
+</li>
+<li><p><strong>Facial Recognition (මුහුණු හඳුනාගැනීම) - <em>&quot;මේ කවුද?&quot;</em></strong> 🧑‍🦱
+මේක නම් ඔයාලා හැමෝම දන්නවා. ඔයාලගේ ඇස් දෙක තියෙන දුර, නහයේ හැඩය වගේ දේවල් මැනලා &quot;මේ ඉන්නේ මගේ බොසා&quot; කියලා ෆෝන් එක අඳුරගන්න එක.</p>
+</li>
+</ol>
+<h2>පරිගණකය මේවා තේරුම් ගන්න ඉගෙන ගන්නේ කොහොමද? 🧠</h2>
+<p>මම ඔයාලට කිව්වොත්, කම්පියුටර් එකට ෆොටෝ අඳුරගන්න උගන්නන එක හරියට <strong>පොඩි ළමයෙකුට උගන්නනවා වගේ</strong> වැඩක් කියලා. </p>
+<p>හිතන්න ඔයාලගේ ගෙදර ඉන්න පොඩි මල්ලිට හරි නංගිට හරි බල්ලෙක්ව අඳුරගන්න කියලා දෙනවා. ඔයා මොකද කරන්නේ? පොතක් අරන් බල්ලන්ගේ ෆොටෝස් 10-15 ක් පෙන්නලා කියනවා &quot;ඔන්න බලන්න, මේ ඉන්නේ බල්ලා&quot; කියලා. ඊටපස්සේ ඒ ළමයා පාරේ යන ඕනෑම බල්ලෙක්ව දැක්ක ගමන් අඳුරගන්නවා. </p>
+<p>අපි කම්පියුටර් එකටත් කරන්නේ ඕකමයි! අපි කම්පියුටර් එකට කියනවා නෑ &quot;බල්ලෙකුට කන් දෙකක් තියෙනවා, වලිගයක් තියෙනවා&quot; කියලා නීති දාලා. මොකද පූසටත් ඒවා තියෙනවනේ. ඒ වෙනුවට අපි කරන්නේ <strong>Deep Learning (Convolutional Neural Networks - CNN)</strong> කියන AI මොළයට බල්ලන්ගේ ෆොටෝස් ලක්ෂ ගණනක් පෙන්නන එක. </p>
+<p><img src="https://raw.githubusercontent.com/sh4lu-z/sh4lu-z.github.io/main/assets/blog-images/1779905378107-gemini-generated-image-wbeb3bwbeb3bwbeb.png" alt=""></p>
+<hr>
+<p>කම්පියුටර් එක මේ ෆොටෝස් ලක්ෂ ගාන දිහා බලලා තනියම ඉගෙන ගන්නවා &quot;ආ.. බල්ලෙක් නම් මෙන්න මේ වගේ හැඩයක් තමයි තියෙන්න ඕනේ&quot; කියලා. </p>
+<h2>අපේ එදිනෙදා ජීවිතේ මේවා පාවිච්චි වෙන්නේ කොහෙද? 🌍</h2>
+<p>&quot;හරි බං, ඔය ටෙක්නොලොජි එකෙන් මට තියෙන වාසිය මොකක්ද?&quot; කියලා ඔයාලට හිතෙන්න පුළුවන්. ඒත් ඇත්තම කතාව, ඔයාලා නොදැනුවත්වම හැමදාම මේ දේවල් පාවිච්චි කරනවා.</p>
+<ul>
+<li><strong>Social Media Filters (Snapchat / Instagram):</strong> ඔයාලා ස්නැප්චැට් එකේ බල්ලගෙ කන් දාලා, දිව දාලා ෆොටෝ අරන් තියෙනවනේ? ඔයා ඔලුව හොලවද්දි ඒ කන් දෙකත් ඔයාගේ ඔලුව එක්කම යන්නේ කොහොමද? අන්න එතන ඔයාගේ මුහුණේ තියෙන ඇස්, නහය, කට Real-time ට්‍රැක් කරන්නේ මේ Computer Vision තාක්ෂණයෙන්.</li>
+<li><strong>Self-Driving Cars (ස්වයංක්‍රීය වාහන):</strong> ටෙස්ලා (Tesla) වගේ කාර් පාරේ තනියම යන්නේ වාහනේ වටේට තියෙන කැමරා වලින් අර අපි කලින් කතා කරපු Object Detection පාවිච්චි කරලා පාරේ යන අනිත් කාර්, පාර පනින මිනිස්සු අඳුරගන්න නිසයි.</li>
+<li><strong>Amazon Go Stores:</strong> මේක මාරම ගැජට් එකක්. ඇමසන් සමාගමේ තියෙනවා සුපර් මාර්කට් වගයක් මුදල් අයකරන අය (Cashiers) නැති. ඔයාට තියෙන්නේ කඩේට ගිහින් ඕන බඩු ටික අරන් එළියට එන්න විතරයි. ඔයා ගත්තේ මොනවද කියලා කඩේ උඩ තියෙන කැමරා වලින් (Computer Vision හරහා) අඳුරගෙන ඔයාගේ කාඩ් එකෙන් ගාණ කපාගන්නවා!</li>
+</ul>
+<h2>හැබැයි මේකේ පොඩි අවුලකුත් තියෙනවා (The Chihuahua vs. Muffin Problem) 😂</h2>
+<p>කම්පියුටර්ස් කොච්චර ස්මාර්ට් වුණත්, සමහර වෙලාවට අපිට හිනායන විදිහේ මෝඩ වැඩත් කරනවා. </p>
+<p>මුල් කාලේදී AI රිසර්ච් කරන අයට ආපු ලොකුම ප්‍රශ්නයක් තමයි කම්පියුටර් එකට <strong>Chihuahua (චිහුවාවා)</strong> කියන බලු වර්ගයයි, <strong>Blueberry Muffins (කප් කේක් ජාතියක්)</strong> යි වෙන් කරලා අඳුරගන්න බැරි වෙච්ච එක. මොකද ඒ බල්ලගෙ මූණයි, ඒ කේක් එකේ හැඩයයි දෙකම එක වගේ! බල්ලගෙ ඇස් දෙකයි නහයයි හරියට කේක් එකේ තියෙන බ්ලූබෙරි ඇට වගේමයි කම්පියුටර් එකට පෙනුණේ.</p>
+<p><img src="https://raw.githubusercontent.com/sh4lu-z/sh4lu-z.github.io/main/assets/blog-images/1779905482073-gemini-generated-image-1psyi31psyi31psy.png" alt=""></p>
+<hr>
+<p>ඒත් අද වෙද්දී නම් තාක්ෂණය ගොඩක් දියුණුයි, දැන් නම් කම්පියුටර් එක අපිව වුණත් රවට්ටන තරමටම දක්ෂ වෙලා තියෙන්නේ.</p>
+<h2>මගේ අදහස... 💡</h2>
+<p>Computer Vision කියන්නේ නිකන්ම Sci-Fi ෆිල්ම්ස් වලට සීමා වෙච්ච දෙයක් නෙවෙයි. මේ වෙද්දිත් වෛද්‍යවරුන්ට පිළිකා සෛල හොයාගන්න, ගොවියන්ට ලෙඩ වෙච්ච ගස් හොයාගන්න මේ තාක්ෂණය උදව් වෙනවා. ඉස්සරහට එන Augmented Reality (AR) වගේ දේවල් එක්ක (උදාහරණයක් විදිහට Apple Vision Pro) අපේ ලෝකය සම්පූර්ණයෙන්ම වෙනස් වෙන්න යනවා.</p>
+<p>ඉතින් ඊළඟ පාර ඔයාගේ ෆෝන් එකේ කැමරාවෙන් මොකක් හරි ෆොටෝ එකක් අරන් AI එකකින් Edit කරද්දී, තත්පරෙන් දාහෙන් පංගුවක් ඇතුළත ඒ සිද්ධවෙන දැවැන්ත ක්‍රියාවලිය ගැන පොඩ්ඩක් හිතලා බලන්න!</p>
+<p>ඔයාලට මොකද හිතෙන්නේ? කවදාහරි දවසක කම්පියුටර් වලට මිනිස්සුන්ගේ ඇස් වලට වඩා හොඳට දේවල් තේරුම් ගන්න පුළුවන් වෙයිද? <strong>පල්ලෙහායින් කමෙන්ට් එකක් දාන්න, අපි ඒ ගැන කතා කරමු!</strong> 👇</p>
+<p><em>(ඔබට මෙම ලිපිය වැදගත් වුණා නම් යාලුවන් එක්ක Share කරන්නත් අමතක කරන්න එපා!)</em></p>
+
+        </article>
+        <div id="comments-container-computer-vision"></div>
+      </div>
+    </main>
+
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+      <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+    </footer>
+  </div>
+  <script src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
