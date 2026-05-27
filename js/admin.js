@@ -36,6 +36,20 @@ function insertMathBlock() {
   cm.focus();
 }
 
+function insertImageBlock() {
+  if (!editor || !editor.codemirror) return;
+
+  const cm = editor.codemirror;
+  const cursor = cm.getCursor();
+  const text = cm.getSelection() || "";
+  
+  cm.replaceSelection(`![${text}](https://)\n<sub><a href="https://example.com">Source Image</a></sub>\n`);
+  
+  // Move cursor to the end of https://
+  cm.setCursor({ line: cursor.line, ch: text.length + 12 });
+  cm.focus();
+}
+
 function refreshEditorPreviewMath() {
   requestAnimationFrame(() => {
     const preview = document.querySelector(".editor-preview-side, .editor-preview");
@@ -60,7 +74,13 @@ function initializeEditor() {
     toolbar: [
       "bold", "italic", "strikethrough", "heading", "|", 
       "quote", "unordered-list", "ordered-list", "|", 
-      "link", "image",
+      "link", 
+      {
+        name: "image",
+        action: () => insertImageBlock(),
+        className: "fa fa-picture-o",
+        title: "Insert Image with Source"
+      },
       {
         name: "widget",
         action: () => insertWidgetBlock(),
