@@ -4,6 +4,10 @@ export function preprocessWidgetBlocks(markdown) {
   if (!markdown || typeof markdown !== "string") return markdown;
 
   return markdown.replace(WIDGET_BLOCK_REGEX, (_, blockBody) => {
+    if (blockBody.trim().startsWith("<")) {
+      return blockBody;
+    }
+
     const lines = blockBody
       .split("\n")
       .map((line) => line.trim())
