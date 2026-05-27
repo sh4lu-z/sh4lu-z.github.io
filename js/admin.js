@@ -1,3 +1,6 @@
+import { parseBlogMarkdown } from './markdown-utils.js';
+import { renderBlogMath } from './math-render.js';
+
 const GH_TOKEN = localStorage.getItem("gh_token") || "";
 const GH_OWNER = "sh4lu-z"; // Hardcoded
 const GH_REPO = "sh4lu-z.github.io"; // Hardcoded
@@ -11,6 +14,35 @@ const settingsPanel = document.getElementById("settings-panel");
 
 let editor; // For EasyMDE
 
+function insertWidgetBlock() {
+  if (!editor || !editor.codemirror) return;
+
+  const cm = editor.codemirror;
+  const cursor = cm.getCursor();
+
+  // Insert an empty widget block and place cursor inside it
+  cm.replaceSelection("```widget\n\n```\n");
+  cm.setCursor({ line: cursor.line + 1, ch: 0 });
+  cm.focus();
+}
+
+function insertMathBlock() {
+  if (!editor || !editor.codemirror) return;
+
+  const cm = editor.codemirror;
+  const cursor = cm.getCursor();
+  cm.replaceSelection("$$\n\n$$\n");
+  cm.setCursor({ line: cursor.line + 1, ch: 0 });
+  cm.focus();
+}
+
+function refreshEditorPreviewMath() {
+  requestAnimationFrame(() => {
+    const preview = document.querySelector(".editor-preview-side, .editor-preview");
+    if (preview) renderBlogMath(preview);
+  });
+}
+
 function initializeEditor() {
   editor = new EasyMDE({ 
     element: document.getElementById('blog-content'),
@@ -23,14 +55,31 @@ function initializeEditor() {
       uniqueId: "shaluka-blog-editor",
       delay: 1000,
     },
+    previewRender: (plainText) => parseBlogMarkdown(plainText),
     toolbar: [
       "bold", "italic", "strikethrough", "heading", "|", 
       "quote", "unordered-list", "ordered-list", "|", 
-      "link", "image", "table", "horizontal-rule", "|", 
+      "link", "image",
+      {
+        name: "widget",
+        action: () => insertWidgetBlock(),
+        className: "fa fa-cube",
+        title: "Insert Widget Block"
+      },
+      {
+        name: "math",
+        action: () => insertMathBlock(),
+        className: "fa fa-superscript",
+        title: "Insert LaTeX Equation Block"
+      },
+      "table", "horizontal-rule", "|", 
       "preview", "side-by-side", "fullscreen", "|", 
       "guide"
     ],
   });
+
+  editor.codemirror.on("change", refreshEditorPreviewMath);
+  editor.codemirror.on("refresh", refreshEditorPreviewMath);
 }
 
 function loadSettings() {
@@ -175,8 +224,11 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
   </style>
-  <link rel="stylesheet" href="/css/style.css?v=2">
+  <link rel="stylesheet" href="/css/style.css?v=3">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 </head>
 <script>
   if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
@@ -311,7 +363,15 @@ publishBtn.addEventListener("click", async () => {
     if (!res.ok) throw new Error("Failed to publish Markdown");
 
     // 3. Publish HTML (SSG)
-    const htmlContent = generateHtmlForBlog(slug, title, dateStr, coverImage, description, marked.parse(content), keywords);
+    const htmlContent = generateHtmlForBlog(
+      slug,
+      title,
+      dateStr,
+      coverImage,
+      description,
+      parseBlogMarkdown(content),
+      keywords
+    );
     const htmlBody = {
       message: existingHtml.sha ? `Updated blog HTML: ${title}` : `Created blog HTML: ${title}`,
       content: encodeBase64Unicode(htmlContent)
@@ -582,4 +642,11 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeEditor();
   loadSettings();
   fetchAdminBlogs();
+
+  window.insertWidgetBlock = insertWidgetBlock;
+  window.insertMathBlock = insertMathBlock;
+  const widgetBtn = document.getElementById("insert-widget-btn");
+  const mathBtn = document.getElementById("insert-math-btn");
+  if (widgetBtn) widgetBtn.addEventListener("click", insertWidgetBlock);
+  if (mathBtn) mathBtn.addEventListener("click", insertMathBlock);
 });

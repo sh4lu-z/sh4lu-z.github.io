@@ -8,7 +8,11 @@
   <link rel="stylesheet" href="/css/style.css">
   <!-- Use EasyMDE for beautiful Rich Text / Markdown Editing -->
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <!-- Markdown parser for generated HTML -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -79,6 +83,12 @@
               <input type="text" id="generated-link" readonly class="w-full text-xs p-2 bg-gray-50 border border-gray-200 rounded mt-2 font-mono" onclick="this.select(); document.execCommand('copy'); window.showToast('Link copied!', 'success');">
               <p class="text-[10px] text-gray-400 mt-1">↑ Click to copy Markdown link</p>
             </div>
+            <button id="insert-widget-btn" class="bg-gray-900 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-black transition shadow">
+              ⬛ Insert Widget Block
+            </button>
+            <button id="insert-math-btn" class="bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-800 transition shadow">
+              ∑ Insert LaTeX Equation
+            </button>
           </div>
         </div>
 
