@@ -1,4 +1,7 @@
 import { renderCommentSection } from './comments.js';
+import { initWidgets } from './widget-loader.js';
+import { parseBlogMarkdown } from './markdown-utils.js';
+import { renderBlogMath } from './math-render.js';
 
 window.allBlogs = []; 
 window.currentPostIndex = -1;
@@ -124,11 +127,13 @@ window.viewPost = async function (slug, append = false) {
     </div>
   `;
 
+  const renderedContent = parseBlogMarkdown(content);
+
   const articleHtml = `
     <div id="post-${slug}">
       ${headerHtml}
       <article class="py-8 markdown-body">
-        ${marked.parse(content)}
+        ${renderedContent}
       </article>
       <div id="comments-container-${slug}"></div>
     </div>
@@ -140,6 +145,11 @@ window.viewPost = async function (slug, append = false) {
 
   // Initialize the comments section
   renderCommentSection(`comments-container-${slug}`, slug);
+  const postRoot = document.getElementById(`post-${slug}`);
+  if (postRoot) {
+    initWidgets(postRoot);
+    renderBlogMath(postRoot);
+  }
 
   setupNextPostObserver();
 };
@@ -329,6 +339,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchContainer) searchContainer.style.display = 'none';
 
     renderCommentSection(`comments-container-${slug}`, slug);
+    initWidgets(document);
+    renderBlogMath(document);
     loadAllBlogsForStaticPage(slug);
   } else {
     const initialHash = window.location.hash.substring(1);
