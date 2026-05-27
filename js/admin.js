@@ -50,6 +50,7 @@ function initializeEditor() {
     placeholder: "Start your mind-blowing article here...",
     status: ["lines", "words", "preview"],
     minHeight: "500px",
+    maxHeight: "600px",
     autosave: {
       enabled: true,
       uniqueId: "shaluka-blog-editor",

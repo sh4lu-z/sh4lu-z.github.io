@@ -182,3 +182,20 @@ html.dark .blog-widget-error {
 html.dark .markdown-body .katex {
   color: #f9fafb;
 }
+
+/* Sticky Markdown Toolbar */
+.editor-toolbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 50;
+  background-color: white;
+  opacity: 1 !important;
+}
+
+.editor-toolbar:hover {
+  opacity: 1 !important;
+}
+
+.editor-toolbar::before, .editor-toolbar::after {
+  display: none !important;
+}
