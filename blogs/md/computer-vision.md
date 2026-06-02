@@ -31,7 +31,6 @@
 නිකන්ම කියවනවට වඩා, ඇත්තටම කම්පියුටර් එකක් ෆොටෝ එකක් process කරන්නේ කොහොමද කියලා ඔයාලටම අත්හදා බලන්න මම පහළින් පොඩි Interactive Widget එකක් හැදුවා. ඒකේ තියෙන බටන්ස් ක්ලික් කරලා බලන්න, සාමාන්‍ය ෆොටෝ එකක දාර (Edges) කම්පියුටර් එක හොයාගන්නේ කොහොමද, ෆොටෝ එකක් පික්සල් විදිහට කම්පියුටර් එකට පේන්නේ කොහොමද කියලා. 
 
 *(ඔබට පහතින් ඇති බටන්ස් ක්ලික් කර වෙනස්කම් නිරීක්ෂණය කළ හැක)*
-
 ```widget
 <div id="cv-widget-container" style="display: flex; justify-content: center; width: 100%; margin: 30px 0;">
   <div class="cv-widget-box" style="width: 100%; max-width: 850px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #e9ecef;">
