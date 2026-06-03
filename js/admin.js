@@ -501,7 +501,7 @@ publishBtn.addEventListener("click", async () => {
             headings: { "en": "New Post: " + title },
             contents: { "en": description || "Read the latest post now!" },
             url: `https://sh4lu-z.github.io/blogs/${slug}`,
-            send_after: new Date(Date.now() + 3 * 60000).toString()
+            send_after: new Date(Date.now() + 3 * 60000).toUTCString()
           })
         });
 
