@@ -270,6 +270,7 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
           enable: true,
         },
       });
+      OneSignal.showSlidedownPrompt();
     });
   </script>
 </head>
