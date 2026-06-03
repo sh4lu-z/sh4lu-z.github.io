@@ -92,40 +92,39 @@
 <div id="cv-widget-container" style="display: flex; justify-content: center; width: 100%; margin: 30px 0;">
   <div class="cv-widget-box" style="width: 100%; max-width: 850px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #e9ecef;">
     
-<pre><code>&lt;div class=&quot;cv-header&quot; style=&quot;text-align: center; margin-bottom: 25px;&quot;&gt;
-  &lt;h2 style=&quot;margin: 0; color: #1a202c; font-size: 28px; font-weight: 800;&quot;&gt;🔍 Computer Vision Simulator&lt;/h2&gt;
-  &lt;p style=&quot;margin: 8px 0 0; color: #718096; font-size: 16px;&quot;&gt;පරිගණකයක ඇසින් ලෝකය දකින්න! පහතින් ඇති Filters ඔබා බලන්න.&lt;/p&gt;
-&lt;/div&gt;
+    <div class="cv-header" style="text-align: center; margin-bottom: 25px;">
+      <h2 style="margin: 0; color: #1a202c; font-size: 28px; font-weight: 800;">🔍 Computer Vision Simulator</h2>
+      <p style="margin: 8px 0 0; color: #718096; font-size: 16px;">පරිගණකයක ඇසින් ලෝකය දකින්න! පහතින් ඇති Filters ඔබා බලන්න.</p>
+    </div>
 
-&lt;div style=&quot;display: flex; flex-wrap: wrap; gap: 25px; margin-bottom: 20px;&quot;&gt;
-  
-  &lt;!-- Canvas Area --&gt;
-  &lt;div style=&quot;flex: 1.2; min-width: 320px; display: flex; flex-direction: column; align-items: center; background: #f7fafc; padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e0;&quot;&gt;
-    &lt;canvas id=&quot;cv-canvas&quot; width=&quot;450&quot; height=&quot;300&quot; style=&quot;background-color: #fff; border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);&quot;&gt;&lt;/canvas&gt;
-    &lt;div id=&quot;mode-badge&quot; style=&quot;margin-top: 15px; background: #4299e1; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; letter-spacing: 0.5px;&quot;&gt;සාමාන්‍ය රූපය (Original)&lt;/div&gt;
-  &lt;/div&gt;
+    <div style="display: flex; flex-wrap: wrap; gap: 25px; margin-bottom: 20px;">
+      
+      <!-- Canvas Area -->
+      <div style="flex: 1.2; min-width: 320px; display: flex; flex-direction: column; align-items: center; background: #f7fafc; padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e0;">
+        <canvas id="cv-canvas" width="450" height="300" style="background-color: #fff; border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);"></canvas>
+        <div id="mode-badge" style="margin-top: 15px; background: #4299e1; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; letter-spacing: 0.5px;">සාමාන්‍ය රූපය (Original)</div>
+      </div>
 
-  &lt;!-- Controls Area --&gt;
-  &lt;div style=&quot;flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;&quot;&gt;
-    &lt;h4 style=&quot;margin-top: 0; color: #2d3748; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px;&quot;&gt;පෙරහන් (Filters) තෝරන්න&lt;/h4&gt;
-    
-    &lt;div style=&quot;display: flex; flex-direction: column; gap: 10px;&quot;&gt;
-      &lt;button onclick=&quot;applyFilter(&#39;original&#39;)&quot; style=&quot;padding: 12px; background-color: #3182ce; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(49, 130, 206, 0.4);&quot;&gt;🖼️ Original (සාමාන්‍ය දර්ශනය)&lt;/button&gt;
-      
-      &lt;button onclick=&quot;applyFilter(&#39;grayscale&#39;)&quot; style=&quot;padding: 12px; background-color: #718096; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(113, 128, 150, 0.4);&quot;&gt;⚫ Grayscale (වර්ණ ඉවත් කිරීම)&lt;/button&gt;
-      
-      &lt;button onclick=&quot;applyFilter(&#39;edges&#39;)&quot; style=&quot;padding: 12px; background-color: #38a169; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(56, 161, 105, 0.4);&quot;&gt;📐 Edge Detection (දාර හඳුනාගැනීම)&lt;/button&gt;
-      
-      &lt;button onclick=&quot;applyFilter(&#39;pixelate&#39;)&quot; style=&quot;padding: 12px; background-color: #e53e3e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(229, 62, 62, 0.4);&quot;&gt;👾 Pixelate (පික්සල් ලෙස දැකීම)&lt;/button&gt;
-    &lt;/div&gt;
+      <!-- Controls Area -->
+      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
+        <h4 style="margin-top: 0; color: #2d3748; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px;">පෙරහන් (Filters) තෝරන්න</h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button onclick="applyFilter('original')" style="padding: 12px; background-color: #3182ce; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(49, 130, 206, 0.4);">🖼️ Original (සාමාන්‍ය දර්ශනය)</button>
+          
+          <button onclick="applyFilter('grayscale')" style="padding: 12px; background-color: #718096; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(113, 128, 150, 0.4);">⚫ Grayscale (වර්ණ ඉවත් කිරීම)</button>
+          
+          <button onclick="applyFilter('edges')" style="padding: 12px; background-color: #38a169; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(56, 161, 105, 0.4);">📐 Edge Detection (දාර හඳුනාගැනීම)</button>
+          
+          <button onclick="applyFilter('pixelate')" style="padding: 12px; background-color: #e53e3e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(229, 62, 62, 0.4);">👾 Pixelate (පික්සල් ලෙස දැකීම)</button>
+        </div>
 
-    &lt;div id=&quot;slider-container&quot; style=&quot;display: none; margin-top: 25px; background: #edf2f7; padding: 15px; border-radius: 8px;&quot;&gt;
-      &lt;label for=&quot;cv-slider&quot; style=&quot;font-weight: bold; color: #2d3748; display: block; margin-bottom: 10px; font-size: 14px;&quot;&gt;පික්සල් ප්‍රමාණය වෙනස් කරන්න:&lt;/label&gt;
-      &lt;input type=&quot;range&quot; id=&quot;cv-slider&quot; min=&quot;3&quot; max=&quot;25&quot; value=&quot;12&quot; style=&quot;width: 100%; accent-color: #e53e3e;&quot;&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
+        <div id="slider-container" style="display: none; margin-top: 25px; background: #edf2f7; padding: 15px; border-radius: 8px;">
+          <label for="cv-slider" style="font-weight: bold; color: #2d3748; display: block; margin-bottom: 10px; font-size: 14px;">පික්සල් ප්‍රමාණය වෙනස් කරන්න:</label>
+          <input type="range" id="cv-slider" min="3" max="25" value="12" style="width: 100%; accent-color: #e53e3e;">
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
