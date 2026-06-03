@@ -1,11 +1,13 @@
 const WIDGET_BLOCK_REGEX = /```widget\s*\n([\s\S]*?)```/g;
 
-export function preprocessWidgetBlocks(markdown) {
+export function preprocessWidgetBlocks(markdown, widgetStore = []) {
   if (!markdown || typeof markdown !== "string") return markdown;
 
   return markdown.replace(WIDGET_BLOCK_REGEX, (_, blockBody) => {
     if (blockBody.trim().startsWith("<")) {
-      return blockBody;
+      const id = widgetStore.length;
+      widgetStore.push(blockBody);
+      return `%%WIDGET${id}%%`;
     }
 
     const lines = blockBody
@@ -83,14 +85,23 @@ export function restoreMath(html, mathStore) {
   });
 }
 
+export function restoreWidgets(html, widgetStore) {
+  return html.replace(/<p>%%WIDGET(\d+)%%<\/p>|%%WIDGET(\d+)%%/g, (match, id1, id2) => {
+    const id = id1 !== undefined ? id1 : id2;
+    return widgetStore[Number(id)] || "";
+  });
+}
+
 export function parseBlogMarkdown(content, markedParser = null) {
   const markedFn = markedParser || (typeof marked !== "undefined" ? marked.parse.bind(marked) : null);
   if (!markedFn) {
     throw new Error("marked is required to parse blog markdown");
   }
 
-  const withWidgets = preprocessWidgetBlocks(content);
+  const widgetStore = [];
+  const withWidgets = preprocessWidgetBlocks(content, widgetStore);
   const { markdown, mathStore } = protectMath(withWidgets);
   const html = markedFn(markdown);
-  return restoreMath(html, mathStore);
+  const htmlWithMath = restoreMath(html, mathStore);
+  return restoreWidgets(htmlWithMath, widgetStore);
 }

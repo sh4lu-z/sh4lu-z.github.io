@@ -149,10 +149,21 @@ window.viewPost = async function (slug, append = false) {
   if (postRoot) {
     initWidgets(postRoot);
     renderBlogMath(postRoot);
+    executeDynamicScripts(postRoot);
   }
 
   setupNextPostObserver();
 };
+
+function executeDynamicScripts(element) {
+  const scripts = element.querySelectorAll('script');
+  scripts.forEach(oldScript => {
+    const newScript = document.createElement('script');
+    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+    oldScript.parentNode.replaceChild(newScript, oldScript);
+  });
+}
 
 function setupNextPostObserver() {
   if (window.currentPostIndex === -1 || window.currentPostIndex >= window.allBlogs.length - 1) return;
