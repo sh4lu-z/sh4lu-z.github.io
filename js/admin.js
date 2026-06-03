@@ -489,6 +489,15 @@ publishBtn.addEventListener("click", async () => {
         // We use corsproxy.io to securely bypass it for our admin dashboard.
         const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://onesignal.com/api/v1/notifications");
 
+        // Format date strictly for OneSignal: YYYY-MM-DD HH:MM:SS GMT±HHMM
+        const d = new Date(Date.now() + 3 * 60000); // 3 minutes later
+        const pad = (num) => String(num).padStart(2, '0');
+        const offset = -d.getTimezoneOffset(); 
+        const sign = offset >= 0 ? '+' : '-';
+        const absOffset = Math.abs(offset);
+        const tzString = `GMT${sign}${pad(Math.floor(absOffset / 60))}${pad(absOffset % 60)}`;
+        const sendAfterStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${tzString}`;
+
         const osRes = await fetch(proxyUrl, {
           method: "POST",
           headers: {
@@ -501,7 +510,7 @@ publishBtn.addEventListener("click", async () => {
             headings: { "en": "New Post: " + title },
             contents: { "en": description || "Read the latest post now!" },
             url: `https://sh4lu-z.github.io/blogs/${slug}`,
-            send_after: new Date(Date.now() + 3 * 60000).toUTCString()
+            send_after: sendAfterStr
           })
         });
 
