@@ -25,7 +25,7 @@ service cloud.firestore {
       return data.keys().hasAll(['text', 'userId', 'userName', 'userPhoto', 'createdAt']) &&
              validSize &&
              data.text is string && data.text.size() > 0 && data.text.size() <= 2000 &&
-             data.userId is string && data.userId == request.auth.uid &&
+             data.userId is string &&
              data.userName is string && data.userName.size() <= 100 &&
              data.userPhoto is string && data.userPhoto.size() <= 1000 &&
              (hasParent ? (data.parentId is string || data.parentId == null) : true) &&
@@ -47,6 +47,7 @@ service cloud.firestore {
                        isValidId(postSlug) && 
                        isValidId(commentId) &&
                        isValidCommentShape(incoming()) &&
+                       incoming().userId == request.auth.uid &&
                        incoming().createdAt is timestamp &&
                        (!incoming().keys().hasAny(['adminHearted']) || incoming().adminHearted == false);
 
