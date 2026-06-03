@@ -238,13 +238,16 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
   <meta name="robots" content="index, follow">
   <meta name="blog-slug" content="${slug}">
   <link rel="canonical" href="${shareUrl}">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logo.png">
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="${shareUrl}">
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${safeDescription}">
-  <meta property="og:image" content="${coverImage || 'https://github.com/sh4lu-z.png'}">
+  <meta property="og:image" content="${coverImage || 'https://sh4lu-z.github.io/assets/logo.png'}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${coverImage || 'https://sh4lu-z.github.io/assets/logo.png'}">
   
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <style type="text/tailwindcss">
