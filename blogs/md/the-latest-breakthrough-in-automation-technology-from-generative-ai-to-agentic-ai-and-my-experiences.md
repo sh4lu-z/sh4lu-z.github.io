@@ -17,7 +17,7 @@
 | **මෙවලම් භාවිතය** | බාහිර මෙවලම් හෝ පරිගණක පද්ධති හැසිරවීමේ හැකියාව සීමිතයි | Terminal, Browser, File System සහ APIs ස්වයංක්‍රීයව හසුරුවයි |
 | **දෝෂ නිවැරදි කිරීම** | වැරදීමක් වුවහොත් පරිශීලකයා විසින් එය පෙන්වා දිය යුතුය | Self-Reflection (තමා විසින්ම වැරදි හඳුනාගෙන නිවැරදි කරයි) |
 
-> 📷 **Image Prompt 1:** A professional dual-panel diagram illustration. The left panel shows "Generative AI" represented as a text-chat interface waiting for user prompts. The right panel shows "Agentic AI" represented as a centralized core orchestrating multiple automatic sub-tasks simultaneously like file editing, browser testing, and running server commands on a dark futuristic workspace background.
+![123.png](https://raw.githubusercontent.com/sh4lu-z/sh4lu-z.github.io/main/assets/blog-images/1780483044522-123.png)
 
 ---
 
@@ -29,7 +29,7 @@
 
 මෙම පද්ධති හරහා සාමාන්‍යයෙන් දිනකදී නිම කරන වැඩකටයුතු 4-5 ගුණයක වේගයකින් නිම කරගැනීමේ හැකියාව ලැබුණා. Antigravity මෙවලමකට අප යම් කාර්යයක් පැවරු විට, එය මඟදී 500 Server Error එකක් පැමිණ නැවතුනෙ නැත්තම්, තනිවම මුළු Codebase සමගම වැඩ කර  Errors fix කරයි.
 
-සුවිශේෂී කරුණ නම්, වෙබ් අඩවියක් ඩිවෙලොප් කිරීමේදී මූ විසින්ම කේතය ලියා, තමන්ගේම බ්‍රවුසර් ටූල් එකක් හරහා Chrome එකක් ඕපන් කර සජීවීව පරීක්ෂා කිරීමයි. අප විසින් එහි පරිශීලක UI දෝෂයක් පවතින බව පැවසුවහොත්, මූ බ්‍රවුසරය තුළ Virtual කීබෝඩ් සහ මවුස් (Virtual Input Systems) සකස් කරගෙන, ක්ලික් කරමින් දෝෂ පවතින ස්ථාන සොයාගෙන ස්වයංක්‍රීයවම ඒවා නිවැරදි කරයි.
+සුවිශේෂී කරුණ නම්, වෙබ් අඩවියක් ඩිවෙලොප් කිරීමේදී Agent විසින්ම කේතය ලියා, තමන්ගේම බ්‍රවුසර් ටූල් එකක් හරහා Chrome එකක් ඕපන් කර සජීවීව පරීක්ෂා කිරීමයි. අප විසින් එහි පරිශීලක UI දෝෂයක් පවතින බව පැවසුවහොත්, Agent විසින් බ්‍රවුසරය තුළ Virtual කීබෝඩ් සහ මවුස් (Virtual Input Systems) සකස් කරගෙන, ක්ලික් කරමින් දෝෂ පවතින ස්ථාන සොයාගෙන ස්වයංක්‍රීයවම ඒවා නිවැරදි කරයි.
 
 මෑතකදී නිකුත් වූ **Antigravity 2.0** සංස්කරණය ප්‍රධාන ප්‍රවේශයන් දෙකක් ඔස්සේ ක්‍රියාත්මක වේ:
 
@@ -49,7 +49,8 @@
 
 මම මේ ක්‍රියාවලිය තවදුරටත් පහසු කිරීමට, එදිනෙදා පරිශීලනය වන කාර්යයන් සහ Commands 90 කට වඩා අඩංගු **Custom Python MCP Server** එකක් නිර්මාණය කර GitHub වෙතOpen Sourceලෙස මුදාහැර තිබෙනවා. අවශ්‍ය ඕනෑම කෙනෙකුට පහත Link ඔස්සේ එය ලබාගෙන ස්වයංක්‍රීයකරණ කටයුතු සඳහා පරීක්ෂා කර බැලිය හැකියි:
 
-🔗 **GitHub Repository:** [sh4lu-z/Custom-MCP](https://github.com/sh4lu-z/Custom-MCP)
+🔗 **GitHub Repository:**
+[sh4lu-z/Custom-MCP](https://github.com/sh4lu-z/Custom-MCP)
 
 ### 📊 Agentic AI සහ MCP සන්නිවේදන Simulator එක
 
@@ -203,7 +204,7 @@
   })();
 </script>
 ```
-📷 Image Prompt 2: A clean conceptual architecture poster. In the center, a large glowing digital node labeled "LLM Engine". It bridges into external environment connectors using unified pipelines titled "Model Context Protocol (MCP)", expanding into automated nodes for server handling, browsing, and file architecture. Minimalist engineering schematic layout.
+![34434.png](https://raw.githubusercontent.com/sh4lu-z/sh4lu-z.github.io/main/assets/blog-images/1780483241595-34434.png)
 
 ## 4. කිසිදු පිරිවැයකින් තොරව Local Machine එකක Agentic AI ධාවනය කිරීම
 
