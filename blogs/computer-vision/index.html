@@ -32,6 +32,20 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <!-- OneSignal SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "4436d79b-58af-4568-ac20-62578c4be3b5",
+        notifyButton: {
+          enable: true,
+        },
+      });
+      OneSignal.showSlidedownPrompt();
+    });
+  </script>
 </head>
 <script>
   if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
