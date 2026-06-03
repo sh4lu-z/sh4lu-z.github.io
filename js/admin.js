@@ -43,9 +43,9 @@ function insertImageBlock() {
   const cm = editor.codemirror;
   const cursor = cm.getCursor();
   const text = cm.getSelection() || "";
-  
+
   cm.replaceSelection(`![${text}](https://)\n<sub><a href="https://example.com">Source Image</a></sub>\n`);
-  
+
   // Move cursor to the end of https://
   cm.setCursor({ line: cursor.line, ch: text.length + 12 });
   cm.focus();
@@ -59,7 +59,7 @@ function refreshEditorPreviewMath() {
 }
 
 function initializeEditor() {
-  editor = new EasyMDE({ 
+  editor = new EasyMDE({
     element: document.getElementById('blog-content'),
     spellChecker: false,
     placeholder: "Start your mind-blowing article here...",
@@ -73,9 +73,9 @@ function initializeEditor() {
     },
     previewRender: (plainText) => parseBlogMarkdown(plainText),
     toolbar: [
-      "bold", "italic", "strikethrough", "heading", "|", 
-      "quote", "unordered-list", "ordered-list", "|", 
-      "link", 
+      "bold", "italic", "strikethrough", "heading", "|",
+      "quote", "unordered-list", "ordered-list", "|",
+      "link",
       {
         name: "image",
         action: () => insertImageBlock(),
@@ -94,8 +94,8 @@ function initializeEditor() {
         className: "fa fa-superscript",
         title: "Insert LaTeX Equation Block"
       },
-      "table", "horizontal-rule", "|", 
-      "preview", "side-by-side", "fullscreen", "|", 
+      "table", "horizontal-rule", "|",
+      "preview", "side-by-side", "fullscreen", "|",
       "guide"
     ],
   });
@@ -137,27 +137,27 @@ async function fetchAdminBlogs() {
     adminBlogList.innerHTML = `<div class="text-amber-600 bg-amber-50 p-4 rounded-xl text-center font-bold">Waiting for GitHub Token...</div>`;
     return;
   }
-  
+
   adminBlogList.innerHTML = `<div class="text-gray-500 text-center font-bold">Connecting to GitHub API...</div>`;
 
   try {
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/md`, {
-      headers: { 
+      headers: {
         "Authorization": `Bearer ${token}`,
         "Accept": "application/vnd.github.v3+json"
       }
     });
-    
+
     if (res.status === 404) {
       adminBlogList.innerHTML = `<div class="bg-blue-50 text-blue-800 p-6 rounded-xl text-center font-bold">The 'blogs/md' folder doesn't exist yet in your repo. It will be created automatically when you publish your first post!</div>`;
       return;
     }
 
     if (!res.ok) {
-       const err = await res.json();
-       throw new Error(err.message || "Failed to fetch blogs (Check your Token)");
+      const err = await res.json();
+      throw new Error(err.message || "Failed to fetch blogs (Check your Token)");
     }
-    
+
     const data = await res.json();
     const blogs = data.filter(f => f.name.endsWith(".md"));
 
@@ -192,9 +192,9 @@ async function fetchAdminBlogs() {
 // Helper to safely handle Base64 encoding with Unicode
 function encodeBase64Unicode(str) {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
-      function toSolidBytes(match, p1) {
-          return String.fromCharCode('0x' + p1);
-      }));
+    function toSolidBytes(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    }));
 }
 
 // Helper: Get file SHA
@@ -207,7 +207,7 @@ async function getFileSha(path, owner, repo, token) {
       const data = await res.json();
       return { sha: data.sha, content: data.content };
     }
-  } catch (e) {}
+  } catch (e) { }
   return { sha: null, content: null };
 }
 
@@ -215,7 +215,7 @@ async function getFileSha(path, owner, repo, token) {
 // Helper: Generate static HTML string
 function generateHtmlForBlog(slug, title, dateStr, coverImage, description, htmlContent, keywords) {
   const shareUrl = "https://sh4lu-z.github.io/blogs/" + slug;
-  
+
   // Type කරලා නැත්නම් Title එකෙන් auto හදාගන්නවා
   const finalKeywords = keywords ? keywords : title.replace(/[^a-zA-Z0-9 ]/g, "").split(" ").filter(w => w.length > 2).join(", ");
 
@@ -362,8 +362,8 @@ publishBtn.addEventListener("click", async () => {
   const coverImage = document.getElementById("blog-cover").value.trim();
   const description = document.getElementById("blog-desc").value.trim();
   const keywords = document.getElementById("blog-keywords").value.trim();
-  const content = editor.value(); 
-  
+  const content = editor.value();
+
   const owner = GH_OWNER;
   const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
@@ -379,7 +379,7 @@ publishBtn.addEventListener("click", async () => {
   }
 
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
-  
+
   publishBtn.innerText = "Publishing... Please wait";
   publishBtn.disabled = true;
   publishBtn.classList.add("opacity-70", "cursor-not-allowed");
@@ -438,8 +438,8 @@ publishBtn.addEventListener("click", async () => {
       currentIndex = JSON.parse(decodeURIComponent(escape(atob(existingIndex.content.replace(/\s/g, '')))));
     }
 
-    const indexObj = { 
-      name: slug + ".md", 
+    const indexObj = {
+      name: slug + ".md",
       title: title,
       coverImage: coverImage,
       description: description,
@@ -480,12 +480,16 @@ publishBtn.addEventListener("click", async () => {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify(sitemapBody)
     });
-    
+
     // 6. Send OneSignal Push Notification (Only for new posts)
     const osKey = localStorage.getItem("onesignal_key") || (onesignalKeyInput ? onesignalKeyInput.value.trim() : "");
     if (osKey && !existingMd.sha) {
       try {
-        await fetch("https://onesignal.com/api/v1/notifications", {
+        // OneSignal REST API restricts direct browser requests via CORS.
+        // We use corsproxy.io to securely bypass it for our admin dashboard.
+        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://onesignal.com/api/v1/notifications");
+
+        const osRes = await fetch(proxyUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -496,9 +500,18 @@ publishBtn.addEventListener("click", async () => {
             included_segments: ["Total Subscriptions", "Subscribed Users"],
             headings: { "en": "New Post: " + title },
             contents: { "en": description || "Read the latest post now!" },
-            url: `https://sh4lu-z.github.io/blogs/${slug}`
+            url: `https://sh4lu-z.github.io/blogs/${slug}`,
+            send_after: new Date(Date.now() + 3 * 60000).toString()
           })
         });
+
+        if (!osRes.ok) {
+          const osErr = await osRes.json();
+          console.error("OneSignal Error:", osErr);
+          window.showToast("Push notification failed, but blog published.", 'error');
+        } else {
+          console.log("OneSignal Notification sent successfully!");
+        }
       } catch (err) {
         console.error("Failed to send push notification:", err);
       }
@@ -506,7 +519,7 @@ publishBtn.addEventListener("click", async () => {
 
     // Handle renaming if title changed
     if (window.editingOriginalFilename && window.editingOriginalFilename !== (slug + ".md")) {
-       await window.deleteBlog(window.editingOriginalFilename, null, true);
+      await window.deleteBlog(window.editingOriginalFilename, null, true);
     }
     window.editingOriginalFilename = null;
 
@@ -515,10 +528,10 @@ publishBtn.addEventListener("click", async () => {
     document.getElementById("blog-cover").value = "";
     document.getElementById("blog-desc").value = "";
     document.getElementById("blog-keywords").value = "";
-    editor.value(""); 
-    
-    fetchAdminBlogs(); 
-    
+    editor.value("");
+
+    fetchAdminBlogs();
+
   } catch (err) {
     window.showToast("Error publishing: " + err.message, 'error');
   } finally {
@@ -530,7 +543,7 @@ publishBtn.addEventListener("click", async () => {
 
 window.editingOriginalFilename = null;
 
-window.editBlog = async function(filename) {
+window.editBlog = async function (filename) {
   const owner = GH_OWNER;
   const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
@@ -564,11 +577,11 @@ window.editBlog = async function(filename) {
     window.showToast("Ready to edit!", "success");
 
   } catch (err) {
-     window.showToast("Error loading blog: " + err.message, "error");
+    window.showToast("Error loading blog: " + err.message, "error");
   }
 };
 
-window.deleteBlog = async function(filename, sha, silent = false) {
+window.deleteBlog = async function (filename, sha, silent = false) {
   const owner = GH_OWNER;
   const repo = GH_REPO;
   const token = tokenInput.value.trim() || GH_TOKEN;
@@ -576,9 +589,9 @@ window.deleteBlog = async function(filename, sha, silent = false) {
 
   try {
     if (!sha) {
-       const oldFile = await getFileSha(`blogs/md/${filename}`, owner, repo, token);
-       if (!oldFile.sha) return; // doesn't exist
-       sha = oldFile.sha;
+      const oldFile = await getFileSha(`blogs/md/${filename}`, owner, repo, token);
+      if (!oldFile.sha) return; // doesn't exist
+      sha = oldFile.sha;
     }
 
     // 1. Delete MD
@@ -619,9 +632,9 @@ window.deleteBlog = async function(filename, sha, silent = false) {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-           message: "Remove from index.json",
-           content: encodeBase64Unicode(JSON.stringify(currentIndex, null, 2)),
-           sha: existingIndex.sha
+          message: "Remove from index.json",
+          content: encodeBase64Unicode(JSON.stringify(currentIndex, null, 2)),
+          sha: existingIndex.sha
         })
       });
 
@@ -636,7 +649,7 @@ window.deleteBlog = async function(filename, sha, silent = false) {
         });
       }
     }
-    
+
     fetchAdminBlogs();
     if (!silent) window.showToast("Blog deleted completely.", 'info');
   } catch (err) {
