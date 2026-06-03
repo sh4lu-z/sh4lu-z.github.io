@@ -53,19 +53,21 @@
 <body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
   <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
     
-    <header class="py-4 sm:py-6 mb-6 relative transition-all duration-300">
-      <div class="absolute top-0 right-0 sm:top-4 flex items-center gap-2">
-        <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-          </svg>
-        </a>
-        <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-          <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-          <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-        </button>
+    <header class="py-4 sm:py-6 mb-6 transition-all duration-300 border-b border-gray-100 dark:border-gray-800 pb-4">
+      <div class="flex justify-between items-center gap-4">
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300 truncate" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+          </a>
+          <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+          </button>
+        </div>
       </div>
-      <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
     </header>
 
     <main id="app-content" class="flex-grow">
@@ -106,7 +108,7 @@
 <p>නිකන්ම කියවනවට වඩා, ඇත්තටම කම්පියුටර් එකක් ෆොටෝ එකක් process කරන්නේ කොහොමද කියලා ඔයාලටම අත්හදා බලන්න මම පහළින් පොඩි Interactive Widget එකක් හැදුවා. ඒකේ තියෙන බටන්ස් ක්ලික් කරලා බලන්න, සාමාන්‍ය ෆොටෝ එකක දාර (Edges) කම්පියුටර් එක හොයාගන්නේ කොහොමද, ෆොටෝ එකක් පික්සල් විදිහට කම්පියුටර් එකට පේන්නේ කොහොමද කියලා. </p>
 <p><em>(ඔබට පහතින් ඇති බටන්ස් ක්ලික් කර වෙනස්කම් නිරීක්ෂණය කළ හැක)</em></p>
 <div id="cv-widget-container" style="display: flex; justify-content: center; width: 100%; margin: 30px 0;">
-  <div class="cv-widget-box" style="width: 100%; max-width: 850px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #e9ecef;">
+  <div class="cv-widget-box" style="width: 100%; max-width: 850px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 15px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #e9ecef;">
     
     <div class="cv-header" style="text-align: center; margin-bottom: 25px;">
       <h2 style="margin: 0; color: #1a202c; font-size: 28px; font-weight: 800;">🔍 Computer Vision Simulator</h2>
@@ -116,23 +118,23 @@
     <div style="display: flex; flex-wrap: wrap; gap: 25px; margin-bottom: 20px;">
       
       <!-- Canvas Area -->
-      <div style="flex: 1.2; min-width: 320px; display: flex; flex-direction: column; align-items: center; background: #f7fafc; padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e0;">
+      <div style="flex: 1.2; min-width: 0; width: 100%; display: flex; flex-direction: column; align-items: center; background: #f7fafc; padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e0;">
         <canvas id="cv-canvas" width="450" height="300" style="background-color: #fff; border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05);"></canvas>
         <div id="mode-badge" style="margin-top: 15px; background: #4299e1; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; letter-spacing: 0.5px;">සාමාන්‍ය රූපය (Original)</div>
       </div>
 
       <!-- Controls Area -->
-      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: center;">
+      <div style="flex: 1; min-width: 0; width: 100%; display: flex; flex-direction: column; justify-content: center;">
         <h4 style="margin-top: 0; color: #2d3748; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 10px;">පෙරහන් (Filters) තෝරන්න</h4>
         
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button onclick="applyFilter('original')" style="padding: 12px; background-color: #3182ce; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(49, 130, 206, 0.4);">🖼️ Original (සාමාන්‍ය දර්ශනය)</button>
+          <button onclick="applyFilter('original')" style="padding: 12px; background-color: #3182ce; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; line-height: 1.4; height: auto; transition: all 0.2s; box-shadow: 0 2px 4px rgba(49, 130, 206, 0.4);">🖼️ Original (සාමාන්‍ය දර්ශනය)</button>
           
-          <button onclick="applyFilter('grayscale')" style="padding: 12px; background-color: #718096; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(113, 128, 150, 0.4);">⚫ Grayscale (වර්ණ ඉවත් කිරීම)</button>
+          <button onclick="applyFilter('grayscale')" style="padding: 12px; background-color: #718096; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; line-height: 1.4; height: auto; transition: all 0.2s; box-shadow: 0 2px 4px rgba(113, 128, 150, 0.4);">⚫ Grayscale (වර්ණ ඉවත් කිරීම)</button>
           
-          <button onclick="applyFilter('edges')" style="padding: 12px; background-color: #38a169; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(56, 161, 105, 0.4);">📐 Edge Detection (දාර හඳුනාගැනීම)</button>
+          <button onclick="applyFilter('edges')" style="padding: 12px; background-color: #38a169; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; line-height: 1.4; height: auto; transition: all 0.2s; box-shadow: 0 2px 4px rgba(56, 161, 105, 0.4);">📐 Edge Detection (දාර හඳුනාගැනීම)</button>
           
-          <button onclick="applyFilter('pixelate')" style="padding: 12px; background-color: #e53e3e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(229, 62, 62, 0.4);">👾 Pixelate (පික්සල් ලෙස දැකීම)</button>
+          <button onclick="applyFilter('pixelate')" style="padding: 12px; background-color: #e53e3e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; line-height: 1.4; height: auto; transition: all 0.2s; box-shadow: 0 2px 4px rgba(229, 62, 62, 0.4);">👾 Pixelate (පික්සල් ලෙස දැකීම)</button>
         </div>
 
         <div id="slider-container" style="display: none; margin-top: 25px; background: #edf2f7; padding: 15px; border-radius: 8px;">
