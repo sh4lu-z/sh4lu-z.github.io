@@ -508,7 +508,13 @@ publishBtn.addEventListener("click", async () => {
         if (!osRes.ok) {
           const osErr = await osRes.json();
           console.error("OneSignal Error:", osErr);
-          window.showToast("Push notification failed, but blog published.", 'error');
+          let errorMsg = "Push notification failed. ";
+          if (osErr.errors && osErr.errors.length > 0) {
+              errorMsg += osErr.errors.join(", ");
+          } else {
+              errorMsg += JSON.stringify(osErr);
+          }
+          window.showToast(errorMsg, 'error');
         } else {
           console.log("OneSignal Notification sent successfully!");
         }
