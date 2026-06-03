@@ -29,13 +29,19 @@
 
     <!-- Configuration -->
     <div id="settings-panel" class="bg-white p-8 rounded-2xl shadow-sm border border-amber-200 mb-8 !hidden">
-      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-amber-700">⚙️ GitHub Setup Needed</h2>
-      <p class="text-gray-500 mb-6 text-sm">We just need your Personal Access Token to manage files via API.</p>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-amber-700">⚙️ Setup Needed</h2>
+      <p class="text-gray-500 mb-6 text-sm">We need your tokens to manage files and send notifications.</p>
       
-      <div class="mb-6">
-        <label class="block text-sm font-bold text-gray-700 mb-2">Personal Access Token</label>
+      <div class="mb-4">
+        <label class="block text-sm font-bold text-gray-700 mb-2">Personal Access Token (GitHub)</label>
         <input type="password" id="gh-token" placeholder="ghp_xxx..." class="border border-gray-300 p-3 w-full rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
       </div>
+      
+      <div class="mb-6">
+        <label class="block text-sm font-bold text-gray-700 mb-2">OneSignal REST API Key</label>
+        <input type="password" id="onesignal-key" placeholder="os_v2_app_xxx..." class="border border-gray-300 p-3 w-full rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+      </div>
+      
       <button id="save-settings" class="bg-amber-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-amber-700 transition-colors shadow">Save to Browser</button>
     </div>
 

@@ -6,6 +6,7 @@ const GH_OWNER = "sh4lu-z"; // Hardcoded
 const GH_REPO = "sh4lu-z.github.io"; // Hardcoded
 
 const tokenInput = document.getElementById("gh-token");
+const onesignalKeyInput = document.getElementById("onesignal-key");
 const saveBtn = document.getElementById("save-settings");
 const adminBlogList = document.getElementById("admin-blog-list");
 const publishBtn = document.getElementById("publish-btn");
@@ -104,19 +105,23 @@ function initializeEditor() {
 }
 
 function loadSettings() {
+  const osKey = localStorage.getItem("onesignal_key") || "";
   // If token is found, hide settings!
-  if (GH_TOKEN) {
+  if (GH_TOKEN && osKey) {
     settingsPanel.classList.add("!hidden");
   } else {
     settingsPanel.classList.remove("!hidden");
     tokenInput.value = localStorage.getItem("gh_token") || "";
+    if (onesignalKeyInput) onesignalKeyInput.value = osKey;
   }
 }
 
 saveBtn.addEventListener("click", () => {
   localStorage.setItem("gh_token", tokenInput.value.trim());
+  if (onesignalKeyInput) localStorage.setItem("onesignal_key", onesignalKeyInput.value.trim());
   window.showToast("Settings safely saved to your browser!", 'success');
   fetchAdminBlogs();
+  loadSettings();
 });
 
 refreshBtn.addEventListener("click", () => {
@@ -470,6 +475,29 @@ publishBtn.addEventListener("click", async () => {
       body: JSON.stringify(sitemapBody)
     });
     
+    // 6. Send OneSignal Push Notification (Only for new posts)
+    const osKey = localStorage.getItem("onesignal_key") || (onesignalKeyInput ? onesignalKeyInput.value.trim() : "");
+    if (osKey && !existingMd.sha) {
+      try {
+        await fetch("https://onesignal.com/api/v1/notifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${osKey}`
+          },
+          body: JSON.stringify({
+            app_id: "4436d79b-58af-4568-ac20-62578c4be3b5",
+            included_segments: ["Total Subscriptions", "Subscribed Users"],
+            headings: { "en": "New Post: " + title },
+            contents: { "en": description || "Read the latest post now!" },
+            url: `https://sh4lu-z.github.io/blogs/${slug}`
+          })
+        });
+      } catch (err) {
+        console.error("Failed to send push notification:", err);
+      }
+    }
+
     // Handle renaming if title changed
     if (window.editingOriginalFilename && window.editingOriginalFilename !== (slug + ".md")) {
        await window.deleteBlog(window.editingOriginalFilename, null, true);
