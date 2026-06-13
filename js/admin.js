@@ -335,16 +335,19 @@ function generateHtmlForBlog(slug, title, dateStr, coverImage, description, html
 
 // Helper: Generate Sitemap XML
 function generateSitemap(currentIndex) {
+  const now = new Date().toISOString();
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sh4lu-z.github.io/</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 `;
   currentIndex.forEach(blog => {
     const slug = blog.name.replace(".md", "");
-    const lastmod = blog.date ? new Date(blog.date).toISOString() : new Date().toISOString();
+    const lastmod = blog.date ? new Date(blog.date).toISOString() : now;
     xml += `  <url>
     <loc>https://sh4lu-z.github.io/blogs/${slug}</loc>
     <lastmod>${lastmod}</lastmod>
@@ -355,6 +358,23 @@ function generateSitemap(currentIndex) {
   });
   xml += `</urlset>`;
   return xml;
+}
+
+// Helper: Ensure robots.txt exists in the repo
+async function ensureRobotsTxt(owner, repo, token) {
+  const existing = await getFileSha("robots.txt", owner, repo, token);
+  // Only create if it doesn't exist yet
+  if (!existing.sha) {
+    const content = `User-agent: *\nAllow: /\n\nSitemap: https://sh4lu-z.github.io/sitemap.xml\n`;
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/robots.txt`, {
+      method: "PUT",
+      headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "Add robots.txt for SEO",
+        content: encodeBase64Unicode(content)
+      })
+    });
+  }
 }
 
 publishBtn.addEventListener("click", async () => {
@@ -393,6 +413,9 @@ publishBtn.addEventListener("click", async () => {
     // 1. Get existing SHAs
     const existingMd = await getFileSha(mdPath, owner, repo, token);
     const existingHtml = await getFileSha(htmlPath, owner, repo, token);
+
+    // 1b. Ensure robots.txt exists (SEO fix)
+    await ensureRobotsTxt(owner, repo, token);
 
     // 2. Publish Markdown
     const mdBody = {
