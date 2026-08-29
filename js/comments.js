@@ -43,11 +43,11 @@ export function renderCommentSection(containerId, slug) {
         <div class="flex gap-4 mb-8">
           <img src="${currentUser.photoURL}" class="w-10 h-10 rounded-full flex-shrink-0" alt="Profile" referrerpolicy="no-referrer" />
           <div class="flex-grow">
-            <textarea id="comment-input-${slug}" placeholder="Add a comment..." class="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 py-1 text-sm focus:border-gray-900 dark:focus:border-gray-100 outline-none transition-all resize-none" rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+            <textarea id="comment-input-${slug}" placeholder="Add a comment..." class="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 py-1 text-sm focus:border-gray-900 dark:focus:border-gray-100 outline-none transition-all resize-none" rows="1" onfocus="document.getElementById('comment-actions-${slug}').style.display = 'flex';" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
             <div class="flex justify-between items-center mt-2">
               <button onclick="logoutFromComments()" class="text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Sign out</button>
-              <div class="flex gap-2">
-                <button onclick="document.getElementById('comment-input-${slug}').value = ''; document.getElementById('comment-input-${slug}').style.height = '';" class="text-gray-900 dark:text-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#272727] text-sm font-bold transition">Cancel</button>
+              <div id="comment-actions-${slug}" class="gap-2" style="display: none;">
+                <button onclick="document.getElementById('comment-input-${slug}').value = ''; document.getElementById('comment-input-${slug}').style.height = ''; document.getElementById('comment-actions-${slug}').style.display = 'none';" class="text-gray-900 dark:text-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#272727] text-sm font-bold transition">Cancel</button>
                 <button onclick="submitComment('${slug}')" class="bg-[#0f0f0f] dark:bg-[#3ea6ff] text-white dark:text-[#0f0f0f] px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-[#65b8ff] transition">Comment</button>
               </div>
             </div>
