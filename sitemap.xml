@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sh4lu-z.github.io/</loc>
-    <lastmod>2026-08-29T20:17:41.134Z</lastmod>
+    <lastmod>2026-08-29T20:21:31.720Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -27,6 +27,12 @@
   <url>
     <loc>https://sh4lu-z.github.io/blogs/the-latest-breakthrough-in-automation-technology-from-generative-ai-to-agentic-ai-and-my-experiences</loc>
     <lastmod>2026-06-03T10:50:39.659Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sh4lu-z.github.io/blogs/gpt-5-6-sol-sandbox-escape-hugging-face</loc>
+    <lastmod>2026-08-29T20:21:26.352Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
