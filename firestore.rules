@@ -19,11 +19,11 @@ service cloud.firestore {
     }
 
     match /subscribers/{emailId} {
-      allow create: if isValidEmail(emailId) &&
+      allow create, update: if isValidEmail(emailId) &&
                        incoming().keys().hasAll(['email', 'createdAt']) &&
                        incoming().email == emailId &&
                        incoming().createdAt is timestamp;
-      allow read, update, delete: if isAdmin();
+      allow read, delete: if isAdmin();
     }
 
     function isValidCommentShape(data) {
