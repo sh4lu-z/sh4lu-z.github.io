@@ -1,0 +1,38 @@
+name: Send OneSignal Push Notification
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Blog Post Title'
+        required: true
+      description:
+        description: 'Blog Post Description'
+        required: true
+      slug:
+        description: 'Blog Post Slug'
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for GitHub Pages to Deploy (60 seconds)
+        run: sleep 60
+        
+      - name: Send Notification to OneSignal
+        env:
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+        run: |
+          curl --request POST \
+               --url https://onesignal.com/api/v1/notifications \
+               --header "Authorization: Basic $ONESIGNAL_REST_API_KEY" \
+               --header "Content-Type: application/json" \
+               --data '{
+                 "app_id": "'"$ONESIGNAL_APP_ID"'",
+                 "included_segments": ["Total Subscriptions", "Subscribed Users"],
+                 "headings": {"en": "New Post: ${{ github.event.inputs.title }}"},
+                 "contents": {"en": "${{ github.event.inputs.description }}"},
+                 "url": "https://sh4lu-z.github.io/blogs/${{ github.event.inputs.slug }}"
+               }'

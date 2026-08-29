@@ -519,53 +519,34 @@ publishBtn.addEventListener("click", async () => {
     });
 
     // 6. Send OneSignal Push Notification (Only for new posts)
-    const osKey = localStorage.getItem("onesignal_key") || (onesignalKeyInput ? onesignalKeyInput.value.trim() : "");
-    if (osKey && !existingMd.sha) {
+    // We now securely trigger a GitHub Action instead of using a public proxy!
+    if (!existingMd.sha) {
       try {
-        // OneSignal REST API restricts direct browser requests via CORS.
-        // We use corsproxy.io to securely bypass it for our admin dashboard.
-        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://onesignal.com/api/v1/notifications");
-
-        // Format date strictly for OneSignal: YYYY-MM-DD HH:MM:SS GMT±HHMM
-        const d = new Date(Date.now() + 3 * 60000); // 3 minutes later
-        const pad = (num) => String(num).padStart(2, '0');
-        const offset = -d.getTimezoneOffset(); 
-        const sign = offset >= 0 ? '+' : '-';
-        const absOffset = Math.abs(offset);
-        const tzString = `GMT${sign}${pad(Math.floor(absOffset / 60))}${pad(absOffset % 60)}`;
-        const sendAfterStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${tzString}`;
-
-        const osRes = await fetch(proxyUrl, {
+        const actionRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/onesignal.yml/dispatches`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Basic ${osKey}`
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            app_id: "4436d79b-58af-4568-ac20-62578c4be3b5",
-            included_segments: ["Total Subscriptions", "Subscribed Users"],
-            headings: { "en": "New Post: " + title },
-            contents: { "en": description || "Read the latest post now!" },
-            url: `https://sh4lu-z.github.io/blogs/${slug}`,
-            send_after: sendAfterStr
+            ref: "main",
+            inputs: {
+              title: title,
+              description: description || "Read the latest post now!",
+              slug: slug
+            }
           })
         });
 
-        if (!osRes.ok) {
-          const osErr = await osRes.json();
-          console.error("OneSignal Error:", osErr);
-          let errorMsg = "Push notification failed. ";
-          if (osErr.errors && osErr.errors.length > 0) {
-              errorMsg += osErr.errors.join(", ");
-          } else {
-              errorMsg += JSON.stringify(osErr);
-          }
-          window.showToast(errorMsg, 'error');
+        if (!actionRes.ok) {
+          console.error("GitHub Action Error:", await actionRes.text());
+          window.showToast("Push notification action failed to trigger (Check GitHub Token permissions).", 'error');
         } else {
-          console.log("OneSignal Notification sent successfully!");
+          console.log("GitHub Action Notification triggered successfully!");
         }
       } catch (err) {
-        console.error("Failed to send push notification:", err);
+        console.error("Failed to trigger push notification action:", err);
       }
     }
 
