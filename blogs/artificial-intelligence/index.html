@@ -13,23 +13,27 @@
   <meta name="robots" content="index, follow">
   <meta name="blog-slug" content="artificial-intelligence">
   <link rel="canonical" href="https://sh4lu-z.github.io/blogs/artificial-intelligence">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logo.png">
   
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://sh4lu-z.github.io/blogs/artificial-intelligence">
   <meta property="og:title" content="Artificial-intelligence">
   <meta property="og:description" content="AI තාක්ෂණය යනු කුමක්ද, එය ක්‍රියා කරන ආකාරය සහ අපේ ජීවිතයට බලපාන අයුරු සරලව පැහැදිලි කරන ලිපියකි. වර්තමානයේ භාවිත කළ හැකි හොඳම AI මෙවලම් සහ අනාගත අභියෝග පිළිබඳවද මෙහි ඇතුළත් වේ.">
-  <meta property="og:image" content="https://github.com/sh4lu-z.png">
+  <meta property="og:image" content="https://sh4lu-z.github.io/assets/logo.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://sh4lu-z.github.io/assets/logo.png">
   
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
   </style>
   <link rel="stylesheet" href="/css/style.css?v=3">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
   <!-- OneSignal SDK -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
@@ -83,119 +87,119 @@
           <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">Artificial-intelligence</h1>
           <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-            Published on 1 May 2026
+            Published on 30 August 2026
           </div>
         </div>
 
         <article class="py-8 markdown-body">
           <p><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1200" alt="AI Header"></p>
-<p>අද මම ඔයාලත් එක්ක කතා කරන්න යන්නේ වර්තමාන ලෝකයේ හැමෝම කතා වෙන, හැම තැනම ඇහෙන මාතෘකාවක් ගැන. ඒ තමයි <strong>AI</strong> එහෙමත් නැත්නම් <strong>Artificial Intelligence</strong>. ගොඩක් අය හිතන්නේ AI කියන්නේ අනාගතයේ එන දෙයක් කියලා, හැබැයි ඇත්තටම අපි දැනටමත් ඉන්නේ AI යුගයක. </p>
-<p>මම මේ ලිපියෙන් AI ගැන සරලව වගේම ගැඹුරින් ඔයාලට කියලා දෙන්න බලාපොරොත්තු වෙනවා.</p>
+<p>කෘත්‍රිම බුද්ධිය (Artificial Intelligence - AI) කියන්නේ අද වෙද්දි තාක්ෂණික ලෝකයේ විතරක් නෙවෙයි, සාමාන්‍ය සමාජය ඇතුළෙත් නිතරම කතාබහට ලක්වෙන මාතෘකාවක්. ගොඩක් අයට AI කිව්වම මතක් වෙන්නේ Sci-Fi චිත්‍රපටවල ඉන්න රොබෝවරු වුණත්, ඇත්තටම අපි මේ වෙද්දිත් ජීවත් වෙන්නේ AI තාක්ෂණයෙන් පාලනය වෙන යුගයකයි. </p>
+<p>මේ ලිපියෙන් මම බලාපොරොත්තු වෙන්නේ AI කියන සංකල්පය සරලව, ඒ වගේම ප්‍රායෝගික උදාහරණත් එක්ක පැහැදිලි කරන්න. </p>
 <hr>
-<h2>🧠 මොකක්ද මේ AI කියන්නේ? (What is AI?)</h2>
-<p>සරලවම කිව්වොත්, AI කියන්නේ මිනිස් බුද්ධිය පරිගණකයකට හෝ යන්ත්‍රයකට ලබා දීමයි. සාමාන්‍යයෙන් පරිගණකයක් කරන්නේ අපි දෙන නියෝග (Instructions) ක්‍රියාත්මක කරන එක විතරයි. හැබැයි AI එකකට පුළුවන්:</p>
+<h2>මොකක්ද මේ AI කියන්නේ? (What is AI?)</h2>
+<p>සරලවම කිව්වොත්, AI කියන්නේ මිනිස් බුද්ධියට සමානව සිතන්නට සහ තීරණ ගන්නට පරිගණකයකට හෝ යන්ත්‍රයකට ලබා දෙන හැකියාවයි. සාමාන්‍ය මෘදුකාංගයක් ක්‍රියාත්මක වෙන්නේ අපි ලබාදෙන නියෝග (Instructions) මත විතරයි. නමුත් AI පද්ධතියකට ඊට වඩා දේවල් කරන්න පුළුවන්:</p>
 <ul>
-<li>දත්ත පාවිච්චි කරලා අලුත් දේවල් ඉගෙන ගන්න (<strong>Learning</strong>)</li>
-<li>ප්‍රශ්නයක් දුන්නම ඒක විසඳන්න ක්‍රම හොයන්න (<strong>Problem Solving</strong>)</li>
-<li>ලබා දෙන තොරතුරු මත තීරණ ගන්න (<strong>Decision Making</strong>)</li>
+<li><strong>Learning (ඉගෙනීම):</strong> ලබා දෙන දත්ත විශ්ලේෂණය කර අලුත් රටා හඳුනා ගැනීම.</li>
+<li><strong>Problem Solving (ගැටලු විසඳීම):</strong> ලබා දී ඇති ගැටලුවකට ගැලපෙන හොඳම විසඳුම තර්කානුකූලව සොයා ගැනීම.</li>
+<li><strong>Decision Making (තීරණ ගැනීම):</strong> පවතින තත්ත්වයන් මත පදනම්ව ස්වාධීන තීරණ වලට එළඹීම.</li>
 </ul>
 <hr>
-<h2>📜 AI වල ඉතිහාසය (History of AI)</h2>
-<p>AI කියන්නේ අද ඊයේ ආපු දෙයක් නෙවෙයි. මේකේ ආරම්භය 1950 දශකය දක්වා දිව යනවා.</p>
+<h2>AI වල පරිණාමය (The Evolution of AI)</h2>
+<p>AI කියන්නේ එක රැයකින් බිහිවුණු තාක්ෂණයක් නෙවෙයි. මේකෙ ඉතිහාසය දශක ගණනාවක් අතීතයට දිව යනවා.</p>
 <ul>
-<li><strong>1950:</strong> ඇලන් ටියුරින් (Alan Turing) &quot;පරිගණකයකට හිතන්න පුළුවන්ද?&quot; කියන ප්‍රශ්නය ලෝකයට ඉදිරිපත් කළා.</li>
-<li><strong>1956:</strong> Dartmouth Conference එකේදී තමයි පළමු වතාවට &quot;Artificial Intelligence&quot; කියන වචනය පාවිච්චි වුණේ.</li>
-<li><strong>1997:</strong> IBM සමාගමේ Deep Blue පරිගණකය ලෝක චෙස් ශූර ගැරී කැස්පරොව්ව පරාජය කළා.</li>
-<li><strong>2022-වර්තමානය:</strong> ChatGPT, Midjourney වැනි Generative AI වල පිපිරීමත් එක්ක AI සාමාන්‍ය මිනිසුන් අතරට ආවා.</li>
+<li><strong>1950:</strong> බ්‍රිතාන්‍ය ජාතික ගණිතඥ ඇලන් ටියුරින් (Alan Turing) විසින් <a href="https://academic.oup.com/mind/article/LIX/236/433/986238">&quot;යන්ත්‍ර වලට සිතිය හැකිද?&quot; යන සුප්‍රසිද්ධ පර්යේෂණ පත්‍රිකාව (Turing Test)</a> ඉදිරිපත් කිරීම.</li>
+<li><strong>1956:</strong> ජෝන් මැකාති (John McCarthy) විසින් <a href="https://home.dartmouth.edu/about/artificial-intelligence-ai-coined-dartmouth">ඩාර්ට්මත් සමුළුවේදී (Dartmouth Conference)</a> පළමු වරට &quot;Artificial Intelligence&quot; කියන පදය භාවිතා කිරීම.</li>
+<li><strong>1997:</strong> <a href="https://www.ibm.com/history/deep-blue">IBM සමාගමේ Deep Blue සුපිරි පරිගණකය විසින් ලෝක චෙස් ශූර ගැරී කැස්පරොව් පරාජය කිරීම.</a></li>
+<li><strong>2022 - වර්තමානය:</strong> OpenAI සමාගමේ ChatGPT සහ Midjourney වැනි Generative AI ආකෘති හරහා AI තාක්ෂණය සාමාන්‍ය ජනතාව අතරට පැමිණීම.</li>
 </ul>
 <p><img src="https://qbi.uq.edu.au/files/40697/The-Brain-Intelligent-Machines-AI-timeline.jpg" alt="AI History"></p>
 <hr>
-<h2>⚙️ AI ක්‍රියා කරන ප්‍රධාන තාක්ෂණයන්</h2>
-<p>AI කියන්නේ එක තාක්ෂණයක් නෙවෙයි, ඒක තාක්ෂණයන් ගණනාවක එකතුවක්:</p>
+<h2>AI පිටුපස ඇති ප්‍රධාන තාක්ෂණයන්</h2>
+<p>AI කියන්නේ තනි තාක්ෂණයක් නෙවෙයි. එය ප්‍රධාන අනු-ක්ෂේත්‍ර කිහිපයක එකතුවක් විදිහට හඳුන්වන්න පුළුවන්:</p>
 <ol>
-<li><strong>Machine Learning (ML):</strong> යන්ත්‍රයකට දත්ත මගින් තනිවම ඉගෙන ගැනීමට සැලැස්වීම.</li>
-<li><strong>Deep Learning:</strong> මිනිස් මොළයේ ස්නායු පද්ධතිය අනුකරණය කරමින් (Neural Networks) ඉතා සංකීර්ණ දත්ත විශ්ලේෂණය කිරීම.</li>
-<li><strong>Natural Language Processing (NLP):</strong> මිනිස් භාෂාව (සිංහල, ඉංග්‍රීසි වගේ) තේරුම් ගැනීමට සහ ප්‍රතිචාර දැක්වීමට ඇති හැකියාව. (උදා: ChatGPT)</li>
-<li><strong>Computer Vision:</strong> පින්තූර සහ වීඩියෝ හඳුනාගැනීමේ හැකියාව. (උදා: Face ID)</li>
+<li><strong>Machine Learning (ML):</strong> යන්ත්‍රයකට දත්ත ලබා දී, එම දත්ත හරහා ස්වයංක්‍රීයව ඉගෙන ගැනීමට සැලැස්වීම (උදා: YouTube Recommendations). </li>
+<li><strong>Deep Learning:</strong> මිනිස් මොළයේ ස්නායු පද්ධතිය (Neural Networks) අනුකරණය කරමින් ඉතා සංකීර්ණ දත්ත ස්ථර විශ්ලේෂණය කිරීම.</li>
+<li><strong>Natural Language Processing (NLP):</strong> මිනිසුන් භාවිතා කරන භාෂාවන් තේරුම් ගැනීමට සහ ඒවාට ප්‍රතිචාර දැක්වීමට ඇති හැකියාව (උදා: ChatGPT, Siri).</li>
+<li><strong>Computer Vision:</strong> ඩිජිටල් රූප සහ වීඩියෝ වල ඇති දේවල් හඳුනාගැනීමේ සහ විශ්ලේෂණය කිරීමේ හැකියාව (උදා: Facial Recognition, Self-driving cars).</li>
 </ol>
 <hr>
-<h2>🛠️ වර්තමානයේ අපිට පාවිච්චි කළ හැකි හොඳම AI Tools</h2>
-<p>ඔයා ශිෂ්‍යයෙක් වුණත්, රැකියාවක් කරන කෙනෙක් වුණත් මේ tools ඔයාගේ වැඩ පහසු කරගන්න පාවිච්චි කරන්න පුළුවන්:</p>
+<h2>වර්තමානයේ භාවිතයට ගත හැකි ප්‍රායෝගික AI Tools</h2>
+<p>ඔබ කුමන ක්ෂේත්‍රයක නිරත වුණත්, මේ AI මෙවලම් හරහා ඔබේ ඵලදායිතාවය (Productivity) වැඩි කරගන්න පුළුවන්:</p>
 <table>
 <thead>
 <tr>
-<th align="left">Tool එක</th>
-<th align="left">කාර්යය</th>
+<th align="left">මෙවලම (Tool)</th>
+<th align="left">ප්‍රධාන භාවිතය</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left"><strong>ChatGPT / Gemini</strong></td>
-<td align="left">ලිපි ලිවීමට, කේතනය (Coding) කිරීමට සහ තොරතුරු සෙවීමට.</td>
+<td align="left"><strong>ChatGPT / Claude / Gemini</strong></td>
+<td align="left">ලිපි සැකසීම, කේතනය (Coding), දත්ත විශ්ලේෂණය සහ ගැටලු විසඳීම.</td>
 </tr>
 <tr>
-<td align="left"><strong>Midjourney / DALL-E</strong></td>
-<td align="left">වචන වලින් ලස්සන පින්තූර නිර්මාණය කිරීමට.</td>
+<td align="left"><strong>Midjourney / DALL-E 3</strong></td>
+<td align="left">ලබාදෙන විස්තරයකට (Prompt) අනුව උසස් තත්ත්වයේ නිර්මාණාත්මක රූප සැකසීම.</td>
 </tr>
 <tr>
 <td align="left"><strong>Canva Magic Studio</strong></td>
-<td align="left">ඉතා ඉක්මනින් ඩිසයින් වැඩ කරගැනීමට.</td>
+<td align="left">ග්‍රැෆික් නිර්මාණ කටයුතු ස්වයංක්‍රීයව සහ පහසුවෙන් සිදු කිරීම.</td>
 </tr>
 <tr>
 <td align="left"><strong>GitHub Copilot</strong></td>
-<td align="left">Programmers ලට code ලියන්න උදවු වෙන්න.</td>
+<td align="left">මෘදුකාංග සංවර්ධකයන්ට (Developers) කේත ලිවීමේදී සහාය වීම.</td>
 </tr>
 <tr>
 <td align="left"><strong>ElevenLabs</strong></td>
-<td align="left">ලියන දේවල් මිනිස් කටහඬකින් අහන්න (Text-to-Speech).</td>
+<td align="left">පෙළක් (Text) ඉතාම ස්වභාවික මිනිස් කටහඬකට (Speech) පරිවර්තනය කිරීම.</td>
 </tr>
 </tbody></table>
 <p><img src="https://images.unsplash.com/photo-1675271591211-126ad94e495d?auto=format&fit=crop&q=80&w=1000" alt="Modern AI Tools"></p>
 <hr>
-<h2>🌍 AI වලින් ලෝකයට වෙන බලපෑම</h2>
-<p>AI නිසා ක්ෂේත්‍ර ගණනාවක් සම්පූර්ණයෙන්ම වෙනස් වෙලා තියෙනවා:</p>
-<h3>1. වෛද්‍ය ක්ෂේත්‍රය (Healthcare)</h3>
-<p>ලෙඩ රෝග කලින් හඳුනාගන්නත්, සාර්ථක සැත්කම් කරන්නත් දැන් AI පාවිච්චි කරනවා. MRI/CT Scan පරීක්ෂා කරලා පිළිකා වැනි රෝග මුල් අවධියේදීම හඳුනාගන්න AI වලට පුළුවන්.</p>
+<h2>AI හරහා ලෝකයට සිදුවන බලපෑම</h2>
+<p>මේ වෙද්දිත් AI තාක්ෂණය ක්ෂේත්‍ර ගණනාවක දැවැන්ත පෙරළියක් කරමින් පවතිනවා:</p>
+<h3>1. සෞඛ්‍ය ක්ෂේත්‍රය (Healthcare)</h3>
+<p>රෝග කල්තියා හඳුනාගැනීමට දැන් AI භාවිතා කරනවා. විශේෂයෙන්ම <a href="https://www.nature.com/articles/s41591-018-0300-7">MRI හෝ CT Scan පරීක්ෂණ විශ්ලේෂණය කර පිළිකා වැනි රෝග මුල් අවධියේදීම හඳුනාගන්න</a> AI ඇල්ගොරිතම වලට පුළුවන්.</p>
 <h3>2. අධ්‍යාපනය (Education)</h3>
-<p>සෑම ශිෂ්‍යයෙකුටම ගැලපෙන විදිහට ඉගෙනුම් රටාවන් සකස් කරන්න (Personalized Learning) AI උදවු වෙනවා.</p>
-<h3>3. කෘෂිකර්මය (Agriculture)</h3>
-<p>පසේ තත්ත්වය, කාලගුණය සහ බෝග වලට වැළඳෙන රෝග ගැන කලින් අනාවැකි කියන්න AI තාක්ෂණය යොදාගන්නවා.</p>
+<p>සෑම ශිෂ්‍යයෙකුගේම ඉගෙනුම් වේගය සහ දුර්වලතා හඳුනාගෙන, ඔවුන්ටම ගැලපෙන Personalized Learning රටාවන් නිර්මාණය කර දෙන්න AI උදවු වෙනවා.</p>
+<h3>3. කෘෂිකර්මාන්තය (Agriculture)</h3>
+<p>කාලගුණික විපර්යාස, පසේ තත්ත්වය සහ වගාවන්ට වැළඳිය හැකි රෝග පිළිබඳව නිවැරදිව අනාවැකි කීමට AI පදනම් කරගත් සංවේදක (Sensors) භාවිතා කෙරෙනවා.</p>
 <p><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1000" alt="AI in Healthcare"></p>
 <hr>
-<h2>⚖️ AI වල තියෙන වාසි සහ අවාසි</h2>
-<p>ඕනෑම දෙයක වගේම AI වලත් පැති දෙකක් තියෙනවා.</p>
-<h3>✅ වාසි:</h3>
+<h2>AI වල වාසි සහ අභියෝග</h2>
+<p>තාක්ෂණික දියුණුවත් එක්කම, ඒ හරහා සමාජයට එල්ල වෙන අභියෝග ගැනත් අපි අවධානය යොමු කරන්න ඕනේ.</p>
+<h3>ප්‍රධාන වාසි:</h3>
 <ul>
-<li>අධික වේගය සහ කාර්යක්ෂමතාව.</li>
-<li>මහන්සියක් නැතිව 24/7 වැඩ කළ හැකි වීම.</li>
-<li>අතිශය නිවැරදි දත්ත විශ්ලේෂණය.</li>
+<li>ඉතා සංකීර්ණ දත්ත ප්‍රමාණයක් තත්පර කිහිපයකින් විශ්ලේෂණය කිරීමේ හැකියාව.</li>
+<li>වෙහෙසකින් තොරව 24/7 අඛණ්ඩව සේවය සැපයීම.</li>
+<li>මිනිස් අතපසුවීම් (Human Errors) අවම වීම.</li>
 </ul>
-<h3>❌ අවාසි සහ අභියෝග:</h3>
+<h3>අභියෝග සහ අවදානම්:</h3>
 <ul>
-<li><strong>රැකියා අර්බුදය:</strong> සාම්ප්‍රදායික රැකියා (Data entry, basic accounting) අහිමි වීමේ අවදානම.</li>
-<li><strong>Ethical Issues:</strong> AI වැරදි තොරතුරු (Fake News) සහ Deepfakes නිර්මාණය කිරීමට යොදාගැනීම.</li>
-<li><strong>පරායත්තතාවය:</strong> මිනිසා ඕනෑවට වඩා AI මත යැපීම නිසා තනිවම සිතීමේ හැකියාව අඩු වීම.</li>
+<li><strong>රැකියා අවදානම:</strong> දත්ත ඇතුළත් කිරීම්, මූලික ගිණුම්කරණය වැනි පුනරාවර්තන රැකියා (Repetitive jobs) අහිමි වීමේ අවදානමක් පවතිනවා.</li>
+<li><strong>ආචාර ධර්ම ගැටලු (Ethical Issues):</strong> Deepfakes තාක්ෂණය හරහා ව්‍යාජ තොරතුරු (Misinformation) සමාජගත කිරීම.</li>
+<li><strong>තාක්ෂණය මත යැපීම:</strong> මිනිසා ඕනෑවට වඩා AI මත යැපීම නිසා තනිවම තීරණ ගැනීමේ සහ විවේචනාත්මකව සිතීමේ හැකියාව (Critical Thinking) අඩු වීම.</li>
 </ul>
 <hr>
-<h2>👨‍💻 AI යුගයට අපි සූදානම් වෙන්නේ කොහොමද?</h2>
-<p>AI එන එක අපිට නවත්වන්න බැහැ, ඒ නිසා අපි කරන්න ඕනේ ඒකට හැඩගැහෙන එකයි. <strong>Shaluka Gimhan</strong> විදිහට මම ඔයාලට දෙන ටිප්ස් කිහිපයක් මෙන්න:</p>
+<h2>👨‍💻 අපි මේ වෙනසට මුහුණ දෙන්නේ කොහොමද?</h2>
+<p>මගේ පෞද්ගලික අදහස නම්, අපි AI වලට බිය විය යුතු නැහැ. ඒ වෙනුවට අපි කළ යුත්තේ ඊට හැඩගැසීමයි.</p>
 <ol>
-<li><strong>AI ගැන ඉගෙන ගන්න:</strong> AI tools පාවිච්චි කරන හැටි ඉගෙන ගන්න (Prompt Engineering).</li>
-<li><strong>Soft Skills දියුණු කරගන්න:</strong> නිර්මාණශීලීව සිතීම, නායකත්වය සහ මිනිස් සබඳතා වැනි AI වලට කළ නොහැකි දේවල් ප්‍රගුණ කරන්න.</li>
-<li><strong>දිගටම ඉගෙන ගන්න (Continuous Learning):</strong> ලෝකය වේගයෙන් වෙනස් වෙනවා, ඒ නිසා අලුත් තාක්ෂණයන් එක්ක යාවත්කාලීන වෙන්න.</li>
+<li><strong>AI මෙවලම් භාවිතය ප්‍රගුණ කිරීම:</strong> AI කියන්නේ තවත් එක මෙවලමක් පමණයි. එය නිවැරදිව හසුරුවන ආකාරය (Prompt Engineering) ඉගෙන ගැනීම අත්‍යවශ්‍යයි.</li>
+<li><strong>Soft Skills වර්ධනය කරගැනීම:</strong> නිර්මාණශීලීව සිතීම, නායකත්වය, චිත්තවේගීය බුද්ධිය (Emotional Intelligence) සහ මිනිස් සබඳතා වැනි AI වලට ප්‍රතිස්ථාපනය කළ නොහැකි කුසලතා දියුණු කරගන්න.</li>
+<li><strong>නිරන්තරයෙන් යාවත්කාලීන වීම (Continuous Learning):</strong> ලෝකය වෙනස් වෙන වේගයට අනුව, අලුත් දේවල් ඉගෙනීමට සෑම විටම සූදානමින් සිටින්න.</li>
 </ol>
 <hr>
-<h2>🏁 අවසාන අදහස</h2>
-<p>AI කියන්නේ අපේ හතුරා නෙවෙයි, ඒක අපේ වැඩ පහසු කරගන්න ලැබුණු සුපිරි මෙවලමක් (Tool එකක්). අපි බුද්ධිමත්ව මේ තාක්ෂණය පාවිච්චි කළොත්, අපිට පුළුවන් ගොඩක් ඉහළට යන්න.</p>
-<p>ඔයාලා දැනටමත් පාවිච්චි කරන AI Tools මොකක්ද?</p>
+<h2>🏁 අවසාන වශයෙන්</h2>
+<p>AI කියන්නේ අපේ රැකියා උදුරාගන්න ආපු සතුරෙක් නෙවෙයි. එය අපේ ඵලදායිතාවය වැඩි කරගන්න ලැබුණු සුපිරි මෙවලමක්. ඉතිහාසයේ හැම තාක්ෂණික විප්ලවයකදීම වගේම, මේ විප්ලවයේදීත් ජයගන්නේ වෙනසට ඉක්මනින් හැඩගැහෙන මිනිස්සු විතරයි.</p>
+<p>ඔබ මේ වෙද්දි දෛනිකව භාවිතා කරන AI මෙවලම් මොනවද? ඒ ගැන පහළින් කමෙන්ට් කරන්න!</p>
 <hr>
-<p><em>(Note: මේ පින්තූර වල අයිතිය ඒවායේ මුල් අයිතිකරුවන් සතු වේ.)</em></p>
+<p><em>(Note: පින්තූරවල අයිතිය ඒවායේ මුල් හිමිකරුවන් සතු වේ.)</em></p>
 
         </article>
         <div id="comments-container-artificial-intelligence"></div>
       </div>
     </main>
 
-                <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
       <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
       
       <div class="mt-4 flex flex-col items-center">
@@ -214,6 +218,6 @@
     </footer>
   </div>
   <script src="/js/toast.js"></script>
-  <script type="module" src="/js/app.js?v=1788014984953"></script>
+  <script type="module" src="/js/app.js?v=1788031142828"></script>
 </body>
 </html>
