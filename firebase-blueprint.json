@@ -14,12 +14,40 @@
         "adminHearted": { "type": "boolean", "description": "Whether an admin hearted this comment" }
       },
       "required": ["text", "userId", "userName", "userPhoto", "createdAt"]
+    },
+    "PostLike": {
+      "title": "PostLike",
+      "description": "A user's like on a blog post",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user who liked" },
+        "createdAt": { "type": "timestamp", "description": "When the post was liked" }
+      },
+      "required": ["userId", "createdAt"]
+    },
+    "Bookmark": {
+      "title": "Bookmark",
+      "description": "A user's saved blog post",
+      "type": "object",
+      "properties": {
+        "postSlug": { "type": "string", "description": "The slug of the bookmarked post" },
+        "createdAt": { "type": "timestamp", "description": "When the post was bookmarked" }
+      },
+      "required": ["postSlug", "createdAt"]
     }
   },
   "firestore": {
     "/postComments/{postSlug}/comments/{commentId}": {
       "schema": { "$ref": "#/entities/Comment" },
       "description": "Stores comments for a specific blog post where the document ID is the slug."
+    },
+    "/postLikes/{postSlug}/likes/{userId}": {
+      "schema": { "$ref": "#/entities/PostLike" },
+      "description": "Stores likes for a specific blog post. Document ID is the user's UID."
+    },
+    "/users/{userId}/bookmarks/{postSlug}": {
+      "schema": { "$ref": "#/entities/Bookmark" },
+      "description": "Stores bookmarked posts for a specific user. Document ID is the post slug."
     }
   }
 }

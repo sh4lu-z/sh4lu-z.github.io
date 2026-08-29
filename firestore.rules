@@ -11,10 +11,19 @@ service cloud.firestore {
     function isValidId(id) { return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
     function incoming() { return request.resource.data; }
     function existing() { return resource.data; }
+    function isValidEmail(email) { return email.matches('^[^@]+@[^@]+\\.[a-zA-Z]{2,}$'); }
     
     function isAdmin() {
       return isSignedIn() && 
              (request.auth.token.email == 'shalukagimhan13@gmail.com' || request.auth.token.email == 'sh4lu.z@gmail.com');
+    }
+
+    match /subscribers/{emailId} {
+      allow create: if isValidEmail(emailId) &&
+                       incoming().keys().hasAll(['email', 'createdAt']) &&
+                       incoming().email == emailId &&
+                       incoming().createdAt is timestamp;
+      allow read, update, delete: if isAdmin();
     }
 
     function isValidCommentShape(data) {
@@ -72,6 +81,16 @@ service cloud.firestore {
                        isValidId(postSlug) &&
                        isValidId(commentId) &&
                        (existing().userId == request.auth.uid || isAdmin());
+    }
+
+    match /postLikes/{postSlug}/likes/{userId} {
+      allow read: if true;
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/bookmarks/{postSlug} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if isSignedIn() && request.auth.uid == userId;
     }
   }
 }

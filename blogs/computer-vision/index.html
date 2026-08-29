@@ -51,7 +51,7 @@
   if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
 </script>
 <body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
-  <div class="max-w-4xl mx-auto flex flex-col min-h-screen">
+  <div class="max-w-5xl lg:max-w-6xl mx-auto flex flex-col min-h-screen">
     
     <header class="py-4 sm:py-6 mb-6 transition-all duration-300 border-b border-gray-100 dark:border-gray-800 pb-4">
       <div class="flex justify-between items-center gap-4">
@@ -373,11 +373,25 @@
       </div>
     </main>
 
-    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+                <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
       <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+      
+      <div class="mt-4 flex flex-col items-center">
+        <p class="text-xs font-bold text-gray-900 dark:text-gray-100 mb-2 uppercase tracking-widest">Subscribe to the newsletter</p>
+        <form class="flex items-center gap-2" onsubmit="handleSubscribe(event, this)">
+          <input type="email" placeholder="Enter your email" required class="px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-sm focus:outline-none focus:border-gray-900 dark:focus:border-gray-100 transition-colors w-64 text-gray-900 dark:text-gray-100 placeholder-gray-400">
+          <button type="submit" class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-5 py-2 rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">Subscribe</button>
+        </form>
+      </div>
+
+      <div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest mt-4">
+        <a href="/privacy-policy.html" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Privacy Policy</a>
+        <span>•</span>
+        <a href="/terms-of-service.html" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Terms of Service</a>
+      </div>
     </footer>
   </div>
   <script src="/js/toast.js"></script>
-  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/app.js?v=1788014984953"></script>
 </body>
 </html>

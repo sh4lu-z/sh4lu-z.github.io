@@ -1,4 +1,4 @@
-import { initFirebase, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, onSnapshot, orderBy, deleteDoc, updateDoc, doc, serverTimestamp } from './firebase.js';
+import { initFirebase, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, collection, addDoc, query, onSnapshot, orderBy, deleteDoc, updateDoc, doc, serverTimestamp, arrayUnion, arrayRemove, getDoc } from './firebase.js';
 
 let currentUser = null;
 let db = null;
@@ -40,43 +40,53 @@ export function renderCommentSection(containerId, slug) {
     let authHtml = '';
     if (currentUser) {
       authHtml = `
-        <div class="flex items-center justify-between mb-4 bg-gray-50 dark:bg-[#1a1a1a] p-3 rounded-xl border border-gray-200 dark:border-gray-800">
-          <div class="flex items-center gap-2">
-            <img src="${currentUser.photoURL}" class="w-6 h-6 rounded-full" alt="Profile" referrerpolicy="no-referrer" />
-            <span class="font-bold text-xs text-gray-900 dark:text-gray-100">${currentUser.displayName}</span>
+        <div class="flex gap-4 mb-8">
+          <img src="${currentUser.photoURL}" class="w-10 h-10 rounded-full flex-shrink-0" alt="Profile" referrerpolicy="no-referrer" />
+          <div class="flex-grow">
+            <textarea id="comment-input-${slug}" placeholder="Add a comment..." class="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 py-1 text-sm focus:border-gray-900 dark:focus:border-gray-100 outline-none transition-all resize-none" rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+            <div class="flex justify-between items-center mt-2">
+              <button onclick="logoutFromComments()" class="text-xs font-bold text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Sign out</button>
+              <div class="flex gap-2">
+                <button onclick="document.getElementById('comment-input-${slug}').value = ''; document.getElementById('comment-input-${slug}').style.height = '';" class="text-gray-900 dark:text-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#272727] text-sm font-bold transition">Cancel</button>
+                <button onclick="submitComment('${slug}')" class="bg-[#0f0f0f] dark:bg-[#3ea6ff] text-white dark:text-[#0f0f0f] px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-[#65b8ff] transition">Comment</button>
+              </div>
+            </div>
           </div>
-          <button onclick="logoutFromComments()" class="text-xs font-bold text-red-600 hover:text-red-700 uppercase tracking-widest transition-colors">Sign Out</button>
-        </div>
-        <div class="mb-4">
-          <textarea id="comment-input-${slug}" placeholder="Share your thoughts..." class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#141414] text-gray-900 dark:text-gray-100 p-3 text-sm rounded-xl focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 outline-none transition-all mb-2" rows="2"></textarea>
-          <button onclick="submitComment('${slug}')" class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity">Post Comment</button>
         </div>
       `;
     } else {
       authHtml = `
-        <div class="mb-6 bg-gray-50 dark:bg-[#1a1a1a] p-5 rounded-xl border border-gray-200 dark:border-gray-800 text-center">
-          <p class="text-gray-600 dark:text-gray-400 mb-3 text-sm font-bold">Join the conversation</p>
-          <button onclick="loginFromComments()" class="bg-blue-600 text-white relative px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-blue-700 transition-colors shadow">
-            Sign in with Google
-          </button>
+        <div class="flex gap-4 mb-8">
+          <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-[#272727] flex items-center justify-center text-gray-500 shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          </div>
+          <div class="flex-grow">
+            <textarea readonly placeholder="Add a comment..." onclick="loginFromComments()" class="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 py-1 text-sm focus:border-gray-900 dark:focus:border-gray-100 outline-none cursor-text resize-none" rows="1"></textarea>
+            <div class="flex justify-end mt-2">
+              <button onclick="loginFromComments()" class="bg-[#0f0f0f] dark:bg-[#3ea6ff] text-white dark:text-[#0f0f0f] px-4 py-2 rounded-full text-sm font-bold transition hover:bg-gray-800 dark:hover:bg-[#65b8ff]">Sign in to comment</button>
+            </div>
+          </div>
         </div>
       `;
     }
 
     container.innerHTML = `
-      <div class="mt-16 pt-8 border-t-2 border-gray-900 dark:border-gray-100">
-        <button onclick="toggleComments('${slug}')" class="flex items-center justify-between w-full text-left focus:outline-none group">
-          <h3 class="text-xl font-bold flex items-center text-gray-900 dark:text-gray-100">
-            Comments <span id="comment-count-${slug}" class="text-xs font-normal text-gray-500 ml-3 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">...</span>
+      <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
+        <div class="flex items-center gap-6 mb-6">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+            <span id="comment-count-${slug}">0</span> Comments
           </h3>
-          <svg id="comment-icon-${slug}" class="w-5 h-5 text-gray-500 group-hover:text-gray-900 dark:group-hover:text-gray-100 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </button>
+          <button class="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-[#272727] px-3 py-1.5 rounded-full transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+            Sort by
+          </button>
+        </div>
         
-        <div id="comments-wrapper-${slug}" class="hidden mt-6 transition-all">
+        <div id="comments-wrapper-${slug}" class="transition-all">
           ${authHtml}
-          <div id="comments-list-${slug}" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+          <div id="comments-list-${slug}" class="space-y-6 pb-12">
             <!-- Comments will load here -->
-            <div class="text-gray-500 font-bold text-xs animate-pulse">Loading comments...</div>
+            <div class="text-gray-500 font-bold text-sm animate-pulse">Loading comments...</div>
           </div>
         </div>
       </div>
@@ -161,7 +171,7 @@ function listenToComments(slug, listId) {
 
       const isOwner = currentUser && currentUser.uid === c.userId;
       const isAdmin = currentUser && currentUser.email && ADMIN_EMAILS.includes(currentUser.email);
-      const isAuthor = c.email && ADMIN_EMAILS.includes(c.email); // Can't easily check comment author email without storing it, but we can check if it's admin replying
+      const isAuthor = c.email && ADMIN_EMAILS.includes(c.email); // Note: we don't save email yet, but kept for future
       const canDelete = isOwner || isAdmin;
       
       const isHearted = c.adminHearted === true;
@@ -172,19 +182,26 @@ function listenToComments(slug, listId) {
         `<button onclick="toggleAdminHeart('${slug}', '${c.id}', ${isHearted})" class="text-[10px] font-bold uppercase flex items-center gap-1 ${heartBtnClass} transition-colors" title="${isHearted ? 'Remove Heart' : 'Give Heart'}"><svg class="w-4 h-4 ${heartIconClass}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg> Love</button>` : '';
 
       const heartedBadge = isHearted && !isAdmin ? 
-        `<span class="text-[10px] font-bold uppercase flex items-center gap-1 text-red-500" title="Admin Loved this"><svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> Loved by Admin</span>` : '';
+        `<span class="text-[10px] font-bold uppercase flex items-center gap-1 text-red-500" title="Admin Loved this"><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>` : '';
+
+      // Likes/Dislikes handling
+      const likedBy = c.likedBy || [];
+      const dislikedBy = c.dislikedBy || [];
+      const likesCount = likedBy.length;
+      const isLiked = currentUser && likedBy.includes(currentUser.uid);
+      const isDisliked = currentUser && dislikedBy.includes(currentUser.uid);
 
       let replyInputHtml = '';
       if (!isReply) {
         replyInputHtml = `
-        <div id="reply-box-${c.id}" class="hidden mt-4 pl-4 border-l-2 border-transparent">
-          <div class="flex gap-3">
-            <img src="${currentUser ? currentUser.photoURL : ''}" class="w-6 h-6 rounded-full shrink-0" />
+        <div id="reply-box-${c.id}" class="hidden mt-4">
+          <div class="flex gap-4">
+            <img src="${currentUser ? currentUser.photoURL : ''}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full shrink-0" />
             <div class="flex-grow">
-              <textarea id="reply-input-${c.id}" placeholder="Write a reply..." class="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 py-1 text-sm focus:border-gray-900 dark:focus:border-gray-100 outline-none transition-all resize-none" rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+              <textarea id="reply-input-${c.id}" placeholder="Add a reply..." class="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 py-1 text-sm focus:border-gray-900 dark:focus:border-gray-100 outline-none transition-all resize-none" rows="1" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
               <div class="flex gap-2 mt-2 justify-end">
-                <button onclick="toggleReplyBox('${c.id}')" class="text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-1.5 text-xs font-bold transition">Cancel</button>
-                <button onclick="submitReply('${slug}', '${c.id}')" class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-4 py-1.5 rounded-full text-xs font-bold transition shadow-sm uppercase tracking-widest">Reply</button>
+                <button onclick="toggleReplyBox('${c.id}')" class="text-gray-900 dark:text-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-[#272727] text-sm font-bold transition">Cancel</button>
+                <button onclick="submitReply('${slug}', '${c.id}')" class="bg-[#0f0f0f] dark:bg-[#3ea6ff] text-white dark:text-[#0f0f0f] px-4 py-2 rounded-full text-sm font-bold transition hover:bg-gray-800 dark:hover:bg-[#65b8ff]">Reply</button>
               </div>
             </div>
           </div>
@@ -193,28 +210,44 @@ function listenToComments(slug, listId) {
       }
 
       return `
-        <div class="${isReply ? 'mt-3 pl-4 sm:pl-10 relative' : 'bg-gray-50 dark:bg-[#1a1a1a] p-4 rounded-xl border border-gray-200 dark:border-gray-800 relative'}">
-          ${isReply ? '<div class="absolute left-4 sm:left-10 top-0 bottom-0 w-[2px] -ml-[22px] sm:-ml-[26px] bg-gray-200 dark:bg-gray-800 rounded-full"></div>' : ''}
-          <div class="flex justify-between items-start mb-2">
-            <div class="flex items-center gap-2">
-              <img src="${c.userPhoto}" alt="${c.userName}" class="w-6 h-6 rounded-full" referrerpolicy="no-referrer" />
-              <div>
-                <div class="font-bold text-xs text-gray-900 dark:text-gray-100">${c.userName}</div>
-                <div class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">${date}</div>
-              </div>
+        <div class="flex gap-4 group ${isReply ? 'mt-4' : ''}">
+          <img src="${c.userPhoto}" alt="${c.userName}" class="${isReply ? 'w-6 h-6 sm:w-8 sm:h-8' : 'w-10 h-10'} rounded-full shrink-0" referrerpolicy="no-referrer" />
+          <div class="flex-grow min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-bold text-[13px] text-gray-900 dark:text-gray-100 truncate ${isAdmin || (c.email && ADMIN_EMAILS.includes(c.email)) ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-2 py-0.5 rounded-full' : ''}">@${c.userName.replace(/\s+/g, '')}</span>
+              <span class="text-[12px] text-gray-500 dark:text-[#aaaaaa] shrink-0">${date}</span>
             </div>
-            ${canDelete ? `<button onclick="deleteComment('${slug}', '${c.id}')" class="text-gray-400 hover:text-red-600 transition-colors" title="Delete">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-            </button>` : ''}
+            
+            <p class="text-gray-900 dark:text-[#f1f1f1] text-[14px] whitespace-pre-wrap leading-relaxed mb-2">${c.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+            
+            <div class="flex items-center gap-1 sm:gap-4 text-gray-600 dark:text-[#aaaaaa]">
+              <div class="flex items-center gap-1">
+                <button onclick="toggleCommentLike('${slug}', '${c.id}')" class="hover:bg-gray-100 dark:hover:bg-[#272727] p-2 rounded-full transition ${isLiked ? 'text-gray-900 dark:text-white' : ''}">
+                  <svg class="w-4 h-4 ${isLiked ? 'fill-current' : 'fill-none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.514"></path></svg>
+                </button>
+                <span class="text-[12px] min-w-[12px]">${likesCount > 0 ? likesCount : ''}</span>
+              </div>
+              
+              <button onclick="toggleCommentDislike('${slug}', '${c.id}')" class="hover:bg-gray-100 dark:hover:bg-[#272727] p-2 rounded-full transition ${isDisliked ? 'text-gray-900 dark:text-white' : ''}">
+                <svg class="w-4 h-4 ${isDisliked ? 'fill-current' : 'fill-none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.514"></path></svg>
+              </button>
+              
+              ${!isReply ? `<button onclick="toggleReplyBox('${c.id}')" class="text-[12px] font-bold hover:bg-gray-100 dark:hover:bg-[#272727] px-3 py-1.5 rounded-full transition ml-2">Reply</button>` : ''}
+              
+              ${heartBtn}
+              ${heartedBadge}
+            </div>
+            
+            ${replyInputHtml}
           </div>
-          <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">${c.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
           
-          <div class="flex items-center gap-4 mt-3">
-            ${!isReply && currentUser ? `<button onclick="toggleReplyBox('${c.id}')" class="text-[10px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Reply</button>` : ''}
-            ${heartBtn}
-            ${heartedBadge}
+          ${canDelete ? `
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+            <button onclick="deleteComment('${slug}', '${c.id}')" class="p-2 hover:bg-gray-100 dark:hover:bg-[#272727] rounded-full text-gray-500 hover:text-red-500 transition" title="Delete">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+            </button>
           </div>
-          ${replyInputHtml}
+          ` : ''}
         </div>
       `;
     };
@@ -259,18 +292,20 @@ window.submitComment = async function(slug) {
 
   input.value = ''; // clear immediately
   
-  try {
-    const commentsRef = collection(db, 'postComments', slug, 'comments');
-    await addDoc(commentsRef, {
-      text: text,
-      userId: currentUser.uid,
-      userName: currentUser.displayName || "Anonymous",
-      userPhoto: currentUser.photoURL || "",
-      createdAt: serverTimestamp(),
-      parentId: null,
-      adminHearted: false
-    });
-  } catch (err) {
+    try {
+      const commentsRef = collection(db, 'postComments', slug, 'comments');
+      await addDoc(commentsRef, {
+        text: text,
+        userId: currentUser.uid,
+        userName: currentUser.displayName || "Anonymous",
+        userPhoto: currentUser.photoURL || "",
+        createdAt: serverTimestamp(),
+        parentId: null,
+        adminHearted: false,
+        likedBy: [],
+        dislikedBy: []
+      });
+    } catch (err) {
     console.error("Error adding comment", err);
     window.showToast("Error: " + err.message, 'error');
   }
@@ -319,18 +354,20 @@ window.submitReply = async function(slug, parentId) {
   input.value = ''; // clear immediately
   toggleReplyBox(parentId); // hide box
   
-  try {
-    const commentsRef = collection(db, 'postComments', slug, 'comments');
-    await addDoc(commentsRef, {
-      text: text,
-      userId: currentUser.uid,
-      userName: currentUser.displayName || "Anonymous",
-      userPhoto: currentUser.photoURL || "",
-      createdAt: serverTimestamp(),
-      parentId: parentId,
-      adminHearted: false
-    });
-  } catch (err) {
+    try {
+      const commentsRef = collection(db, 'postComments', slug, 'comments');
+      await addDoc(commentsRef, {
+        text: text,
+        userId: currentUser.uid,
+        userName: currentUser.displayName || "Anonymous",
+        userPhoto: currentUser.photoURL || "",
+        createdAt: serverTimestamp(),
+        parentId: parentId,
+        adminHearted: false,
+        likedBy: [],
+        dislikedBy: []
+      });
+    } catch (err) {
     console.error("Error adding reply", err);
     window.showToast("Error: " + err.message, 'error');
   }
@@ -345,5 +382,55 @@ window.toggleAdminHeart = async function(slug, commentId, currentValue) {
   } catch (err) {
     console.error("Error toggling heart:", err);
     window.showToast("Error: " + err.message, 'error');
+  }
+};
+
+window.toggleCommentLike = async function(slug, commentId) {
+  if (!currentUser || !db) {
+    window.showToast("Please sign in to like comments", "error");
+    return;
+  }
+  const commentRef = doc(db, 'postComments', slug, 'comments', commentId);
+  try {
+    const snap = await getDoc(commentRef);
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const likedBy = data.likedBy || [];
+    
+    if (likedBy.includes(currentUser.uid)) {
+      await updateDoc(commentRef, { likedBy: arrayRemove(currentUser.uid) });
+    } else {
+      await updateDoc(commentRef, { 
+        likedBy: arrayUnion(currentUser.uid),
+        dislikedBy: arrayRemove(currentUser.uid)
+      });
+    }
+  } catch (err) {
+    console.error("Error toggling like", err);
+  }
+};
+
+window.toggleCommentDislike = async function(slug, commentId) {
+  if (!currentUser || !db) {
+    window.showToast("Please sign in to dislike comments", "error");
+    return;
+  }
+  const commentRef = doc(db, 'postComments', slug, 'comments', commentId);
+  try {
+    const snap = await getDoc(commentRef);
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const dislikedBy = data.dislikedBy || [];
+    
+    if (dislikedBy.includes(currentUser.uid)) {
+      await updateDoc(commentRef, { dislikedBy: arrayRemove(currentUser.uid) });
+    } else {
+      await updateDoc(commentRef, { 
+        dislikedBy: arrayUnion(currentUser.uid),
+        likedBy: arrayRemove(currentUser.uid)
+      });
+    }
+  } catch (err) {
+    console.error("Error toggling dislike", err);
   }
 };

@@ -2,11 +2,48 @@ import { renderCommentSection } from './comments.js';
 import { initWidgets } from './widget-loader.js';
 import { parseBlogMarkdown } from './markdown-utils.js';
 import { renderBlogMath } from './math-render.js';
+import { setupInteractionsUI } from './interactions.js';
+import { initFirebase, setDoc, doc, serverTimestamp } from './firebase.js';
+
+window.handleSubscribe = async function(event, form) {
+  event.preventDefault();
+  const emailInput = form.querySelector('input[type="email"]');
+  const email = emailInput.value.trim().toLowerCase();
+  if (!email) return;
+
+  const btn = form.querySelector('button');
+  const originalText = btn.innerText;
+  btn.innerText = "Saving...";
+  btn.disabled = true;
+
+  try {
+    const { db } = await initFirebase();
+    await setDoc(doc(db, 'subscribers', email), {
+      email: email,
+      createdAt: serverTimestamp()
+    });
+    
+    if (window.showToast) {
+      window.showToast('Subscribed successfully!', 'success');
+    } else {
+      alert('Subscribed successfully!');
+    }
+    form.reset();
+  } catch (error) {
+    console.error("Subscription error", error);
+    if (window.showToast) {
+      window.showToast('Error subscribing. Try again.', 'error');
+    } else {
+      alert('Error subscribing.');
+    }
+  } finally {
+    btn.innerText = originalText;
+    btn.disabled = false;
+  }
+};
 
 window.allBlogs = []; 
 window.currentPostIndex = -1;
-window.loadingNextPost = false;
-window.postObserver = null;
 window.lastScrollPosition = 0;
 
 async function loadBlogs() {
@@ -115,12 +152,7 @@ window.viewPost = async function (slug, append = false) {
   const shareUrl = window.location.origin + "/blogs/" + slug;
 
   let headerHtml = `
-    <div class="my-24 border-b border-gray-200 dark:border-gray-800 text-center relative max-w-lg mx-auto">
-      <span class="bg-[#fcfcfc] dark:bg-[#141414] px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-200 absolute -top-2 left-1/2 transform -translate-x-1/2">
-        Next Blog
-      </span>
-    </div>
-    <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+    <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6 pt-16">
       <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">
         <a href="/blogs/${slug}" class="hover:underline">${window.currentPostIndex !== -1 ? (window.allBlogs[window.currentPostIndex].title || slug.replace(/-/g, " ")) : slug.replace(/-/g, " ")}</a>
       </h1>
@@ -143,6 +175,9 @@ window.viewPost = async function (slug, append = false) {
   if (loader) loader.remove();
   container.insertAdjacentHTML('beforeend', articleHtml);
 
+  // Inject TOC and Interactions via DOM manipulation
+  injectTOCAndInteractions(slug);
+
   // Initialize the comments section
   renderCommentSection(`comments-container-${slug}`, slug);
   const postRoot = document.getElementById(`post-${slug}`);
@@ -151,8 +186,6 @@ window.viewPost = async function (slug, append = false) {
     renderBlogMath(postRoot);
     executeDynamicScripts(postRoot);
   }
-
-  setupNextPostObserver();
 };
 
 function executeDynamicScripts(element) {
@@ -163,39 +196,6 @@ function executeDynamicScripts(element) {
     newScript.appendChild(document.createTextNode(oldScript.innerHTML));
     oldScript.parentNode.replaceChild(newScript, oldScript);
   });
-}
-
-function setupNextPostObserver() {
-  if (window.currentPostIndex === -1 || window.currentPostIndex >= window.allBlogs.length - 1) return;
-
-  const container = document.getElementById("app-content");
-
-  let loader = document.getElementById("next-post-loader");
-  if (!loader) {
-    loader = document.createElement("div");
-    loader.id = "next-post-loader";
-    loader.className = "flex flex-col items-center justify-center py-20 opacity-0 transition-opacity";
-    loader.innerHTML = `<div class="w-8 h-8 border-2 border-gray-200 dark:border-gray-800 border-t-gray-900 dark:border-t-gray-100 rounded-full animate-spin"></div>`;
-    container.appendChild(loader);
-  }
-
-  if (window.postObserver) window.postObserver.disconnect();
-
-  window.postObserver = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !window.loadingNextPost) {
-      window.loadingNextPost = true;
-      loader.classList.remove("opacity-0");
-      setTimeout(() => {
-        window.currentPostIndex++;
-        const nextSlug = window.allBlogs[window.currentPostIndex].name.replace(".md", "");
-        window.viewPost(nextSlug, true).then(() => {
-          window.loadingNextPost = false;
-        });
-      }, 300);
-    }
-  }, { rootMargin: "100px" });
-
-  window.postObserver.observe(loader);
 }
 
 const EXTERNAL_ARTICLES = [
@@ -332,14 +332,13 @@ async function loadAllBlogsForStaticPage(currentSlug) {
         return dateB - dateA;
       });
       window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === currentSlug);
-      setupNextPostObserver();
     }
   } catch (err) {
     console.warn("Could not load index for infinite scroll", err);
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const slugMeta = document.querySelector('meta[name="blog-slug"]');
   if (slugMeta) {
     const slug = slugMeta.content;
@@ -349,10 +348,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchContainer = document.getElementById("search-container");
     if (searchContainer) searchContainer.style.display = 'none';
 
+    await loadAllBlogsForStaticPage(slug);
+
     renderCommentSection(`comments-container-${slug}`, slug);
+    injectTOCAndInteractions(slug);
     initWidgets(document);
     renderBlogMath(document);
-    loadAllBlogsForStaticPage(slug);
   } else {
     const initialHash = window.location.hash.substring(1);
     if (initialHash) {
@@ -362,3 +363,152 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+function injectTOCAndInteractions(slug) {
+  const postRoot = document.getElementById(`post-${slug}`);
+  if (!postRoot) return;
+  if (document.getElementById(`btn-like-icon`)) return; // Already injected
+
+  const markdownBody = postRoot.querySelector('.markdown-body');
+  if (!markdownBody) return;
+
+  const headings = markdownBody.querySelectorAll('h2, h3');
+  
+  let tocHtml = '';
+  if (headings.length > 0) {
+    tocHtml = `
+      <aside class="toc-sidebar hidden lg:block w-64 flex-shrink-0 sticky top-10 h-fit">
+        <div class="p-5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#1a1a1a]">
+          <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase tracking-widest mb-4">Table of Contents</h3>
+          <ul class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+    `;
+    headings.forEach((h, index) => {
+      const text = h.textContent;
+      let baseId = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      if (!baseId) baseId = 'section';
+      
+      let id = baseId;
+      let counter = 1;
+      // Check for duplicates in previously processed headings
+      while (Array.from(headings).slice(0, index).some(prev => prev.id === id)) {
+        id = baseId + '-' + counter;
+        counter++;
+      }
+      
+      h.id = id;
+      h.classList.add('scroll-mt-24');
+      const isH3 = h.tagName.toLowerCase() === 'h3';
+      tocHtml += `<li class="${isH3 ? 'ml-4' : ''}"><a href="#${id}" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">${text}</a></li>`;
+    });
+    tocHtml += `</ul></div></aside>`;
+  }
+
+  const interactionsHtml = `
+    <div class="flex items-center gap-4 mt-8 mb-4 border-t border-b border-gray-200 dark:border-gray-800 py-3 w-full">
+      <button onclick="toggleLike('${slug}')" class="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors group">
+        <svg id="btn-like-icon" class="w-6 h-6 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+        <span id="like-count" class="font-bold text-gray-900 dark:text-gray-100 text-sm">0</span>
+      </button>
+      <div class="h-6 w-px bg-gray-300 dark:bg-gray-700"></div>
+      <button onclick="toggleBookmark('${slug}')" class="flex items-center gap-2 text-gray-400 hover:text-blue-500 transition-colors group" title="Bookmark Post">
+        <svg id="btn-bookmark-icon" class="w-6 h-6 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+      </button>
+    </div>
+  `;
+
+  const flexContainer = document.createElement('div');
+  flexContainer.className = 'flex flex-col lg:flex-row gap-10';
+
+  const contentCol = document.createElement('div');
+  contentCol.className = 'flex-grow min-w-0';
+
+  postRoot.insertBefore(flexContainer, markdownBody);
+  contentCol.appendChild(markdownBody);
+  contentCol.insertAdjacentHTML('beforeend', interactionsHtml);
+  
+  const commentsContainer = document.getElementById(`comments-container-${slug}`);
+  if (commentsContainer) {
+    contentCol.appendChild(commentsContainer);
+  }
+
+  renderRelatedPosts(slug, contentCol);
+
+  flexContainer.appendChild(contentCol);
+
+  if (tocHtml) {
+    flexContainer.insertAdjacentHTML('beforeend', tocHtml);
+  }
+
+  setupInteractionsUI(slug);
+}
+
+function getRelatedBlogs(currentSlug, limit = 3) {
+  const currentBlog = window.allBlogs.find(b => b.name.replace('.md', '') === currentSlug);
+  if (!currentBlog) return [];
+
+  const currentKeywords = (currentBlog.keywords || currentBlog.title || "").toLowerCase().split(/[\s,]+/).filter(k => k.length > 2);
+
+  const scoredBlogs = window.allBlogs
+    .filter(b => b.name.replace('.md', '') !== currentSlug)
+    .map(blog => {
+      let score = 0;
+      const blogKeywords = (blog.keywords || blog.title || "").toLowerCase().split(/[\s,]+/).filter(k => k.length > 2);
+      
+      currentKeywords.forEach(kw => {
+        if (blogKeywords.includes(kw)) score += 2;
+        else if (blogKeywords.some(bk => bk.includes(kw) || kw.includes(bk))) score += 1;
+      });
+
+      return { blog, score };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score || new Date(b.blog.date) - new Date(a.blog.date));
+
+  let results = scoredBlogs.map(item => item.blog);
+
+  if (results.length < limit) {
+    const otherBlogs = window.allBlogs
+      .filter(b => b.name.replace('.md', '') !== currentSlug && !results.includes(b));
+    results = [...results, ...otherBlogs];
+  }
+
+  return results.slice(0, limit);
+}
+
+function renderRelatedPosts(slug, container) {
+  const related = getRelatedBlogs(slug);
+  if (related.length === 0) return;
+
+  let html = `
+    <div class="mt-16 mb-8 border-t-2 border-gray-900 dark:border-gray-100 pt-8">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+        Read Next
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  `;
+
+  related.forEach(blog => {
+    const postSlug = blog.name.replace('.md', '');
+    const title = blog.title || postSlug.replace(/-/g, ' ');
+    const cover = blog.coverImage || '';
+    const dateStr = blog.date ? new Date(blog.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    
+    html += `
+      <a href="/blogs/${postSlug}" class="group block border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:border-gray-900 dark:hover:border-gray-100 hover:shadow-lg transition-all bg-white dark:bg-[#1a1a1a]">
+        ${cover ? `<img src="${cover}" class="w-full h-32 object-cover" alt="${title}" />` : `<div class="w-full h-32 bg-gray-100 dark:bg-[#222] flex items-center justify-center text-gray-400"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg></div>`}
+        <div class="p-4">
+          <h4 class="font-bold text-gray-900 dark:text-gray-100 text-sm line-clamp-2 leading-snug transition-colors">${title}</h4>
+          <span class="text-[10px] uppercase tracking-widest font-bold text-gray-500 mt-2 block">${dateStr}</span>
+        </div>
+      </a>
+    `;
+  });
+
+  html += `
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML('beforeend', html);
+}
