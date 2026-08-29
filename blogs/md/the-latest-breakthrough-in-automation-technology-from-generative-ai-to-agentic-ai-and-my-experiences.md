@@ -53,7 +53,7 @@
 🔗 **GitHub Repository:**
 [sh4lu-z/Custom-MCP](https://github.com/sh4lu-z/Custom-MCP)
 
-### 📊 Agentic AI සහ MCP සන්නිවේදන Simulator එක
+### Agentic AI සහ MCP සන්නිවේදන Simulator එක
 
 පහත දැක්වෙන Interactive Simulator එක ආධාරයෙන්, AI මොළය සහ MCP සර්වර්ස් අතර දත්ත හුවමාරු වෙමින් බාහිර මෙවලම් ක්‍රියාත්මක වන ආකාරය ඔබට ප්‍රායෝගිකව අත්හදා බලන්න පුළුවන්:
 
