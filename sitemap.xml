@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sh4lu-z.github.io/</loc>
-    <lastmod>2026-08-30T07:12:39.672Z</lastmod>
+    <lastmod>2026-08-30T11:34:54.538Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -33,6 +33,12 @@
   <url>
     <loc>https://sh4lu-z.github.io/blogs/gpt-5-6-sol-sandbox-escape-hugging-face</loc>
     <lastmod>2026-08-29T20:21:26.352Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sh4lu-z.github.io/blogs/erceptron-multi-layer-perceptron-mlp</loc>
+    <lastmod>2026-08-30T11:34:48.457Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
