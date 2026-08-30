@@ -49,8 +49,8 @@
     "title": "Perceptron සිට Multi-Layer Perceptron (MLP) දක්වා",
     "coverImage": "",
     "description": "AI එකක් හිතන්නේ කොහොමද? මිනිස් මොළයේ ඉඳන් Multi-Layer Perceptron එකක් දක්වා කෘත්‍රිම නියුරෝන වල කතාව සරලව ඉගෙන ගනිමු.",
-    "keywords": "",
-    "aiDesc": "",
+    "keywords": "AI, Artificial Intelligence, Machine Learning, Deep Learning, Neural Networks, Perceptron, Artificial Neuron, MLP, Multi-Layer Perceptron, Activation Functions, ReLU, Sigmoid, Forward Propagation, Loss Function, AI Winter, XOR Problem, sinhala, tutorial",
+    "aiDesc": "Tutorial Part 1: Fundamentals of Artificial Neural Networks, Deep Learning, and Machine Learning. Explaining the biological neuron, Rosenblatt's Perceptron, weights, biases, and mathematical decision boundaries. Discussing the AI Winter, the non-linear XOR problem, and linear separability. Introduction to Multi-Layer Perceptrons (MLP), hidden layers, and the Universal Approximation Theorem. Covers Activation Functions like Sigmoid, ReLU, and Softmax. Explains Forward Propagation and calculating error using a Loss Function. This is the foundational prerequisite for understanding how neural networks learn, leading directly into Part 2 which covers Backpropagation, Gradient Descent, weight optimization, and model training algorithms.",
     "date": "2026-08-30T11:34:48.457Z"
   }
 ]
