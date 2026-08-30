@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>erceptron සිට Multi-Layer Perceptron (MLP) දක්වා - Shaluka Gimhan's Blog</title>
+  <meta name="title" content="erceptron සිට Multi-Layer Perceptron (MLP) දක්වා">
+  <meta name="description" content="AI එකක් හිතන්නේ කොහොමද? මිනිස් මොළයේ ඉඳන් Multi-Layer Perceptron එකක් දක්වා කෘත්‍රිම නියුරෝන වල කතාව සරලව ඉගෙන ගනිමු.">
+  <meta name="author" content="Shaluka Gimhan">
+  <meta name="keywords" content="erceptron, MultiLayer, Perceptron, MLP">
+  <meta name="robots" content="index, follow">
+  <meta name="blog-slug" content="erceptron-multi-layer-perceptron-mlp">
+  <link rel="canonical" href="https://sh4lu-z.github.io/blogs/erceptron-multi-layer-perceptron-mlp">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sh4lu-z.github.io/blogs/erceptron-multi-layer-perceptron-mlp">
+  <meta property="og:title" content="erceptron සිට Multi-Layer Perceptron (MLP) දක්වා">
+  <meta property="og:description" content="AI එකක් හිතන්නේ කොහොමද? මිනිස් මොළයේ ඉඳන් Multi-Layer Perceptron එකක් දක්වා කෘත්‍රිම නියුරෝන වල කතාව සරලව ඉගෙන ගනිමු.">
+  <meta property="og:image" content="https://sh4lu-z.github.io/assets/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://sh4lu-z.github.io/assets/logo.png">
+  
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+  </style>
+  <link rel="stylesheet" href="/css/style.css?v=3">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- OneSignal SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "4436d79b-58af-4568-ac20-62578c4be3b5",
+        notifyButton: {
+          enable: true,
+        },
+      });
+      OneSignal.Slidedown.promptPush();
+    });
+  </script>
+</head>
+<script>
+  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+</script>
+<body class="bg-[#fcfcfc] text-gray-900 font-sans p-4 sm:p-12 transition-colors duration-300 dark:bg-[#141414] dark:text-gray-100">
+  <div class="max-w-5xl lg:max-w-6xl mx-auto flex flex-col min-h-screen">
+    
+    <header class="py-4 sm:py-6 mb-6 transition-all duration-300 border-b border-gray-100 dark:border-gray-800 pb-4">
+      <div class="flex justify-between items-center gap-4">
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 cursor-pointer transition-all duration-300 truncate" onclick="window.location.href='/'">Shaluka Gimhan's Blog</h1>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <a href="/" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Home">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+          </a>
+          <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');" class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="app-content" class="flex-grow">
+      <div id="post-erceptron-multi-layer-perceptron-mlp">
+        <div class="flex items-center justify-between mb-8">
+          <a href="/" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors block" title="Back to list">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          </a>
+          <button onclick="navigator.clipboard.writeText('https://sh4lu-z.github.io/blogs/erceptron-multi-layer-perceptron-mlp'); window.showToast('Link copied to clipboard!', 'success');" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Copy shareable link">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+          </button>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+          <h1 class="text-4xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 leading-tight mb-4 tracking-tight">erceptron සිට Multi-Layer Perceptron (MLP) දක්වා</h1>
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-bold tracking-widest uppercase flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Published on 30 August 2026
+          </div>
+        </div>
+
+        <article class="py-8 markdown-body">
+          <p>අපි හැමෝම අද AI ගැන කතා කළාට, මේ හැමදේකම පටන්ගත්තෙ කොතනින්ද කියලා ඔයා කවදාහරි හිතලා තියෙනවද? අද අපි කතා කරන්න යන්නේ  AI වල හදවත වන Neural Networks වල ආරම්භයේ ඉඳන්ම කතාවයි. ඒ කියන්නේ සරල Perceptron එකක ඉඳන් Multi-Layer Perceptron (MLP) එකක් දක්වා AI එකක් දියුණු වුණු හැටි .</p>
+<h2>මිනිස් මොළයෙන් පරිගණකයට (Biological Inspiration)</h2>
+<p>පරිගණකයකට හිතන්න පුරුදු කරන්න කලින්, විද්‍යාඥයන්ට ඕන වුණේ අපේ මොළය වැඩ කරන්නේ කොහොමද කියලා තේරුම් ගන්නයි. අපේ මොළයේ තියෙනවා <mark>නියුරෝන (Biological Neurons)</mark> බිලියන ගණනක්. මේවා එකිනෙකට සම්බන්ධ වෙලා තමයි අපි හිතන දේවල්, කරන දේවල් පාලනය කරන්නේ.</p>
+<p>මේ සංකල්පය පදනම් කරගෙන තමයි 1958 දී Frank Rosenblatt කියන විද්‍යාඥයා විසින් ලොව පළමු කෘත්‍රිම නියුරෝනය වෙන Perceptron එක හඳුන්වා දුන්නේ. ඇත්තටම ජීව විද්‍යාත්මක නියුරෝනයක් කෘත්‍රිම නියුරෝනයකට සමාන වෙන්නේ මෙහෙමයි</p>
+<ul>
+<li>Dendrite = කෘත්‍රිම නියුරෝනයට දත්ත ලබාදෙන (Inputs) මාර්ගය.</li>
+<li>Cell Body = ලැබෙන දත්ත එකතු කරලා ගණනය කරන තැන (Summation).</li>
+<li>Axon = අවසාන තීරණය පිටතට දෙන මාර්ගය (Output).</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sh4lu-z/sh4lu-z.github.io/main/assets/blog-images/1788089049435-1hkyltodpjjgo32docown5w.png" alt="Biological Neuron vs Artificial Neuron">
+<sub><a href="https://towardsdatascience.com/the-concept-of-artificial-neurons-perceptrons-in-neural-networks-fab22249cbfc/">Towards Data Science</a></sub></p>
+<h2>Perceptron එකක් ගණනය කිරීම් කරන්නේ කොහොමද?</h2>
+<p>කෘත්‍රිම නියුරෝනයක් ඇතුළේ ඇත්තටම වෙන්නේ සරල ගණිත කර්මයක්. මේක තේරුම් ගන්න අපි ප්‍රධාන කොටස් 3ක් බලමු</p>
+<ul>
+<li>Inputs <div class="math-display">$$(x_1, x_2)$$</div> අපි නියුරෝනයට ලබා දෙන දත්ත. (උදාහරණයක් විදිහට ගෙදරක වර්ග අඩිය සහ කාමර ගණන). </li>
+<li>Weights <div class="math-display">$$w_1, w_2$$</div> ලැබෙන එක් එක් දත්තයට තියෙන වැදගත්කම (Strength). ගෙදරක මිල තීරණය කරද්දී කාමර ගණනට වඩා වර්ග අඩිය වැදගත් නම් ඒකේ weight එක වැඩියි.</li>
+<li>Bias <div class="math-display">$$b$$</div> තීරණයක් ගැනීමට අවශ්‍ය මූලික එළිපත්ත (Threshold). මේක හරියට කිසිම input එකක් නැති වුණත් තියෙන base value එක වගේ.</li>
+</ul>
+
+        </article>
+        <div id="comments-container-erceptron-multi-layer-perceptron-mlp"></div>
+      </div>
+    </main>
+
+    <footer class="mt-8 pt-8 pb-8 text-gray-500 dark:text-gray-400 flex flex-col items-center gap-3" style="text-align: center;">
+      <p>&copy; 2026 <a href="https://sh4lu-z.vercel.app/" class="hover:text-gray-900 dark:hover:text-gray-100 font-bold transition-colors">Shaluka Gimhan</a>'s Blog.</p>
+      
+      <div class="mt-4 flex flex-col items-center">
+        <p class="text-xs font-bold text-gray-900 dark:text-gray-100 mb-2 uppercase tracking-widest">Subscribe to the newsletter</p>
+        <form class="flex items-center gap-2" onsubmit="handleSubscribe(event, this)">
+          <input type="email" placeholder="Enter your email" required class="px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-sm focus:outline-none focus:border-gray-900 dark:focus:border-gray-100 transition-colors w-64 text-gray-900 dark:text-gray-100 placeholder-gray-400">
+          <button type="submit" class="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-5 py-2 rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">Subscribe</button>
+        </form>
+      </div>
+
+      <div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest mt-4">
+        <a href="/privacy-policy.html" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Privacy Policy</a>
+        <span>•</span>
+        <a href="/terms-of-service.html" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Terms of Service</a>
+      </div>
+    </footer>
+  </div>
+  <script src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js?v=1788089691824"></script>
+</body>
+</html>
