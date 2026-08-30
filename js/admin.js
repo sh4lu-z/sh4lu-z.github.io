@@ -1,5 +1,19 @@
 import { parseBlogMarkdown } from './markdown-utils.js';
 import { renderBlogMath } from './math-render.js';
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+
+env.allowLocalModels = false;
+env.useBrowserCache = true;
+
+let aiExtractor;
+async function initAI() {
+  if (!aiExtractor) {
+    window.showToast("Loading AI Model for Vectors (may take a moment)...", "info");
+    aiExtractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', { quantized: true });
+    window.showToast("AI Model Ready!", "success");
+  }
+  return aiExtractor;
+}
 
 const GH_TOKEN = localStorage.getItem("gh_token") || "";
 const GH_OWNER = "sh4lu-z"; // Hardcoded
@@ -396,6 +410,7 @@ publishBtn.addEventListener("click", async () => {
   const coverImage = document.getElementById("blog-cover").value.trim();
   const description = document.getElementById("blog-desc").value.trim();
   const keywords = document.getElementById("blog-keywords").value.trim();
+  const aiDesc = document.getElementById("blog-ai-desc").value.trim();
   const content = editor.value();
 
   const owner = GH_OWNER;
@@ -421,8 +436,14 @@ publishBtn.addEventListener("click", async () => {
   try {
     const mdPath = `blogs/md/${slug}.md`;
     const htmlPath = `blogs/${slug}/index.html`;
-    const dateIso = new Date().toISOString();
-    const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    let dateIso = new Date().toISOString();
+    let dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+
+    if (window.editingOriginalDate) {
+      dateIso = window.editingOriginalDate;
+      dateStr = new Date(dateIso).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    }
 
     // 1. Get existing SHAs
     const existingMd = await getFileSha(mdPath, owner, repo, token);
@@ -481,6 +502,7 @@ publishBtn.addEventListener("click", async () => {
       coverImage: coverImage,
       description: description,
       keywords: keywords,
+      aiDesc: aiDesc,
       date: dateIso
     };
 
@@ -517,6 +539,39 @@ publishBtn.addEventListener("click", async () => {
       headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify(sitemapBody)
     });
+
+    // 5.5 Update vectors.json for AI Semantic Recommendations
+    try {
+      publishBtn.innerText = "Generating AI Vector...";
+      const aiModel = await initAI();
+      const textToEmbed = aiDesc || description || title;
+      const output = await aiModel(textToEmbed, { pooling: 'mean', normalize: true });
+      const vector = Array.from(output.data);
+
+      let currentVectors = {};
+      const existingVectors = await getFileSha("blogs/vectors.json", owner, repo, token);
+      if (existingVectors.content) {
+        currentVectors = JSON.parse(decodeURIComponent(escape(atob(existingVectors.content.replace(/\s/g, '')))));
+      }
+      
+      currentVectors[slug] = vector;
+
+      const vectorsBody = {
+        message: "Update vectors.json",
+        content: encodeBase64Unicode(JSON.stringify(currentVectors))
+      };
+      if (existingVectors.sha) vectorsBody.sha = existingVectors.sha;
+
+      await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/vectors.json`, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(vectorsBody)
+      });
+      console.log("AI Vector updated successfully");
+    } catch (e) {
+      console.error("AI Vector generation failed:", e);
+      window.showToast("Warning: AI Vector generation failed. " + e.message, 'error');
+    }
 
     // 6. Send OneSignal Push Notification (Only for new posts)
     // We now securely trigger a GitHub Action instead of using a public proxy!
@@ -555,12 +610,14 @@ publishBtn.addEventListener("click", async () => {
       await window.deleteBlog(window.editingOriginalFilename, null, true);
     }
     window.editingOriginalFilename = null;
+    window.editingOriginalDate = null;
 
     window.showToast("Successfully Published to GitHub! 🎉", 'success');
     document.getElementById("blog-title").value = "";
     document.getElementById("blog-cover").value = "";
     document.getElementById("blog-desc").value = "";
     document.getElementById("blog-keywords").value = "";
+    document.getElementById("blog-ai-desc").value = "";
     editor.value("");
 
     fetchAdminBlogs();
@@ -575,6 +632,7 @@ publishBtn.addEventListener("click", async () => {
 });
 
 window.editingOriginalFilename = null;
+window.editingOriginalDate = null;
 
 window.editBlog = async function (filename) {
   const owner = GH_OWNER;
@@ -602,9 +660,11 @@ window.editBlog = async function (filename) {
     document.getElementById("blog-cover").value = metadata.coverImage || "";
     document.getElementById("blog-desc").value = metadata.description || "";
     document.getElementById("blog-keywords").value = metadata.keywords || "";
+    document.getElementById("blog-ai-desc").value = metadata.aiDesc || "";
     editor.value(mdContent);
 
     window.editingOriginalFilename = filename;
+    window.editingOriginalDate = metadata.date || null;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.getElementById("publish-btn").innerText = "Update Blog";
     window.showToast("Ready to edit!", "success");
@@ -680,6 +740,28 @@ window.deleteBlog = async function (filename, sha, silent = false) {
           headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify({ message: "Update sitemap.xml after delete", content: encodeBase64Unicode(sitemapContent), sha: existingSitemap.sha })
         });
+      }
+
+      // 5. Update vectors.json
+      try {
+        const existingVectors = await getFileSha("blogs/vectors.json", owner, repo, token);
+        if (existingVectors.content) {
+          let currentVectors = JSON.parse(decodeURIComponent(escape(atob(existingVectors.content.replace(/\s/g, '')))));
+          if (currentVectors[slug]) {
+            delete currentVectors[slug];
+            await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/blogs/vectors.json`, {
+              method: "PUT",
+              headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                message: "Remove from vectors.json",
+                content: encodeBase64Unicode(JSON.stringify(currentVectors)),
+                sha: existingVectors.sha
+              })
+            });
+          }
+        }
+      } catch(e) {
+        console.error("Error updating vectors.json:", e);
       }
     }
 

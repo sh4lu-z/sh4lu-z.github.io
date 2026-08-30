@@ -42,7 +42,8 @@ window.handleSubscribe = async function(event, form) {
   }
 };
 
-window.allBlogs = []; 
+window.allBlogs = [];
+window.allVectors = {}; 
 window.currentPostIndex = -1;
 window.lastScrollPosition = 0;
 
@@ -57,6 +58,11 @@ async function loadBlogs() {
       const localData = await localRes.json();
       localBlogs = localData.map(b => b);
     }
+
+    try {
+      const vecRes = await fetch('/blogs/vectors.json' + cacheBuster);
+      if (vecRes.ok) window.allVectors = await vecRes.json();
+    } catch(e) {}
 
     let finalBlogs = Array.from(localBlogs);
     finalBlogs.sort((a, b) => {
@@ -333,6 +339,11 @@ async function loadAllBlogsForStaticPage(currentSlug) {
       });
       window.currentPostIndex = window.allBlogs.findIndex(b => b.name.replace(".md", "") === currentSlug);
     }
+
+    try {
+      const vecRes = await fetch('/blogs/vectors.json' + cacheBuster);
+      if (vecRes.ok) window.allVectors = await vecRes.json();
+    } catch(e) {}
   } catch (err) {
     console.warn("Could not load index for infinite scroll", err);
   }
@@ -442,26 +453,48 @@ function injectTOCAndInteractions(slug) {
   setupInteractionsUI(slug);
 }
 
+function cosineSimilarity(vecA, vecB) {
+  if (!vecA || !vecB || vecA.length !== vecB.length) return 0;
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    dotProduct += vecA[i] * vecB[i];
+    normA += vecA[i] * vecA[i];
+    normB += vecB[i] * vecB[i];
+  }
+  if (normA === 0 || normB === 0) return 0;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
 function getRelatedBlogs(currentSlug, limit = 3) {
   const currentBlog = window.allBlogs.find(b => b.name.replace('.md', '') === currentSlug);
   if (!currentBlog) return [];
 
+  const currentVec = window.allVectors ? window.allVectors[currentSlug] : null;
   const currentKeywords = (currentBlog.keywords || currentBlog.title || "").toLowerCase().split(/[\s,]+/).filter(k => k.length > 2);
 
   const scoredBlogs = window.allBlogs
     .filter(b => b.name.replace('.md', '') !== currentSlug)
     .map(blog => {
       let score = 0;
-      const blogKeywords = (blog.keywords || blog.title || "").toLowerCase().split(/[\s,]+/).filter(k => k.length > 2);
+      const otherSlug = blog.name.replace('.md', '');
       
-      currentKeywords.forEach(kw => {
-        if (blogKeywords.includes(kw)) score += 2;
-        else if (blogKeywords.some(bk => bk.includes(kw) || kw.includes(bk))) score += 1;
-      });
+      // Use AI Semantic Vector if available
+      if (currentVec && window.allVectors && window.allVectors[otherSlug]) {
+        score = cosineSimilarity(currentVec, window.allVectors[otherSlug]) * 10;
+      } else {
+        // Fallback to keyword matching
+        const blogKeywords = (blog.keywords || blog.title || "").toLowerCase().split(/[\s,]+/).filter(k => k.length > 2);
+        currentKeywords.forEach(kw => {
+          if (blogKeywords.includes(kw)) score += 2;
+          else if (blogKeywords.some(bk => bk.includes(kw) || kw.includes(bk))) score += 1;
+        });
+      }
 
       return { blog, score };
     })
-    .filter(item => item.score > 0)
+    .filter(item => item.score > 0.1) // Adjusted threshold for vectors
     .sort((a, b) => b.score - a.score || new Date(b.blog.date) - new Date(a.blog.date));
 
   let results = scoredBlogs.map(item => item.blog);
