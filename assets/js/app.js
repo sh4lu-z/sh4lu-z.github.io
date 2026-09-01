@@ -204,13 +204,7 @@ function executeDynamicScripts(element) {
   });
 }
 
-const EXTERNAL_ARTICLES = [
-  { platform: "Medium", title: "Mastering the JavaScript Event Loop", url: "https://medium.com/@sh4lu_z/mastering-the-javascript-event-loop" },
-  { platform: "DEV.to", title: "Top 10 VS Code Extensions I Use Daily", url: "https://dev.to/sh4lu_z/top-10-vs-code-extensions" },
-  { platform: "Medium", title: "Building a Zero-Backend Blog", url: "https://medium.com/@sh4lu_z/building-a-zero-backend-blog" },
-  { platform: "DEV.to", title: "Why I Treat GitHub as a Free Database", url: "https://dev.to/sh4lu_z/why-i-treat-github-as-a-free-database" },
-  { platform: "Medium", title: "My Favorite Web APIs in 2026", url: "https://medium.com/@sh4lu_z/my-favorite-web-apis" }
-];
+
 
 window.switchTab = function (tabName) {
   const btnInternal = document.getElementById("btn-tab-internal");
@@ -259,7 +253,7 @@ async function renderExternalLinks() {
   let articles = [];
 
   try {
-    const devRes = await fetch("https://dev.to/api/articles?username=sh4lu_z");
+    const devRes = await fetch("https://dev.to/api/articles?username=shaluka");
     if (devRes.ok) {
       const devData = await devRes.json();
       devData.forEach(item => {
@@ -274,7 +268,7 @@ async function renderExternalLinks() {
   } catch (e) { console.warn("Failed Dev.to fetch", e); }
 
   try {
-    const medRes = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@sh4lu_z");
+    const medRes = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@shalukagimhan");
     if (medRes.ok) {
       const medData = await medRes.json();
       if (medData.items) {
@@ -292,16 +286,10 @@ async function renderExternalLinks() {
 
   articles.sort((a, b) => b.date - a.date);
 
-  // If no articles fetched from APIs, fallback to hardcoded EXTERNAL_ARTICLES
+  // If no articles fetched from APIs, show a fallback message
   if (articles.length === 0) {
-    articles = EXTERNAL_ARTICLES.map((art, i) => {
-      const fakeDate = new Date();
-      fakeDate.setDate(fakeDate.getDate() - (i * 15));
-      return {
-        ...art,
-        date: fakeDate.getTime()
-      };
-    });
+    container.innerHTML = `<div class="flex flex-col items-center justify-center py-24"><p class="text-gray-500 dark:text-gray-400">No external publications found yet.</p></div>`;
+    return;
   }
 
   let html = `<div class="grid gap-10">`;

@@ -184,18 +184,49 @@ html.dark .markdown-body .katex {
 }
 
 /* Sticky Markdown Toolbar */
-.editor-toolbar {
-  position: sticky !important;
+.editor-toolbar:not(.fullscreen) {
+  position: sticky;
   top: 0;
   z-index: 50;
   background-color: white;
-  opacity: 1 !important;
+  opacity: 1;
 }
 
-.editor-toolbar:hover {
-  opacity: 1 !important;
+.editor-toolbar:not(.fullscreen):hover {
+  opacity: 1;
 }
 
 .editor-toolbar::before, .editor-toolbar::after {
   display: none !important;
+}
+
+/* EasyMDE Fullscreen & Side-by-side Fixes */
+.editor-toolbar.fullscreen,
+.CodeMirror-fullscreen,
+.editor-preview-side {
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
+.editor-preview-side {
+  background-color: white !important;
+  border-left: 1px solid #e5e7eb !important;
+  padding: 2rem !important;
+}
+
+/* Fix Editor Typing Side (CodeMirror) to look like a raw code editor */
+.CodeMirror {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+.CodeMirror .cm-header-1,
+.CodeMirror .cm-header-2,
+.CodeMirror .cm-header-3,
+.CodeMirror .cm-header-4,
+.CodeMirror .cm-header-5,
+.CodeMirror .cm-header-6 {
+  font-size: 1em !important;
+  font-weight: bold !important;
 }
